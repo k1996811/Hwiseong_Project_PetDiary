@@ -45,14 +45,30 @@
 
             </LinearLayout>
 
-            <ImageView
-                android:layout_marginTop="15dp"
-                android:layout_width="250dp"
-                android:layout_height="250dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:src="@mipmap/ic_launcher"
-                android:id="@+id/postImg1"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_marginTop="15dp"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:src="@mipmap/ic_launcher"
+                    android:id="@+id/postImg1"
+                    android:layout_centerInParent="true"/>
+
+                <ImageView
+                    android:id="@+id/deletePostImg1"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/cancel"
+                    android:layout_alignTop="@id/postImg1"
+                    android:layout_alignRight="@id/postImg1"
+                    android:visibility="invisible"/>
+
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="300dp"
@@ -62,32 +78,93 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp">
 
-                <ImageView
+                <RelativeLayout
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@mipmap/ic_launcher"
-                    android:id="@+id/postImg2"
-                    android:layout_marginRight="20dp"/>
+                    android:layout_marginRight="20dp">
 
-                <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@mipmap/ic_launcher"
-                    android:id="@+id/postImg3"
-                    android:layout_marginRight="20dp"/>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/ic_launcher"
+                        android:id="@+id/postImg2"                        />
 
-                <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@mipmap/ic_launcher"
-                    android:id="@+id/postImg4"
-                    android:layout_marginRight="20dp"/>
+                    <ImageView
+                        android:id="@+id/deletePostImg2"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/cancel"
+                        android:layout_alignTop="@id/postImg2"
+                        android:layout_alignRight="@id/postImg2"
+                        android:visibility="invisible"/>
 
-                <ImageView
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@mipmap/ic_launcher"
-                    android:id="@+id/postImg5" />
+                    android:layout_marginRight="20dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/ic_launcher"
+                        android:id="@+id/postImg3"/>
+
+                    <ImageView
+                        android:id="@+id/deletePostImg3"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/cancel"
+                        android:layout_alignTop="@id/postImg3"
+                        android:layout_alignRight="@id/postImg3"
+                        android:visibility="invisible"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginRight="20dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/ic_launcher"
+                        android:id="@+id/postImg4"/>
+
+                    <ImageView
+                        android:id="@+id/deletePostImg4"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/cancel"
+                        android:layout_alignTop="@id/postImg4"
+                        android:layout_alignRight="@id/postImg4"
+                        android:visibility="invisible"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginRight="20dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/ic_launcher"
+                        android:id="@+id/postImg5"/>
+
+                    <ImageView
+                        android:id="@+id/deletePostImg5"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/cancel"
+                        android:layout_alignTop="@id/postImg5"
+                        android:layout_alignRight="@id/postImg5"
+                        android:visibility="invisible"/>
+
+                </RelativeLayout>
 
             </LinearLayout>
 

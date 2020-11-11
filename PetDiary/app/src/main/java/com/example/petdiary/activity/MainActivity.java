@@ -275,10 +275,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void replaceFragment(Fragment fragment){
-        fragmentManager.beginTransaction().remove(fragmentNewPost);
-        fragmentNewPost = new FragmentNewPost();
-        fragmentManager.beginTransaction().add(R.id.main_layout, fragmentNewPost).commit();
+    public void replaceFragment(){
+        fragmentManager.beginTransaction().remove(fragmentNewPost).commit();
+        fragmentNewPost = null;
         if(fragmentMain != null){
             fragmentManager.beginTransaction().show(fragmentMain).commit();
         }

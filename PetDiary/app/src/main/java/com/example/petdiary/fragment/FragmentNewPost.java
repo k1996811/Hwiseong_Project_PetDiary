@@ -61,6 +61,7 @@ public class FragmentNewPost extends Fragment {
     private static final String TAG = "NewPostActivity";
 
     ImageView[] postImg = new ImageView[5];
+    ImageView[] deletePostImg = new ImageView[5];
     int[] postImgCheck = new int[5];
     int choiceNum;
     RelativeLayout loaderLayout;
@@ -127,6 +128,17 @@ public class FragmentNewPost extends Fragment {
         postImg[4] = viewGroup.findViewById(R.id.postImg5);
         postImg[4].setOnClickListener(onClickListener);
 
+        deletePostImg[0] = viewGroup.findViewById(R.id.deletePostImg1);
+        deletePostImg[0].setOnClickListener(onClickListener);
+        deletePostImg[1] = viewGroup.findViewById(R.id.deletePostImg2);
+        deletePostImg[1].setOnClickListener(onClickListener);
+        deletePostImg[2] = viewGroup.findViewById(R.id.deletePostImg3);
+        deletePostImg[2].setOnClickListener(onClickListener);
+        deletePostImg[3] = viewGroup.findViewById(R.id.deletePostImg4);
+        deletePostImg[3].setOnClickListener(onClickListener);
+        deletePostImg[4] = viewGroup.findViewById(R.id.deletePostImg5);
+        deletePostImg[4].setOnClickListener(onClickListener);
+
         for(int i=0; i<5; i++){
             imgUri[i] = "";
         }
@@ -172,9 +184,48 @@ public class FragmentNewPost extends Fragment {
                     myStartActivity(GalleryActivity.class);
                     choiceNum = 4;
                     break;
+                case R.id.deletePostImg1:
+                    cancelImg(1);
+                    break;
+                case R.id.deletePostImg2:
+                    cancelImg(2);
+                    break;
+                case R.id.deletePostImg3:
+                    cancelImg(3);
+                    break;
+                case R.id.deletePostImg4:
+                    cancelImg(4);
+                    break;
+                case R.id.deletePostImg5:
+                    cancelImg(5);
+                    break;
             }
         }
     };
+
+    private void cancelImg(int a){
+        int count = 0;
+        for(int i=0; i<5; i++){
+            if(postImgCheck[i] == 1){
+                count++;
+            }
+        }
+        if(count == 1){
+            postImgCheck[0] = 0;
+            postImg[0].setImageResource(R.mipmap.ic_launcher);
+            deletePostImg[0].setVisibility(View.INVISIBLE);
+        } else {
+            for(int i=a; i<count; i++){
+                img[i-1] = img[i];
+                Glide.with(getContext()).load(img[i-1]).centerCrop().override(500).into(postImg[i-1]);
+            }
+            postImgCheck[count-1] = 0;
+            postImg[count-1].setImageResource(R.mipmap.ic_launcher);
+            deletePostImg[count-1].setVisibility(View.INVISIBLE);
+            img[count-1] = null;
+        }
+        postNumCheck--;
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
@@ -214,26 +265,31 @@ public class FragmentNewPost extends Fragment {
             img[0] = postImgPath;
             postImgCheck[0] = 1;
             postNumCheck = 1;
+            deletePostImg[0].setVisibility(View.VISIBLE);
         } else if(postImgCheck[1] == 0){
             Glide.with(this).load(postImgPath).centerCrop().override(500).into(postImg[1]);
             img[1] = postImgPath;
             postImgCheck[1] = 1;
             postNumCheck = 2;
+            deletePostImg[1].setVisibility(View.VISIBLE);
         } else if(postImgCheck[2] == 0){
             Glide.with(this).load(postImgPath).centerCrop().override(500).into(postImg[2]);
             img[2] = postImgPath;
             postImgCheck[2] = 1;
             postNumCheck = 3;
+            deletePostImg[2].setVisibility(View.VISIBLE);
         } else if(postImgCheck[3] == 0){
             Glide.with(this).load(postImgPath).centerCrop().override(500).into(postImg[3]);
             img[3] = postImgPath;
             postImgCheck[3] = 1;
             postNumCheck = 4;
+            deletePostImg[3].setVisibility(View.VISIBLE);
         } else if(postImgCheck[4] == 0){
             Glide.with(this).load(postImgPath).centerCrop().override(500).into(postImg[4]);
             img[4] = postImgPath;
             postImgCheck[4] = 1;
             postNumCheck = 5;
+            deletePostImg[4].setVisibility(View.VISIBLE);
         } else if(postImgCheck[0] == 1 && postImgCheck[1] == 1 && postImgCheck[2] == 1 && postImgCheck[3] == 1 && postImgCheck[4] == 1){
             Glide.with(this).load(postImgPath).centerCrop().override(500).into(postImg[choiceNum]);
             img[choiceNum] = postImgPath;
@@ -372,7 +428,6 @@ public class FragmentNewPost extends Fragment {
 
     long maxid = 0;
     private FirebaseDatabase firebaseDatabase;
-    FragmentMain fragmentMain;
     BottomNavigationView bottomNavigationView;
     Menu menu;
 
@@ -382,7 +437,6 @@ public class FragmentNewPost extends Fragment {
         DatabaseReference images = firebaseDatabase.getReference().child("images").push();
 
         ContentDTO contentDTO = new ContentDTO();
-        //Log.e("@@@", String.valueOf(maxid));
         contentDTO.setNum((int)maxid+1);
 
         contentDTO.setImageUrl1(imgUri[0]);
@@ -410,7 +464,7 @@ public class FragmentNewPost extends Fragment {
         menu.findItem(R.id.tab1).setChecked(true);
 
         /////메인 타임라인으로 프래그먼트 이동
-        ((MainActivity)getActivity()).replaceFragment(fragmentMain.newInstance());
+        ((MainActivity)getActivity()).replaceFragment();
     }
 
     private void startToast(String msg){
