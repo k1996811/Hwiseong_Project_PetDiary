@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.example.petdiary.ContentDTO;
@@ -374,6 +375,11 @@ public class FragmentNewPost extends Fragment {
     FragmentMain fragmentMain;
     BottomNavigationView bottomNavigationView;
     Menu menu;
+    private FragmentManager fragmentManager;
+    FragmentSub fragmentSub;
+    FragmentNewPost fragmentNewPost;
+    FragmentMy fragmentMy;
+    FragmentContentMain fragmentContentMain;
 
     private void postData(){
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -409,7 +415,29 @@ public class FragmentNewPost extends Fragment {
         menu.findItem(R.id.tab1).setChecked(true);
 
         /////메인 타임라인으로 프래그먼트 이동
-        ((MainActivity)getActivity()).replaceFragment(fragmentMain.newInstance());
+        //((MainActivity)getActivity()).replaceFragment(fragmentMain.newInstance());
+
+        fragmentManager = getActivity().getSupportFragmentManager();
+
+        if(fragmentMain == null){
+            fragmentMain = new FragmentMain();
+            fragmentManager.beginTransaction().add(R.id.main_layout, fragmentMain).commit();
+        }
+        if(fragmentMain != null){
+            fragmentManager.beginTransaction().show(fragmentMain).commit();
+        }
+        if(fragmentSub != null){
+            fragmentManager.beginTransaction().hide(fragmentSub).commit();
+        }
+        if(fragmentNewPost != null){
+            fragmentManager.beginTransaction().hide(fragmentNewPost).commit();
+        }
+        if(fragmentMy != null){
+            fragmentManager.beginTransaction().hide(fragmentMy).commit();
+        }
+        if(fragmentContentMain != null){
+            fragmentManager.beginTransaction().hide(fragmentContentMain).commit();
+        }
     }
 
     private void startToast(String msg){

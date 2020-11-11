@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     FragmentMy fragmentMy;
     FragmentContentMain fragmentContentMain;
 
+    private FragmentManager fragmentManager;
+
 //    private void getAppKeyHash() {
 //        try {
 //            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
@@ -152,34 +154,133 @@ public class MainActivity extends AppCompatActivity {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void setFirst() {
+        fragmentManager = getSupportFragmentManager();
+
         fragmentMain = new FragmentMain();
-        fragmentSub = new FragmentSub();
-        fragmentNewPost = new FragmentNewPost();
-        fragmentMy = new FragmentMy();
-        fragmentContentMain = new FragmentContentMain();
+//        fragmentSub = new FragmentSub();
+//        fragmentNewPost = new FragmentNewPost();
+//        fragmentMy = new FragmentMy();
+//        fragmentContentMain = new FragmentContentMain();
+
+        fragmentManager.beginTransaction().replace(R.id.main_layout, fragmentMain).commit();
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentMain).commitAllowingStateLoss();
+        //getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentMain).commitAllowingStateLoss();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.tab1:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentMain).commitAllowingStateLoss();
+                        if(fragmentMain == null){
+                            fragmentMain = new FragmentMain();
+                            fragmentManager.beginTransaction().add(R.id.main_layout, fragmentMain).commit();
+                        }
+                        if(fragmentMain != null){
+                            fragmentManager.beginTransaction().show(fragmentMain).commit();
+                        }
+                        if(fragmentSub != null){
+                            fragmentManager.beginTransaction().hide(fragmentSub).commit();
+                        }
+                        if(fragmentNewPost != null){
+                            fragmentManager.beginTransaction().hide(fragmentNewPost).commit();
+                        }
+                        if(fragmentMy != null){
+                            fragmentManager.beginTransaction().hide(fragmentMy).commit();
+                        }
+                        if(fragmentContentMain != null){
+                            fragmentManager.beginTransaction().hide(fragmentContentMain).commit();
+                        }
+                        //getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentMain).commitAllowingStateLoss();
                         return true;
                     case R.id.tab2:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentSub).commitAllowingStateLoss();
+                        if(fragmentSub == null){
+                            fragmentSub = new FragmentSub();
+                            fragmentManager.beginTransaction().add(R.id.main_layout, fragmentSub).commit();
+                        }
+                        if(fragmentSub != null){
+                            fragmentManager.beginTransaction().show(fragmentSub).commit();
+                        }
+                        if(fragmentMain != null){
+                            fragmentManager.beginTransaction().hide(fragmentMain).commit();
+                        }
+                        if(fragmentNewPost != null){
+                            fragmentManager.beginTransaction().hide(fragmentNewPost).commit();
+                        }
+                        if(fragmentMy != null){
+                            fragmentManager.beginTransaction().hide(fragmentMy).commit();
+                        }
+                        if(fragmentContentMain != null){
+                            fragmentManager.beginTransaction().hide(fragmentContentMain).commit();
+                        }
+                        //getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentSub).commitAllowingStateLoss();
                         return true;
                     case R.id.tab3:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentNewPost).commitAllowingStateLoss();
+                        if(fragmentNewPost == null){
+                            fragmentNewPost = new FragmentNewPost();
+                            fragmentManager.beginTransaction().add(R.id.main_layout, fragmentNewPost).commit();
+                        }
+                        if(fragmentNewPost != null){
+                            fragmentManager.beginTransaction().show(fragmentNewPost).commit();
+                        }
+                        if(fragmentMain != null){
+                            fragmentManager.beginTransaction().hide(fragmentMain).commit();
+                        }
+                        if(fragmentSub != null){
+                            fragmentManager.beginTransaction().hide(fragmentSub).commit();
+                        }
+                        if(fragmentMy != null){
+                            fragmentManager.beginTransaction().hide(fragmentMy).commit();
+                        }
+                        if(fragmentContentMain != null){
+                            fragmentManager.beginTransaction().hide(fragmentContentMain).commit();
+                        }
+                        //getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentNewPost).commitAllowingStateLoss();
                         return true;
                     case R.id.tab4:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentMy).commitAllowingStateLoss();
+                        if(fragmentMy == null){
+                            fragmentMy = new FragmentMy();
+                            fragmentManager.beginTransaction().add(R.id.main_layout, fragmentMy).commit();
+                        }
+                        if(fragmentMy != null){
+                            fragmentManager.beginTransaction().show(fragmentMy).commit();
+                        }
+                        if(fragmentMain != null){
+                            fragmentManager.beginTransaction().hide(fragmentMain).commit();
+                        }
+                        if(fragmentSub != null){
+                            fragmentManager.beginTransaction().hide(fragmentSub).commit();
+                        }
+                        if(fragmentNewPost != null){
+                            fragmentManager.beginTransaction().hide(fragmentNewPost).commit();
+                        }
+                        if(fragmentContentMain != null){
+                            fragmentManager.beginTransaction().hide(fragmentContentMain).commit();
+                        }
+                        //getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentMy).commitAllowingStateLoss();
                         return true;
                     case R.id.tab5:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentContentMain).commitAllowingStateLoss();
+                        if(fragmentContentMain == null){
+                            fragmentContentMain = new FragmentContentMain();
+                            fragmentManager.beginTransaction().add(R.id.main_layout, fragmentContentMain).commit();
+                        }
+                        if(fragmentContentMain != null){
+                            fragmentManager.beginTransaction().show(fragmentContentMain).commit();
+                        }
+                        if(fragmentMain != null){
+                            fragmentManager.beginTransaction().hide(fragmentMain).commit();
+                        }
+                        if(fragmentSub != null){
+                            fragmentManager.beginTransaction().hide(fragmentSub).commit();
+                        }
+                        if(fragmentNewPost != null){
+                            fragmentManager.beginTransaction().hide(fragmentNewPost).commit();
+                        }
+                        if(fragmentMy != null){
+                            fragmentManager.beginTransaction().hide(fragmentMy).commit();
+                        }
+                        //getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentContentMain).commitAllowingStateLoss();
                         return true;
                     default: return false;
 
