@@ -202,7 +202,7 @@ public class FragmentNewPost extends Fragment {
                     //Bitmap bmp = BitmapFactory.decodeFile(profilePath);
                     //user_profileImage_ImageView.setImageBitmap(bmp);
                 } else {
-                    Log.e("postImgPath", "실패!");
+                    //Log.e("postImgPath", "실패!");
                 }
                 break;
         }
@@ -355,7 +355,7 @@ public class FragmentNewPost extends Fragment {
                                     Uri downloadUri = task.getResult();
                                     imgUri[finalI1] = downloadUri.toString();
                                     postNum++;
-                                    Log.e("@@@", imgUri[0]);
+                                    //Log.e("@@@", imgUri[0]);
                                     if(postNum == postNumCheck){
                                         postData();
                                     }
@@ -375,11 +375,6 @@ public class FragmentNewPost extends Fragment {
     FragmentMain fragmentMain;
     BottomNavigationView bottomNavigationView;
     Menu menu;
-    private FragmentManager fragmentManager;
-    FragmentSub fragmentSub;
-    FragmentNewPost fragmentNewPost;
-    FragmentMy fragmentMy;
-    FragmentContentMain fragmentContentMain;
 
     private void postData(){
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -387,7 +382,7 @@ public class FragmentNewPost extends Fragment {
         DatabaseReference images = firebaseDatabase.getReference().child("images").push();
 
         ContentDTO contentDTO = new ContentDTO();
-        Log.e("@@@", String.valueOf(maxid));
+        //Log.e("@@@", String.valueOf(maxid));
         contentDTO.setNum((int)maxid+1);
 
         contentDTO.setImageUrl1(imgUri[0]);
@@ -415,29 +410,7 @@ public class FragmentNewPost extends Fragment {
         menu.findItem(R.id.tab1).setChecked(true);
 
         /////메인 타임라인으로 프래그먼트 이동
-        //((MainActivity)getActivity()).replaceFragment(fragmentMain.newInstance());
-
-        fragmentManager = getActivity().getSupportFragmentManager();
-
-        if(fragmentMain == null){
-            fragmentMain = new FragmentMain();
-            fragmentManager.beginTransaction().add(R.id.main_layout, fragmentMain).commit();
-        }
-        if(fragmentMain != null){
-            fragmentManager.beginTransaction().show(fragmentMain).commit();
-        }
-        if(fragmentSub != null){
-            fragmentManager.beginTransaction().hide(fragmentSub).commit();
-        }
-        if(fragmentNewPost != null){
-            fragmentManager.beginTransaction().hide(fragmentNewPost).commit();
-        }
-        if(fragmentMy != null){
-            fragmentManager.beginTransaction().hide(fragmentMy).commit();
-        }
-        if(fragmentContentMain != null){
-            fragmentManager.beginTransaction().hide(fragmentContentMain).commit();
-        }
+        ((MainActivity)getActivity()).replaceFragment(fragmentMain.newInstance());
     }
 
     private void startToast(String msg){

@@ -71,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
         //getAppKeyHash();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu);
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerView = (View) findViewById(R.id.drawerView);
         drawerLayout.setDrawerListener(listener);
@@ -132,12 +135,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDrawerOpened(@NonNull View drawerView) {
-            //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
         @Override
         public void onDrawerClosed(@NonNull View drawerView) {
-            //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         @Override
@@ -145,28 +148,16 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    public void replaceFragment(Fragment fragment){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.main_layout, fragment).commit();      // Fragment로 사용할 MainActivity내의 layout공간을 선택합니다
-    }
-
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void setFirst() {
         fragmentManager = getSupportFragmentManager();
 
         fragmentMain = new FragmentMain();
-//        fragmentSub = new FragmentSub();
-//        fragmentNewPost = new FragmentNewPost();
-//        fragmentMy = new FragmentMy();
-//        fragmentContentMain = new FragmentContentMain();
 
         fragmentManager.beginTransaction().replace(R.id.main_layout, fragmentMain).commit();
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-
-        //getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentMain).commitAllowingStateLoss();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -192,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
                         if(fragmentContentMain != null){
                             fragmentManager.beginTransaction().hide(fragmentContentMain).commit();
                         }
-                        //getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentMain).commitAllowingStateLoss();
                         return true;
                     case R.id.tab2:
                         if(fragmentSub == null){
@@ -214,7 +204,6 @@ public class MainActivity extends AppCompatActivity {
                         if(fragmentContentMain != null){
                             fragmentManager.beginTransaction().hide(fragmentContentMain).commit();
                         }
-                        //getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentSub).commitAllowingStateLoss();
                         return true;
                     case R.id.tab3:
                         if(fragmentNewPost == null){
@@ -236,7 +225,6 @@ public class MainActivity extends AppCompatActivity {
                         if(fragmentContentMain != null){
                             fragmentManager.beginTransaction().hide(fragmentContentMain).commit();
                         }
-                        //getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentNewPost).commitAllowingStateLoss();
                         return true;
                     case R.id.tab4:
                         if(fragmentMy == null){
@@ -258,7 +246,6 @@ public class MainActivity extends AppCompatActivity {
                         if(fragmentContentMain != null){
                             fragmentManager.beginTransaction().hide(fragmentContentMain).commit();
                         }
-                        //getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentMy).commitAllowingStateLoss();
                         return true;
                     case R.id.tab5:
                         if(fragmentContentMain == null){
@@ -280,13 +267,33 @@ public class MainActivity extends AppCompatActivity {
                         if(fragmentMy != null){
                             fragmentManager.beginTransaction().hide(fragmentMy).commit();
                         }
-                        //getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragmentContentMain).commitAllowingStateLoss();
                         return true;
                     default: return false;
 
                 }
             }
         });
+    }
+
+    public void replaceFragment(Fragment fragment){
+        fragmentManager.beginTransaction().remove(fragmentNewPost);
+        fragmentNewPost = new FragmentNewPost();
+        fragmentManager.beginTransaction().add(R.id.main_layout, fragmentNewPost).commit();
+        if(fragmentMain != null){
+            fragmentManager.beginTransaction().show(fragmentMain).commit();
+        }
+        if(fragmentSub != null){
+            fragmentManager.beginTransaction().hide(fragmentSub).commit();
+        }
+        if(fragmentNewPost != null){
+            fragmentManager.beginTransaction().hide(fragmentNewPost).commit();
+        }
+        if(fragmentMy != null){
+            fragmentManager.beginTransaction().hide(fragmentMy).commit();
+        }
+        if(fragmentContentMain != null){
+            fragmentManager.beginTransaction().hide(fragmentContentMain).commit();
+        }
     }
 
 
