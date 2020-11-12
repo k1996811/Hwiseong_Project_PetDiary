@@ -47,10 +47,10 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp">
 
                 <ImageView
-                    android:layout_marginTop="15dp"
                     android:layout_width="250dp"
                     android:layout_height="250dp"
                     android:layout_marginLeft="20dp"
@@ -168,15 +168,33 @@
 
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/contents"
-                android:layout_marginTop="15dp"
+            <RelativeLayout
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:lines="5"
-                android:background="#ffffff"
-                android:hint="여기다 글을 입력해주세요." />
+                android:layout_marginTop="15dp">
+
+                <EditText
+                    android:id="@+id/contents"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textMultiLine"
+                    android:lines="6"
+                    android:background="@drawable/textbox"
+                    android:hint="여기다 글을 입력해주세요."
+                    android:layout_centerInParent="true"
+                    android:maxLength="100"/>
+
+                <TextView
+                    android:id="@+id/contentsLengthTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_gravity="right"
+                    android:layout_alignRight="@+id/contents"
+                    android:layout_below="@+id/contents"
+                    android:text="0 / 100"/>
+
+            </RelativeLayout>
 
             <Button
                 android:layout_marginTop="15dp"

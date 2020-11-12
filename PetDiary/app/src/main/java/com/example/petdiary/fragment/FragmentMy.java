@@ -31,6 +31,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import static android.app.Activity.RESULT_OK;
+
 public class FragmentMy extends Fragment {
 
     private static final String TAG = "MyPageActivity";
@@ -77,14 +79,12 @@ public class FragmentMy extends Fragment {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    //Log.d("@@@", FirebaseAuth.getInstance().getCurrentUser().getUid()+"");
                     if (document != null) {
                         if (document.exists()) {
                             setImg();
                             Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                             emailTextView.setText(document.getData().get("email").toString());
                             nickNameTextView.setText(document.getData().get("nickName").toString());
-//                            toolbarNickName.setText(document.getData().get("nickName").toString() + " 님");
                         } else {
                             Log.d(TAG, "No such document");
                         }
@@ -120,8 +120,8 @@ public class FragmentMy extends Fragment {
                     startToast("회원정보수정");
                     break;
                 case R.id.setProfileImg:
-                    //Log.e("###", "카메라켜져라");
-                    myStartActivity2(CameraActivity.class);
+                    //myStartActivity2(ImageChoicePopupActivity.class);
+                    startPopupActivity();
                     break;
             }
         }
@@ -139,10 +139,7 @@ public class FragmentMy extends Fragment {
             case 0:
                 if(resultCode == Activity.RESULT_OK){
                     profilePath = data.getStringExtra("profilePath");
-                    Log.e("profilePath", "profilePath : " + profilePath);
                     setProfileImg(profilePath);
-                    //Bitmap bmp = BitmapFactory.decodeFile(profilePath);
-                    //user_profileImage_ImageView.setImageBitmap(bmp);
                 } else {
                     Log.e("profilePath", "실패!");
                 }
@@ -152,6 +149,11 @@ public class FragmentMy extends Fragment {
 
     private void myStartActivity2(Class c){
         Intent intent = new Intent(getContext(), c);
+        startActivityForResult(intent, 0);
+    }
+
+    private void startPopupActivity(){
+        Intent intent = new Intent(getContext(), ImageChoicePopupActivity.class);
         startActivityForResult(intent, 0);
     }
 
@@ -165,12 +167,11 @@ public class FragmentMy extends Fragment {
             public void onSuccess(Uri uri) {
 
                 String profileImg = uri.toString();
-                while(profileImg.length() == 0){
-                    continue;
-                }
+//                while(profileImg.length() == 0){
+//                    continue;
+//                }
+                //Log.e("@@@!", profileImg);
                 setProfileImg(profileImg);
-
-                //user_profileImage_ImageView.setImageURI(uri);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

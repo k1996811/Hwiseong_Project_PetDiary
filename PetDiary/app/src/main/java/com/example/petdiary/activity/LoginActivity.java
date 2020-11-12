@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                                 //Log.w(TAG, "signInWithEmail:failure", task.getException());
                                 if(task.getException() != null){
                                     Log.d(TAG, task.getException().toString());
-                                    startToast("로그인에 실패하였습니다.");
+                                    startToast("이메일과 비밀번호를 확인해 주세요.");
                                 }
                             }
                         }
