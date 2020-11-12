@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,7 +52,7 @@ public class FragmentMain extends Fragment {
                     myStartActivity(Comment.class);
                     break;
                 case R.id.onPopupButton:
-                    PopupMenu popup = new PopupMenu(getActivity(), viewGroup);
+                    PopupMenu popup = new PopupMenu(getContext(), viewGroup);
 
                     //설정한 popup XML을 inflate.
                     popup.getMenuInflater().inflate(R.menu.popup, popup.getMenu());
@@ -61,18 +62,22 @@ public class FragmentMain extends Fragment {
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.search:
+                                    startToast("search");
                                     /* Search를 선택했을 때 이벤트 실행 코드 작성 */
                                     break;
 
                                 case R.id.add:
+                                    startToast("add");
                                     /* Add를 선택했을 때 이벤트 실행 코드 작성 */
                                     break;
 
                                 case R.id.edit:
+                                    startToast("edit");
                                     /* Edit를 선택했을 때 이벤트 실행 코드 작성 */
                                     break;
 
                                 case R.id.share:
+                                    startToast("share");
                                     /* Share를 선택했을 때 이벤트 실행 코드 작성 */
                                     break;
                             }
@@ -88,6 +93,10 @@ public class FragmentMain extends Fragment {
     private void myStartActivity(Class c){
         Intent intent = new Intent(getActivity(), c);
         startActivity(intent);
+    }
+
+    private void startToast(String msg){
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
 }
