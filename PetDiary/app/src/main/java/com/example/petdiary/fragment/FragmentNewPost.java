@@ -207,7 +207,8 @@ public class FragmentNewPost extends Fragment {
                     choiceNum = 3;
                     break;
                 case R.id.postImg5:
-                    myStartActivity(GalleryActivity.class);
+                    //myStartActivity(GalleryActivity.class);
+                    startPopupActivity();
                     choiceNum = 4;
                     break;
                 case R.id.deletePostImg1:
@@ -228,6 +229,11 @@ public class FragmentNewPost extends Fragment {
             }
         }
     };
+
+    private void startPopupActivity(){
+        Intent intent = new Intent(getContext(), ImageChoicePopupActivity.class);
+        startActivityForResult(intent, 0);
+    }
 
     private void cancelImg(int a){
         int count = 0;
@@ -406,7 +412,7 @@ public class FragmentNewPost extends Fragment {
         for(int i=0; i<5; i++){
             if(postImgCheck[i] == 1){
                 final Uri file = Uri.fromFile(new File(img[i]));
-                StorageReference riversRef = storageRef.child("images/"+date2+"postImg_"+i);
+                StorageReference riversRef = storageRef.child("images/"+date2+"_postImg_"+i);
                 uploadTask[0] = riversRef.putFile(file);
 
                 final int finalI = i;
@@ -419,7 +425,7 @@ public class FragmentNewPost extends Fragment {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                        final StorageReference ref = storageRef.child("images/"+date2+"postImg_"+ finalI);
+                        final StorageReference ref = storageRef.child("images/"+date2+"_postImg_"+ finalI);
                         uploadTask[0] = ref.putFile(file);
 
                         Task<Uri> urlTask = uploadTask[0].continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
