@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.petdiary.MyAdapter;
 import com.example.petdiary.R;
 import com.example.petdiary.Chat;
 import com.example.petdiary.PersonAdapter;
@@ -31,12 +32,13 @@ import java.util.Hashtable;
 public class ChatActivity extends AppCompatActivity {
     private static final String TAG = "ChatMain";
     private FirebaseAuth mAuth;
+    private  RecyclerView recyclerView;
     FirebaseDatabase database;
     EditText etText;
     Button btnSend;
     String stEmail;
     ArrayList<Chat> chatArrayList;
-    PersonAdapter mAdapter;
+    MyAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
     protected void onCreate(Bundle savedInstanceState){
@@ -50,21 +52,25 @@ public class ChatActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-        chatArrayList = new ArrayList<>();
-        Log.d("bbb","cccc");
 
+
+        chatArrayList = new ArrayList<>();
         //stEmail = getIntent().getStringExtra("email");
         FirebaseUser user =mAuth.getCurrentUser();
         stEmail =  user.getEmail();
+
         btnSend = findViewById(R.id.btn_send);
         etText = findViewById(R.id.chat);
 
-        RecyclerView recyclerView = findViewById(R.id.room_recyclerview);
+        recyclerView = findViewById(R.id.room_recyclerview);
+
         recyclerView.setHasFixedSize(true);
+
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new PersonAdapter(chatArrayList, stEmail);
+        Log.d("xxx","cccc1"+stEmail);
+        mAdapter = new MyAdapter(chatArrayList, stEmail);
         recyclerView.setAdapter(mAdapter);
 
         ChildEventListener childEventListener = new ChildEventListener() {
@@ -90,7 +96,7 @@ public class ChatActivity extends AppCompatActivity {
 
                 // A comment has changed, use the key to determine if we are displaying this
                 // comment and if so displayed the changed comment.
-                Chat chat = dataSnapshot.getValue(Chat.class);
+                //Chat chat = dataSnapshot.getValue(Chat.class);
 
                 // ...
             }
@@ -129,15 +135,18 @@ public class ChatActivity extends AppCompatActivity {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("vvvv","ddd"+stEmail);
 
                 String stText = etText.getText().toString();
                 Toast.makeText(ChatActivity.this, "MSG : "+stText, Toast.LENGTH_SHORT).show();
+
                 // Write a message to the database
                 database = FirebaseDatabase.getInstance();
+
                 Calendar c = Calendar.getInstance();
                 SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 String datetime = dateformat.format(c.getTime());
-                System.out.println(datetime);
+
                 DatabaseReference myRef = database.getReference("message").child(datetime);
 
                 Hashtable<String, String> numbers
@@ -149,10 +158,5 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-
-
-
     }
-
-
 }

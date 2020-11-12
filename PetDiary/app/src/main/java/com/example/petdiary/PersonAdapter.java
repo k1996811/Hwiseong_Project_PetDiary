@@ -20,8 +20,7 @@ import java.util.ArrayList;
 public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder> implements ItemTouchHelperListener {
     private ArrayList<Chat> mDataset;
 
-    String stMyEmail = "";
-    String stEmail;
+    String stMyEmail;
 
     ArrayList<Person> items = new ArrayList<Person>();
     private OnItemClickListener mListener = null;
@@ -33,7 +32,6 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
     public PersonAdapter(ArrayList<Chat> myDataset, String stEmail) {
         mDataset = myDataset;
         this.stMyEmail = stEmail;
-
     }
 
     public void setOnitemClickListener(OnItemClickListener listener){
@@ -44,25 +42,24 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
         void onItemClick(View v, int position);
 
     }
-
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView textView;
         Button chat;
+        TextView nick;
 
 
         public ViewHolder(final View itemView){
             super(itemView);
 
-            textView = itemView.findViewById(R.id.textView);
+            nick = itemView.findViewById(R.id.textView);
+            textView = itemView.findViewById(R.id.tvChat);
             chat = itemView.findViewById(R.id.btn_chat);
-
 
             chat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("bbb","bbbb");
                     Intent intent = new Intent(itemView.getContext(), ChatActivity.class);
-                    intent.putExtra("email",stEmail );
+                    //intent.putExtra("email",stMyEmail );
                     mContext.startActivity(intent);
                 }
             });
@@ -80,9 +77,10 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
             });
         }
         public void setItem(Person item){
-            textView.setText(item.getNickname());
+            nick.setText(item.getNickname());
         }
     }
+
 
     @NonNull
     @Override
@@ -98,6 +96,7 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
 
         Person item = items.get(position);
         viewHolder.setItem(item);
+        //viewHolder.nick.setText(mDataset.get(position).getEmail());
 
     }
     @Override
@@ -117,7 +116,10 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
     public void setItem(int position, Person item){
         items.set(position,item);
     }
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
 
+    }
 
     public boolean onItemMove(int from_position, int to_position) {
         //이동할 객체 저장
