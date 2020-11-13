@@ -5,8 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -33,18 +32,24 @@
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key"/>
 
-        <activity android:name=".activity.LoginActivity"></activity>
-        <activity android:name=".activity.SignUpActivity" android:parentActivityName=".activity.LoginActivity"></activity>
-        <activity android:name=".activity.FindPasswordActivity" android:parentActivityName=".activity.LoginActivity"></activity>
-        <activity android:name=".activity.GalleryActivity"></activity>
-        <activity android:name=".activity.SetPasswordActivity"></activity>
-        <activity android:name=".activity.SetPasswordTwoActivity"></activity>
-        <activity android:name=".activity.KakaoMyPageActivity"></activity>
-        <activity android:name=".activity.ChatActivity"></activity>
-        <activity android:name=".activity.ImageChoicePopupActivity" android:theme="@android:style/Theme.Dialog"></activity>
-        <activity android:name=".activity.CameraAppActivity"></activity>
+        <activity android:name=".activity.LoginActivity" />
+        <activity
+            android:name=".activity.SignUpActivity"
+            android:parentActivityName=".activity.LoginActivity" />
+        <activity
+            android:name=".activity.FindPasswordActivity"
+            android:parentActivityName=".activity.LoginActivity" />
+        <activity android:name=".activity.GalleryActivity" />
+        <activity android:name=".activity.SetPasswordActivity" />
+        <activity android:name=".activity.SetPasswordTwoActivity" />
+        <activity android:name=".activity.KakaoMyPageActivity" />
+        <activity android:name=".activity.ChatActivity" />
+        <activity
+            android:name=".activity.ImageChoicePopupActivity"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity android:name=".activity.CameraAppActivity" />
 
-        <activity android:name=".Expand_ImageView"></activity>
+        <activity android:name=".Expand_ImageView" />
         <activity android:name=".Comment" />
 
         <provider
