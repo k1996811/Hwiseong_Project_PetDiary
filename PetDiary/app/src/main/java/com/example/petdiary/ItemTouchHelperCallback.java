@@ -19,7 +19,7 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     private ItemTouchHelperListener listener;
     private ButtonsState buttonsShowedState = ButtonsState.GONE;
-    private static final float buttonWidth = 115;
+    private static final float buttonWidth = 215;
     private RectF buttonInstance = null;
     private RecyclerView.ViewHolder currenrtItemViewHolder = null;
     private boolean swipeBack = false;
@@ -53,11 +53,13 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
     ///////////////////////////////////////////////////
     @Override
     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
-                            float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                            float dX, float dY, int actionState, boolean    isCurrentlyActive) {
         //아이템이 스와이프 됐을경우 버튼을 그려주기 위해서 스와이프가 됐는지 확인
+
         if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
             if(buttonsShowedState != ButtonsState.GONE){
-                if(buttonsShowedState == ButtonsState.RIGHT_VISIBLE) dX = Math.min(dX, -buttonWidth);
+                if(buttonsShowedState == ButtonsState.RIGHT_VISIBLE)
+                    dX = Math.min(dX, -buttonWidth);
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
             else{
@@ -67,27 +69,30 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
         } currenrtItemViewHolder = viewHolder;
-        //버튼을 그려주는 함수 d
+        //버튼을 그려주는 함수
         drawButtons(c, currenrtItemViewHolder);
     }
     private void drawButtons(Canvas c, RecyclerView.ViewHolder viewHolder){
         float buttonWidthWithOutPadding = buttonWidth - 10;
-        float corners = 5; View itemView = viewHolder.itemView;
+        float corners = 5;
+        View itemView = viewHolder.itemView;
         Paint p = new Paint();
         buttonInstance = null;
-        //오른쪽으로 스와이프 했을때 (왼쪽에 버튼이 보여지게 될 경우)
 
             //왼쪽으로 스와이프 했을때 (오른쪽에 버튼이 보여지게 될 경우)
         if(buttonsShowedState == ButtonsState.RIGHT_VISIBLE){
             RectF rightButton =
-                    new RectF(itemView.getRight() - buttonWidthWithOutPadding, itemView.getTop() + 10, itemView.getRight() -10, itemView.getBottom() - 10);
-            p.setColor(Color.RED); c.drawRoundRect(rightButton, corners, corners, p);
-            drawText("삭제", c, rightButton, p); buttonInstance = rightButton;
+                    new RectF(itemView.getRight() - buttonWidthWithOutPadding, itemView.getTop() + 20, itemView.getRight() -10, itemView.getBottom() - 20);
+            p.setColor(Color.RED);
+            c.drawRoundRect(rightButton, corners, corners, p);
+
+            drawText("삭제", c, rightButton, p);
+            buttonInstance = rightButton;
         }
     }
     //버튼의 텍스트 그려주기
     private void drawText(String text, Canvas c, RectF button, Paint p){
-        float textSize = 25; p.setColor(Color.WHITE); p.setAntiAlias(true);
+        float textSize = 50; p.setColor(Color.WHITE); p.setAntiAlias(true);
         p.setTextSize(textSize);
         float textWidth = p.measureText(text);
         c.drawText(text, button.centerX() - (textWidth/2), button.centerY() + (textSize/2), p);
