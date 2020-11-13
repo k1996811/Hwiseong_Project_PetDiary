@@ -23,32 +23,36 @@ import com.example.petdiary.Person;
 import com.example.petdiary.PersonAdapter;
 import com.example.petdiary.R;
 import com.example.petdiary.ui.chat.ChatListFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class FriendsListFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
-    private FragmentManager fragmentManager;
-    private Fragment fragmentA, fragmentB;
+    private FirebaseDatabase database;
+    private FirebaseAuth  mAuth;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
 
-
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_friends, container, false);
-
 
         RecyclerView recyclerView = root.findViewById(R.id.fri_recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL, false);
 
         recyclerView.setLayoutManager(layoutManager);
 
-        PersonAdapter adapter = new PersonAdapter(getContext());
-        adapter.addItem(new Person("휘"));
 
-        final Button chat = root.findViewById(R.id.btn_chat);
+        PersonAdapter adapter = new PersonAdapter(getContext());
+
+
+
+
+        adapter.addItem(new Person("휘휘"));
+
+       final Button chat = root.findViewById(R.id.btn_chat);
 
         adapter.setOnitemClickListener(new PersonAdapter.OnItemClickListener() {
             @Override
