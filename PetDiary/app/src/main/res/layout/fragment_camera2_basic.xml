@@ -34,28 +34,27 @@
         android:background="#D9F1F1">
 
         <Button
-            android:id="@+id/picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="촬영"
-            android:background="#B6E3E9"/>
-
-        <Button
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="15dp"
             android:id="@+id/change"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="카메라 변경"
-            android:background="#B6E3E9"/>
+            android:background="@drawable/button2"/>
 
         <Button
-            android:id="@+id/gallery"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="15dp"
+            android:id="@+id/picture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="갤러리"
-            android:background="#B6E3E9"/>
+            android:text="촬영"
+            android:background="@drawable/button2" />
+
 
     </LinearLayout>
 

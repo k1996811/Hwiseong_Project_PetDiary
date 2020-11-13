@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -67,6 +70,8 @@ public class FragmentNewPost extends Fragment {
     RelativeLayout loaderLayout;
     Spinner spinner;
     DatabaseReference images;
+    TextView contentsLengthTextView;
+    EditText contents;
 
     ViewGroup viewGroup;
 
@@ -99,6 +104,27 @@ public class FragmentNewPost extends Fragment {
         });
 
         setEmail();
+
+        contentsLengthTextView = (TextView) viewGroup.findViewById(R.id.contentsLengthTextView);
+        contents = (EditText) viewGroup.findViewById(R.id.contents);
+
+        contents.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String input = contents.getText().toString();
+                contentsLengthTextView.setText(input.length()+" / 100");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         images = FirebaseDatabase.getInstance().getReference().child("images");
         images.addValueEventListener(new ValueEventListener() {

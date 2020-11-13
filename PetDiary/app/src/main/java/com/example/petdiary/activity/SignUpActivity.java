@@ -140,7 +140,9 @@ public class SignUpActivity extends AppCompatActivity {
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(nickName);
         if(m.matches()){
-            err = true;
+            if(nickName.length() > 1 && nickName.length() < 9){
+                err = true;
+            }
         }
         return err;
     }
@@ -279,6 +281,13 @@ public class SignUpActivity extends AppCompatActivity {
             if(isValidPassword(passwordEditText.getText().toString())){
                 passwordUnCheckedImg.setVisibility(View.INVISIBLE);
                 passwordCheckedImg.setVisibility(View.VISIBLE);
+                if(passwordEditText.getText().toString().equals(passwordCheckEditText.getText().toString()) && isValidPassword(passwordCheckEditText.getText().toString())){
+                    passwordCheckUnCheckedImg.setVisibility(View.INVISIBLE);
+                    passwordCheckCheckedImg.setVisibility(View.VISIBLE);
+                } else {
+                    passwordCheckCheckedImg.setVisibility(View.INVISIBLE);
+                    passwordCheckUnCheckedImg.setVisibility(View.VISIBLE);
+                }
             } else {
                 passwordCheckedImg.setVisibility(View.INVISIBLE);
                 passwordUnCheckedImg.setVisibility(View.VISIBLE);
@@ -295,7 +304,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if(passwordEditText.getText().toString().equals(passwordCheckEditText.getText().toString())){
+            if(passwordEditText.getText().toString().equals(passwordCheckEditText.getText().toString()) && isValidPassword(passwordCheckEditText.getText().toString())){
                 passwordCheckUnCheckedImg.setVisibility(View.INVISIBLE);
                 passwordCheckCheckedImg.setVisibility(View.VISIBLE);
             } else {

@@ -18,6 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +40,10 @@
         <activity android:name=".activity.SetPasswordTwoActivity"></activity>
         <activity android:name=".activity.KakaoMyPageActivity"></activity>
         <activity android:name=".activity.ChatActivity"></activity>
+        <activity android:name=".activity.ImageChoicePopupActivity" android:theme="@android:style/Theme.Dialog"></activity>
+
+        <activity android:name=".Expand_ImageView"></activity>
+        <activity android:name=".Comment" />
     </application>
 
 </manifest>

@@ -18,11 +18,14 @@ package com.example.petdiary.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.Image;
 import android.media.ImageReader;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,6 +45,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import static android.os.Environment.DIRECTORY_DCIM;
+
 public class CameraActivity extends AppCompatActivity {
 
     private static final String TAG = "SetPasswordActivity";
@@ -54,7 +59,7 @@ public class CameraActivity extends AppCompatActivity {
         @Override
         public void onImageAvailable(ImageReader reader) {
             //mBackgroundHandler.post(new Camera2BasicFragment.ImageUpLoader(reader.acquireNextImage()));
-            Log.e("로그", "캡쳐");
+            //Log.e("로그", "캡쳐");
 
             Image mImage = reader.acquireNextImage();
             File mFile = new File(getExternalFilesDir(null), "_profileImage.jpg");
@@ -89,7 +94,7 @@ public class CameraActivity extends AppCompatActivity {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     if (!task.isSuccessful()) {
-                        Log.e("실패1","실패1");
+                        //Log.e("실패1","실패1");
                         throw task.getException();
                     }
                     // Continue with the task to get the download URL
@@ -101,7 +106,13 @@ public class CameraActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
                         profilePath = FirebaseAuth.getInstance().getCurrentUser().getUid()+"_profileImage.jpg";
-                        Log.e("성공","성공" + downloadUri);
+                        //Log.e("성공","성공" + downloadUri);
+
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("profilePath", profilePath);
+                        //Log.e("###222", mFile.toString());
+                        setResult(Activity.RESULT_OK, resultIntent);
+                        finish();
                     } else {
                         // Handle failures
                         // ...
@@ -110,11 +121,6 @@ public class CameraActivity extends AppCompatActivity {
                 }
             });
 
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("profilePath", mFile.toString());
-            Log.e("###222", mFile.toString());
-            setResult(Activity.RESULT_OK, resultIntent);
-            finish();
         }
     };
 
@@ -131,4 +137,24 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
+    private void startToast(String msg){
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    private void myStartActivity(Class c){
+        Intent intent = new Intent(this, c);
+        startActivityForResult(intent, 0);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
+        switch(requestCode){
+            case 1:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    myStartActivity(GalleryActivity.class);
+                } else {
+                    startToast("권한을 허용해 주세요.");
+                }
+        }
+    }
 }
