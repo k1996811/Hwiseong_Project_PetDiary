@@ -30,6 +30,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -137,11 +140,28 @@ public class FragmentMy extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode){
             case 0:
-                if(resultCode == Activity.RESULT_OK){
-                    profilePath = data.getStringExtra("profilePath");
-                    setProfileImg(profilePath);
+                if(resultCode == RESULT_OK){
+                    String postImgPath = data.getStringExtra("postImgPath");
+
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    final StorageReference storageRef = storage.getReference();
+                    final UploadTask[] uploadTask = new UploadTask[1];
+
+                    final Uri file = Uri.fromFile(new File(postImgPath));
+                    StorageReference riversRef = storageRef.child("users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid() +"_profileImage.jpg");
+                    uploadTask[0] = riversRef.putFile(file);
+
+                    uploadTask[0].addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        }
+                    });
+                    setProfileImg(postImgPath);
                 } else {
-                    Log.e("profilePath", "실패!");
                 }
                 break;
         }

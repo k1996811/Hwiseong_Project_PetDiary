@@ -8,6 +8,7 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".App"
@@ -34,16 +35,29 @@
         <activity android:name=".activity.LoginActivity"></activity>
         <activity android:name=".activity.SignUpActivity" android:parentActivityName=".activity.LoginActivity"></activity>
         <activity android:name=".activity.FindPasswordActivity" android:parentActivityName=".activity.LoginActivity"></activity>
-        <activity android:name=".activity.CameraActivity"></activity>
         <activity android:name=".activity.GalleryActivity"></activity>
         <activity android:name=".activity.SetPasswordActivity"></activity>
         <activity android:name=".activity.SetPasswordTwoActivity"></activity>
         <activity android:name=".activity.KakaoMyPageActivity"></activity>
         <activity android:name=".activity.ChatActivity"></activity>
         <activity android:name=".activity.ImageChoicePopupActivity" android:theme="@android:style/Theme.Dialog"></activity>
+        <activity android:name=".activity.CameraAppActivity"></activity>
 
         <activity android:name=".Expand_ImageView"></activity>
         <activity android:name=".Comment" />
+
+        <provider
+            android:authorities="com.example.petdiary"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+
+        </provider>
+
     </application>
 
 </manifest>

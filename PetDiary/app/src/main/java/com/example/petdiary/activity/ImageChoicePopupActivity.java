@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,8 +47,8 @@ public class ImageChoicePopupActivity extends Activity {
     }
 
     public void goCamera(View v){
-        Intent intent = new Intent(this, CameraActivity.class);
-        startActivityForResult(intent, 0);
+        Intent intent = new Intent(this, CameraAppActivity.class);
+        startActivityForResult(intent, 1);
     }
 
     public void goGallery(View v){
@@ -74,46 +75,39 @@ public class ImageChoicePopupActivity extends Activity {
         }
     }
 
-    private String profilePath;
+    private String postImgPath;
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode){
-            case 0:
-                if(resultCode == Activity.RESULT_OK){
-                    profilePath = data.getStringExtra("profilePath");
-                } else {
-                    //Log.e("profilePath", "실패!");
-                }
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("profilePath", profilePath);
-                setResult(Activity.RESULT_OK, resultIntent);
-                finish();
-                break;
             case 1:
                 if(resultCode == RESULT_OK){
-                    profilePath = data.getStringExtra("postImgPath");
+                    postImgPath = data.getStringExtra("postImgPath");
                     //Log.e("@@@icp-gallery", profilePath);
-                    FirebaseStorage storage = FirebaseStorage.getInstance();
-                    final StorageReference storageRef = storage.getReference();
-                    final UploadTask[] uploadTask = new UploadTask[1];
-
-                    final Uri file = Uri.fromFile(new File(profilePath));
-                    StorageReference riversRef = storageRef.child("users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid() +"_profileImage.jpg");
-                    uploadTask[0] = riversRef.putFile(file);
-
-                    uploadTask[0].addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        }
-                    });
+//                    FirebaseStorage storage = FirebaseStorage.getInstance();
+//                    final StorageReference storageRef = storage.getReference();
+//                    final UploadTask[] uploadTask = new UploadTask[1];
+//
+//                    final Uri file = Uri.fromFile(new File(profilePath));
+//                    StorageReference riversRef = storageRef.child("users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid() +"_profileImage.jpg");
+//                    uploadTask[0] = riversRef.putFile(file);
+//
+//                    uploadTask[0].addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception exception) {
+//                        }
+//                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                        }
+//                    });
                     Intent resultIntent2 = new Intent();
-                    resultIntent2.putExtra("profilePath", profilePath);
+                    resultIntent2.putExtra("postImgPath", postImgPath);
                     setResult(Activity.RESULT_OK, resultIntent2);
+                    finish();
+                } else if(resultCode == 999){
+                    finish();
+                } else if(resultCode == RESULT_CANCELED){
                     finish();
                 } else {
                     //Log.e("postImgPath", "실패!");
@@ -146,6 +140,7 @@ public class ImageChoicePopupActivity extends Activity {
 //        //안드로이드 백버튼 막기
 //        return;
 //    }
+
 }
 
 
