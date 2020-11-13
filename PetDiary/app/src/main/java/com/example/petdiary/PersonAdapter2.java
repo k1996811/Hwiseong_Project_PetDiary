@@ -1,5 +1,7 @@
 package com.example.petdiary;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,12 +10,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.petdiary.activity.ChatActivity;
+
 import java.util.ArrayList;
 
 public class PersonAdapter2 extends RecyclerView.Adapter<PersonAdapter2.ViewHolder> implements ItemTouchHelperListener {
 
     ArrayList<Person> items = new ArrayList<Person>();
     private OnItemClickListener mListener = null ;
+
+    private Context mContext;
+
+    public PersonAdapter2(Context mContext){
+        this.mContext = mContext;
+    }
 
 
     public void setOnitemClickListener(OnItemClickListener listener){
@@ -37,7 +47,7 @@ public class PersonAdapter2 extends RecyclerView.Adapter<PersonAdapter2.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView textView;
 
-        public ViewHolder(View itemView){
+        public ViewHolder(final View itemView){
             super(itemView);
 
             textView = itemView.findViewById(R.id.textView);
@@ -52,6 +62,9 @@ public class PersonAdapter2 extends RecyclerView.Adapter<PersonAdapter2.ViewHold
                             mListener.onItemClick(v, pos);
                         }
                     }
+                    Intent intent = new Intent(itemView.getContext(), ChatActivity.class);
+                    //intent.putExtra("email",stMyEmail );
+                    mContext.startActivity(intent);
                 }
             });
             textView = itemView.findViewById(R.id.textView);

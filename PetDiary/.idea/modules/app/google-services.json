@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "1005327959397",
-    "firebase_url": "https://petdiary-e463c.firebaseio.com",
-    "project_id": "petdiary-e463c",
-    "storage_bucket": "petdiary-e463c.appspot.com"
+    "project_number": "546784592266",
+    "firebase_url": "https://petdiary-794c6.firebaseio.com",
+    "project_id": "petdiary-794c6",
+    "storage_bucket": "petdiary-794c6.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1005327959397:android:b4391477c285d8e7088d8c",
+        "mobilesdk_app_id": "1:546784592266:android:02c9f9aa28484e1d52c873",
         "android_client_info": {
           "package_name": "com.example.petdiary"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1005327959397-a7k2lj2g98vjm5or0bg5f2apqi6navfu.apps.googleusercontent.com",
+          "client_id": "546784592266-opmsn8iju6los7j6tt26dpebt8s0gh6a.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.petdiary",
@@ -23,20 +23,20 @@
           }
         },
         {
-          "client_id": "1005327959397-c30qiithu0gq3hp2781t4tdask8l17n1.apps.googleusercontent.com",
+          "client_id": "546784592266-bm4ov8u1vk6r837649de2ider19r7vq8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAfoKu_HlaAxpnADsplK5D7lCrjd0DqiLg"
+          "current_key": "AIzaSyBiijT62xRvbAgTBHcJ6XbNr5krSbA9Jm8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1005327959397-c30qiithu0gq3hp2781t4tdask8l17n1.apps.googleusercontent.com",
+              "client_id": "546784592266-bm4ov8u1vk6r837649de2ider19r7vq8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

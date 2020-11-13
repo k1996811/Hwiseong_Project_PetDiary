@@ -44,7 +44,7 @@ public class ChatListFragment extends Fragment {
 
         recyclerView.setLayoutManager(layoutManager);
 
-        final PersonAdapter2 adapter = new PersonAdapter2();
+        final PersonAdapter2 adapter = new PersonAdapter2(getContext());
 
         adapter.addItem(new Person("성"));
 

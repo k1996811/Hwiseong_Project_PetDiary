@@ -87,6 +87,12 @@ public class ChatActivity extends AppCompatActivity {
                 Log.d(TAG, "stText:" + stText);
                 chatArrayList.add(chat);
                 mAdapter.notifyDataSetChanged();
+                recyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount()-1);
+                    }
+                });
                 // ...
             }
 
@@ -139,6 +145,7 @@ public class ChatActivity extends AppCompatActivity {
 
                 String stText = etText.getText().toString();
                 Toast.makeText(ChatActivity.this, "MSG : "+stText, Toast.LENGTH_SHORT).show();
+                etText.getText().clear();
 
                 // Write a message to the database
                 database = FirebaseDatabase.getInstance();
@@ -154,6 +161,14 @@ public class ChatActivity extends AppCompatActivity {
                 numbers.put("email", stEmail);
                 numbers.put("text", stText);
                 myRef.setValue(numbers);
+
+                recyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount()-1);
+                    }
+                });
+
 
             }
         });
