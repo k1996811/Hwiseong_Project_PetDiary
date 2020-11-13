@@ -89,6 +89,12 @@ public class PersonAdapter2 extends RecyclerView.Adapter<PersonAdapter2.ViewHold
         viewHolder.setItem(item);
     }
     @Override
+    public void onRightClick(int position, RecyclerView.ViewHolder viewHolder) {
+        items.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    @Override
     public int getItemCount(){
         return items.size();
     }

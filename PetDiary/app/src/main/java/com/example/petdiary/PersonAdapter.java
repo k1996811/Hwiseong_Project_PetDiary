@@ -136,6 +136,13 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
         items.remove(position);
         notifyItemRemoved(position);
     }
+
+    @Override
+    public void onRightClick(int position, RecyclerView.ViewHolder viewHolder) {
+        items.remove(position);
+        notifyItemRemoved(position);
+    }
+
     class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView list_name,list_age;
         ImageView list_image;
