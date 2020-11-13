@@ -190,24 +190,24 @@ public class FragmentNewPost extends Fragment {
                             //startToast("권한을 허용해 주세요.");
                         }
                     } else {
-                        myStartActivity(GalleryActivity.class);
+                        //myStartActivity(GalleryActivity.class);
+                        startPopupActivity();
                     }
                     choiceNum = 0;
                     break;
                 case R.id.postImg2:
-                    myStartActivity(GalleryActivity.class);
+                    startPopupActivity();
                     choiceNum = 1;
                     break;
                 case R.id.postImg3:
-                    myStartActivity(GalleryActivity.class);
+                    startPopupActivity();
                     choiceNum = 2;
                     break;
                 case R.id.postImg4:
-                    myStartActivity(GalleryActivity.class);
+                    startPopupActivity();
                     choiceNum = 3;
                     break;
                 case R.id.postImg5:
-                    //myStartActivity(GalleryActivity.class);
                     startPopupActivity();
                     choiceNum = 4;
                     break;
