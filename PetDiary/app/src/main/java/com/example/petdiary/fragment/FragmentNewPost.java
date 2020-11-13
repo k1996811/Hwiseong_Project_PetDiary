@@ -409,53 +409,56 @@ public class FragmentNewPost extends Fragment {
         final StorageReference storageRef = storage.getReference();
         final UploadTask[] uploadTask = new UploadTask[1];
 
-        for(int i=0; i<5; i++){
-            if(postImgCheck[i] == 1){
-                final Uri file = Uri.fromFile(new File(img[i]));
-                StorageReference riversRef = storageRef.child("images/"+date2+"_postImg_"+i);
-                uploadTask[0] = riversRef.putFile(file);
+        if(postNumCheck == 0){
+            postData();
+        } else {
+            for(int i=0; i<5; i++){
+                if(postImgCheck[i] == 1){
+                    final Uri file = Uri.fromFile(new File(img[i]));
+                    StorageReference riversRef = storageRef.child("images/"+date2+"_postImg_"+i);
+                    uploadTask[0] = riversRef.putFile(file);
 
-                final int finalI = i;
-                final int finalI1 = i;
-                uploadTask[0].addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    final int finalI = i;
+                    final int finalI1 = i;
+                    uploadTask[0].addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                        final StorageReference ref = storageRef.child("images/"+date2+"_postImg_"+ finalI);
-                        uploadTask[0] = ref.putFile(file);
+                            final StorageReference ref = storageRef.child("images/"+date2+"_postImg_"+ finalI);
+                            uploadTask[0] = ref.putFile(file);
 
-                        Task<Uri> urlTask = uploadTask[0].continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                            @Override
-                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                if (!task.isSuccessful()) {
-                                    throw task.getException();
-                                }
-                                return ref.getDownloadUrl();
-                            }
-                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                if (task.isSuccessful()) {
-                                    Uri downloadUri = task.getResult();
-                                    imgUri[finalI1] = downloadUri.toString();
-                                    postNum++;
-                                    //Log.e("@@@", imgUri[0]);
-                                    if(postNum == postNumCheck){
-                                        postData();
+                            Task<Uri> urlTask = uploadTask[0].continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                                @Override
+                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                    if (!task.isSuccessful()) {
+                                        throw task.getException();
                                     }
-                                } else {
+                                    return ref.getDownloadUrl();
                                 }
-                            }
-                        });
-                    }
-                });
+                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri downloadUri = task.getResult();
+                                        imgUri[finalI1] = downloadUri.toString();
+                                        postNum++;
+                                        //Log.e("@@@", imgUri[0]);
+                                        if(postNum == postNumCheck){
+                                            postData();
+                                        }
+                                    } else {
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
             }
         }
-
     }
 
     long maxid = 0;
