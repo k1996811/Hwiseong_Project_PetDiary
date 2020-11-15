@@ -42,6 +42,7 @@
         <activity android:name=".activity.KakaoMyPageActivity"></activity>
         <activity android:name=".activity.ChatActivity"></activity>
         <activity android:name=".activity.ImageChoicePopupActivity" android:theme="@android:style/Theme.Dialog"></activity>
+        <activity android:name=".activity.ImageChoicePopupActivity2" android:theme="@android:style/Theme.Dialog"></activity>
         <activity android:name=".activity.CameraAppActivity"></activity>
         <activity android:name=".Expand_ImageView"></activity>
         <activity android:name=".Comment" />

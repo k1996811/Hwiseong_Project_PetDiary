@@ -82,7 +82,7 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
             //왼쪽으로 스와이프 했을때 (오른쪽에 버튼이 보여지게 될 경우)
         if(buttonsShowedState == ButtonsState.RIGHT_VISIBLE){
             RectF rightButton =
-                    new RectF(itemView.getRight() - buttonWidthWithOutPadding, itemView.getTop() + 20, itemView.getRight() -10, itemView.getBottom() - 20);
+                    new RectF(itemView.getRight() - buttonWidthWithOutPadding, itemView.getTop() + 25, itemView.getRight() -15, itemView.getBottom() - 25);
             p.setColor(Color.RED);
             c.drawRoundRect(rightButton, corners, corners, p);
 
