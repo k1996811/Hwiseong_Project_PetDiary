@@ -19,6 +19,8 @@ import androidx.core.content.ContextCompat;
 import com.example.petdiary.R;
 import java.io.IOException;
 
+import static androidx.core.content.PermissionChecker.PERMISSION_DENIED;
+
 
 public class ImageChoicePopupActivity extends Activity {
 
@@ -45,12 +47,20 @@ public class ImageChoicePopupActivity extends Activity {
     }
 
     public void goGallery(View v){
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
-        startActivityForResult(intent, 2);
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)){
+                startToast("권한을 허용하셨습니다.");
+            } else {
+                //startToast("권한을 허용해 주세요.");
+            }
+        } else {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.setType("image/*");
+            startActivityForResult(intent, 2);
+        }
     }
-
 
     private String postImgPath;
 

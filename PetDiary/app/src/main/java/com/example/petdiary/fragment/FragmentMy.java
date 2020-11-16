@@ -1,6 +1,5 @@
 package com.example.petdiary.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,7 +38,6 @@ import static android.app.Activity.RESULT_OK;
 public class FragmentMy extends Fragment {
 
     private static final String TAG = "MyPageActivity";
-    private String profilePath;
 
     TextView emailTextView;
     TextView nickNameTextView;
@@ -66,7 +64,6 @@ public class FragmentMy extends Fragment {
         }
 
         viewGroup.findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
-        viewGroup.findViewById(R.id.resetPasswordButton).setOnClickListener(onClickListener);
         viewGroup.findViewById(R.id.memberInfoInitButton).setOnClickListener(onClickListener);
         viewGroup.findViewById(R.id.setProfileImg).setOnClickListener(onClickListener);
 
@@ -114,9 +111,6 @@ public class FragmentMy extends Fragment {
                     FirebaseAuth.getInstance().signOut();
                     myStartActivity(LoginActivity.class);
                     getActivity().finish();
-                    break;
-                case R.id.resetPasswordButton:
-                    myStartActivity2(SetPasswordTwoActivity.class);
                     break;
                 case R.id.memberInfoInitButton:
                     //myStartActivity(MemberInfoEditActivity.class);

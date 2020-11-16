@@ -96,27 +96,33 @@ public class MainActivity extends AppCompatActivity {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 햄버거메뉴
 
-    public void blockFriendOnClick(View view){
+    public void blockFriendOnClick(View view) {
+        myStartActivity2(SettingBlockFriendsActivity.class);
         startToast("차단친구 메뉴");
     }
 
     public void noticeOnClick(View view){
+        myStartActivity2(SettingNotificationActivity.class);
         startToast("알림 설정 메뉴");
     }
 
     public void passwordSetOnClick(View view){
+        myStartActivity2(SettingResetPasswordActivity.class);
         startToast("비밀번호 변경 메뉴");
     }
 
     public void customerCenterOnClick(View view){
+        myStartActivity2(SettingCustomerActivity.class);
         startToast("고객센터 메뉴");
     }
 
     public void unRegisterOnClick(View view){
+        myStartActivity2(SettingLeaveActivity.class);
         startToast("회원탈퇴 메뉴");
     }
 
     public void AppInfoOnClick(View view){
+        myStartActivity2(SettingAppInfoActivity.class);
         startToast("앱 정보 메뉴");
     }
 
@@ -137,12 +143,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDrawerOpened(@NonNull View drawerView) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
         }
 
         @Override
         public void onDrawerClosed(@NonNull View drawerView) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu);
         }
 
         @Override
@@ -307,6 +313,11 @@ public class MainActivity extends AppCompatActivity {
             err = true;
         }
         return err;
+    }
+
+    private void myStartActivity2(Class c) {
+        Intent intent = new Intent(this, c);
+        startActivity(intent);
     }
 
     private void myStartActivity(Class c) {

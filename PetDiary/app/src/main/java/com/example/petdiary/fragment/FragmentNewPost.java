@@ -275,7 +275,7 @@ public class FragmentNewPost extends Fragment {
         switch(requestCode){
             case 1:
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    myStartActivity(GalleryActivity.class);
+                    //myStartActivity(GalleryActivity.class);
                 } else {
                     startToast("권한을 허용해 주세요.");
                 }
@@ -381,11 +381,13 @@ public class FragmentNewPost extends Fragment {
                 }
             }
         }
-        if(content.length() > 0 || img[0].length() > 0){
-            saveImage();
-        } else {
-            startToast("내용을 입력해주세요.");
-        }
+
+        saveImage();
+//        if(content.length() > 0 || img[0].length() > 0){
+//            saveImage();
+//        } else {
+//            startToast("내용을 입력해주세요.");
+//        }
 
     }
 
