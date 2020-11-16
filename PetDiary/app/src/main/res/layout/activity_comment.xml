@@ -17,22 +17,23 @@
         android:src="@drawable/dog"
         app:civ_border_color="#FF000000"
         app:civ_border_width="0dp" />
-
+    
     <ScrollView
-        android:id="@+id/main_scroll_text"
+        android:id="@+id/PostText_view"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="70dp"
         android:layout_below="@id/Profile_image"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginRight="10dp">
-
-        <TextView
-            android:id="@+id/PostText_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="강아지와 산책을 했습방dsdsdsdsdsdsdsdsdsdssdsdsdsdsdsdsdsdsdsdsdsㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅂㅇㅂㅇ"
-            android:textColor="#000000" />
+    <kr.co.prnd.readmore.ReadMoreTextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="강아지와 산책을 했습방dsdsdsdsdsdsdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddsdsdsdssdsdsdsdsdsdsdsdsdsdsdsㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅇㅂㅂㅇㅂㅇ"
+        android:textColor="#000000"
+        app:readMoreColor="@android:color/darker_gray"
+        app:readMoreMaxLine="2"
+        app:readMoreText="...더보기" />
     </ScrollView>
 
     <TextView
@@ -50,12 +51,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottom_Profile_Image"
-        android:layout_below="@+id/main_scroll_text"
+        android:layout_below="@+id/PostText_view"
         android:layout_alignParentStart="true"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="5dp"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/bottom_Profile_Image"
