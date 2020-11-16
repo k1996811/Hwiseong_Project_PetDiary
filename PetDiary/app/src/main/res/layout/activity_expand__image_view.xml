@@ -9,63 +9,45 @@
     tools:context=".Expand_ImageView">
 
 
-        <ImageView
-            android:id="@+id/EXpand_imageView"
-            android:layout_width="match_parent"
-            android:layout_height="450dp"
-            android:layout_marginLeft="7dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="7dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/dog" />
+    <ImageView
+        android:id="@+id/EXpand_imageView"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginLeft="7dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="7dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/dog" />
 
-        <ScrollView
-            android:id="@+id/text_Scroll"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_below="@+id/EXpand_imageView"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp">
 
-                <TextView
-                    android:id="@+id/textPost"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 !
-           댕댕이와 하는 산책이 너무나 즐거웠다 !댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 !
-           댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 !댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 !댕댕이와 하는 산책이 너무나 즐거웠다 !댕댕이와 하는 산책이 너무나 즐거웠다 !댕댕이와 하는 산책이 너무나 즐거웠다 !댕댕이와 하는 산책이 너무나 즐거웠다 !댕댕이와 하는 산책이 너무나 즐거웠다 !"
-                    android:textColor="#000000" />
-        </ScrollView>
+    
+    <kr.co.prnd.readmore.ReadMoreTextView
+        android:id="@+id/Main_Text"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/EXpand_imageView"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:text="댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 !
+                    댕댕이와 하는 산책이 너무나 즐거웠다 !댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 !
+                    #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자#댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 "
+        android:textColor="#000000"
+        app:readMoreColor="@android:color/darker_gray"
+        app:readMoreMaxLine="4"
+        app:readMoreText="...더보기" />
 
-        <HorizontalScrollView
-            android:id="@+id/hashtag_Scroll"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:layout_below="@+id/text_Scroll"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
-
-                <TextView
-                    android:id="@+id/hashtag"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="#댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자#댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자"
-                    android:textColor="#000000" />
-
-        </HorizontalScrollView>
-
-        <TextView
-            android:id="@+id/date_text"
-            android:layout_below="@+id/hashtag_Scroll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="20dp"
-            android:text="2020.11.10"
-            android:gravity="end"
-            android:textColor="#000000" />
+    <TextView
+        android:id="@+id/date_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Main_Text"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="end"
+        android:text="2020.11.10"
+        android:textColor="#000000" />
 </RelativeLayout>
 
 

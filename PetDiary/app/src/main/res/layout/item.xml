@@ -21,7 +21,7 @@
         android:layout_below="@+id/first_Square"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
-        android:layout_height="365dp"
+        android:layout_height="375dp"
         android:background="@drawable/button"/>
 
     <View
@@ -79,7 +79,7 @@
         android:layout_height="300dp"
         android:src="@drawable/dog"/>
 
-    <TextView
+    <kr.co.prnd.readmore.ReadMoreTextView
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
@@ -88,7 +88,10 @@
         android:textColor="#000000"
         android:text="강아지와 산책을 했습니다 너무너무 즐거운 산책 내일또 하고시어용 #강아지 #귀여워잉"
         android:layout_width="match_parent"
-        android:layout_height="40dp" />
+        android:layout_height="50dp"
+        app:readMoreColor="@android:color/darker_gray"
+        app:readMoreMaxLine="4"
+        app:readMoreText="...더보기" />
 
     <CheckBox
         android:button="@android:color/transparent"
@@ -101,7 +104,7 @@
         android:background="@drawable/heart_check"/>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/Comment_btn"
         android:layout_alignBaseline="@+id/Like_button"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="27dp"

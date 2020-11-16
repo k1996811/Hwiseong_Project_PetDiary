@@ -5,11 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,7 +18,6 @@ import com.example.petdiary.Comment;
 import com.example.petdiary.Data;
 import com.example.petdiary.Expand_ImageView;
 import com.example.petdiary.R;
-import com.example.petdiary.activity.MainActivity;
 
 import java.util.ArrayList;
 
@@ -37,7 +34,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.ItemVi
         // return 인자는 ViewHolder 입니다.
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
 
-        view.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener(){
+        view.findViewById(R.id.Comment_btn).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Log.e("@@@re", "button2클릭");
