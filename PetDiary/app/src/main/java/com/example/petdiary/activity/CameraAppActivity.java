@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import static android.os.Environment.DIRECTORY_DCIM;
 import static android.os.Environment.DIRECTORY_PICTURES;
 
 public class CameraAppActivity extends AppCompatActivity {
@@ -61,7 +63,6 @@ public class CameraAppActivity extends AppCompatActivity {
                 .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
                 .check();
 
-
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
             File photoFile = null;
@@ -76,6 +77,9 @@ public class CameraAppActivity extends AppCompatActivity {
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                 startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
             }
+
+            Log.e("@@@1", photoFile.toString());
+            Log.e("@@@2", photoUri.toString());
         }
 
 
@@ -83,14 +87,15 @@ public class CameraAppActivity extends AppCompatActivity {
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "PetDiary_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(DIRECTORY_PICTURES);
+        String imageFileName = "TEST_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,
                 ".jpg",
                 storageDir
         );
         imageFilePath = image.getAbsolutePath();
+        Log.e("@@@3", imageFilePath.toString());
         return image;
     }
 
@@ -99,74 +104,86 @@ public class CameraAppActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bitmap bitmap = BitmapFactory.decodeFile(imageFilePath);
-            ExifInterface exif = null;
+//            Log.e("@@@4", imageFilePath.toString());
+//            Bitmap bitmap = BitmapFactory.decodeFile(imageFilePath);
+//            ExifInterface exif = null;
+//
+//            try {
+//                exif = new ExifInterface(imageFilePath);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//            int exifOrientation;
+//            int exifDegree;
+//
+//            if (exif != null) {
+//                exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+//                exifDegree = exifOrientationToDegress(exifOrientation);
+//            } else {
+//                exifDegree = 0;
+//            }
+//
+//            Log.e("@@@5", exif.toString());
+//
+//            String result = "";
+//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HHmmss", Locale.getDefault());
+//            Date curDate = new Date(System.currentTimeMillis());
+//            String filename = formatter.format(curDate);
+//
+//            String strFolderName = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES) + File.separator + "PatDiary" + File.separator;
+//            File file = new File(strFolderName);
+//            if (!file.exists())
+//                file.mkdirs();
+//
+//            Log.e("@@@6", strFolderName);
+//
+//            File f = new File(strFolderName + "/" + filename + ".png");
+//            result = f.getPath();
+//
+//            Log.e("@@@7", f.toString());
 
-            try {
-                exif = new ExifInterface(imageFilePath);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            int exifOrientation;
-            int exifDegree;
-
-            if (exif != null) {
-                exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-                exifDegree = exifOrientationToDegress(exifOrientation);
-            } else {
-                exifDegree = 0;
-            }
-
-            String result = "";
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HHmmss", Locale.getDefault());
-            Date curDate = new Date(System.currentTimeMillis());
-            String filename = formatter.format(curDate);
-
-            String strFolderName = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES) + File.separator + "PatDiary" + File.separator;
-            File file = new File(strFolderName);
-            if (!file.exists())
-                file.mkdirs();
-
-            File f = new File(strFolderName + "/" + filename + ".png");
-            result = f.getPath();
-
-            FileOutputStream fOut = null;
-            try {
-                fOut = new FileOutputStream(f);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                result = "Save Error fOut";
-            }
+//            FileOutputStream fOut = null;
+//            try {
+//                fOut = new FileOutputStream(f);
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//                result = "Save Error fOut";
+//            }
+//
+//            Log.e("@@@8", fOut.toString());
 
             // 비트맵 사진 폴더 경로에 저장
-            rotate(bitmap, exifDegree).compress(Bitmap.CompressFormat.PNG, 50, fOut);
+//            try {
+//                rotate(bitmap, exifDegree).compress(Bitmap.CompressFormat.PNG, 70, new FileOutputStream(f));
+//                mMediaScanner.mediaScanning(strFolderName + "/" + filename + ".png");
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
 
-            try {
-                fOut.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                fOut.close();
-                // 방금 저장된 사진을 갤러리 폴더 반영 및 최신화
-                mMediaScanner.mediaScanning(strFolderName + "/" + filename + ".png");
-            } catch (IOException e) {
-                e.printStackTrace();
-                result = "File close Error";
-            }
+//            try {
+//                fOut.flush();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            try {
+//                fOut.close();
+//                // 방금 저장된 사진을 갤러리 폴더 반영 및 최신화
+//                mMediaScanner.mediaScanning(strFolderName + "/" + filename + ".png");
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                result = "File close Error";
+//            }
 
-
+            //Log.e("@@@@", strFolderName + "/" + filename + ".png");
             Intent resultIntent = new Intent();
-            resultIntent.putExtra("postImgPath", strFolderName + "/" + filename + ".png");
+            resultIntent.putExtra("postImgPath", imageFilePath);
             setResult(Activity.RESULT_OK, resultIntent);
             finish();
             // 이미지 뷰에 비트맵을 set하여 이미지 표현
             //((ImageView) findViewById(R.id.iv_result)).setImageBitmap(rotate(bitmap,exifDegree));
 
 
-        } else if(resultCode == RESULT_CANCELED){
-            finish();
         }
     }
 

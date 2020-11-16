@@ -85,8 +85,11 @@ public class FragmentNewPost extends Fragment {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_newpost, container, false);
 
         String[] items = {"강아지", "고양이", "앵무새", "두더지", "물고기"};
+        //ArrayList<String> itemss = new ArrayList<String>();
+        //itemss.add("가");
         spinner = (Spinner)viewGroup.findViewById(R.id.categorySpinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, items);
+        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, itemss);
         adapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(adapter);
 
