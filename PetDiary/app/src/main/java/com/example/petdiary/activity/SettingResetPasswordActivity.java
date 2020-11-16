@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 
 public class SettingResetPasswordActivity extends AppCompatActivity {
 
-    private static final String TAG = "SetPasswordActivity";
+    private static final String TAG = "SettingResetPassword";
     private FirebaseAuth mAuth;
 
     private String email;
@@ -142,6 +142,7 @@ public class SettingResetPasswordActivity extends AppCompatActivity {
         if(checkCurrentPassword){
             if(isValidPassword(password)){
                 if(password.equals(passwordCheck) && isValidPassword(passwordCheck)){
+
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     String newPassword = password;
 
@@ -149,7 +150,7 @@ public class SettingResetPasswordActivity extends AppCompatActivity {
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    Log.d("@@@1", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    Log.d("@@@12", FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     if (task.isSuccessful()) {
                                         //Log.d("@@@2", FirebaseAuth.getInstance().getCurrentUser().getUid());
                                         startToast("비밀번호가 변경되었습니다.");
@@ -177,6 +178,8 @@ public class SettingResetPasswordActivity extends AppCompatActivity {
                                                         Log.w(TAG, "Error writing document", e);
                                                     }
                                                 });
+
+                                        finish();
 
                                     } else {
                                         startToast("비밀번호 변경에 실패하였습니다.");

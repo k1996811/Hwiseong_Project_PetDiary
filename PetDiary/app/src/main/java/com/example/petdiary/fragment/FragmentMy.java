@@ -63,7 +63,6 @@ public class FragmentMy extends Fragment {
 
         }
 
-        viewGroup.findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
         viewGroup.findViewById(R.id.memberInfoInitButton).setOnClickListener(onClickListener);
         viewGroup.findViewById(R.id.setProfileImg).setOnClickListener(onClickListener);
 
@@ -107,11 +106,6 @@ public class FragmentMy extends Fragment {
         @Override
         public void onClick(View v) {
             switch(v.getId()){
-                case R.id.logoutButton:
-                    FirebaseAuth.getInstance().signOut();
-                    myStartActivity(LoginActivity.class);
-                    getActivity().finish();
-                    break;
                 case R.id.memberInfoInitButton:
                     //myStartActivity(MemberInfoEditActivity.class);
                     startToast("회원정보수정");
