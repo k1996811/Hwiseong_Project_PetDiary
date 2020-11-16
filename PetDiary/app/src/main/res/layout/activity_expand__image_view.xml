@@ -9,52 +9,63 @@
     tools:context=".Expand_ImageView">
 
 
-
-
-
-        <!---fitxy는 뷰화면에 꽉차게표시-->
         <ImageView
             android:id="@+id/EXpand_imageView"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:scaleType="fitXY"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:src="@drawable/dog"/>
-
-    <!---텍스트뷰-->
-        <TextView
-           android:id="@+id/textPost"
-            android:layout_below="@id/EXpand_imageView"
-            android:gravity="center_vertical|center_horizontal"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
+            android:layout_height="450dp"
+            android:layout_marginLeft="7dp"
             android:layout_marginTop="10dp"
-            android:layout_gravity="center_vertical"
+            android:layout_marginRight="7dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/dog" />
+
+        <ScrollView
+            android:id="@+id/text_Scroll"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:hint="내용이 표시 됩니다"
-            android:textSize="30sp" />
-
-        <TextView
-            android:id="@+id/hashtag"
-            android:layout_below="@+id/textPost"
-            android:layout_centerHorizontal="true"
-            android:textSize="20sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="해시태그 표시"/>
-
-        <TextView
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/hashtag"
+            android:layout_below="@+id/EXpand_imageView"
+            android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:layout_gravity="center"
-            android:textSize="20sp"
-            android:layout_width="wrap_content"
+            android:layout_marginRight="10dp">
+
+                <TextView
+                    android:id="@+id/textPost"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 !
+           댕댕이와 하는 산책이 너무나 즐거웠다 !댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 !
+           댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 !댕댕이와 하는 산책이 너무나 즐거웠다 ! 댕댕이와 하는 산책이 너무나 즐거웠다 !댕댕이와 하는 산책이 너무나 즐거웠다 !댕댕이와 하는 산책이 너무나 즐거웠다 !댕댕이와 하는 산책이 너무나 즐거웠다 !댕댕이와 하는 산책이 너무나 즐거웠다 !댕댕이와 하는 산책이 너무나 즐거웠다 !"
+                    android:textColor="#000000" />
+        </ScrollView>
+
+        <HorizontalScrollView
+            android:id="@+id/hashtag_Scroll"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_below="@+id/text_Scroll"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+
+                <TextView
+                    android:id="@+id/hashtag"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="#댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자#댕댕이 #귀여워 #또놀자 #댕댕이 #귀여워 #또놀자"
+                    android:textColor="#000000" />
+
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/date_text"
+            android:layout_below="@+id/hashtag_Scroll"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="날짜가 표시 됩니다"/>
-
-
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp"
+            android:text="2020.11.10"
+            android:gravity="end"
+            android:textColor="#000000" />
 </RelativeLayout>
+
+
