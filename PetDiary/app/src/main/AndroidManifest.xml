@@ -10,6 +10,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
     <application
 
         android:name=".App"
@@ -36,14 +38,20 @@
         <activity android:name=".activity.LoginActivity"></activity>
         <activity android:name=".activity.SignUpActivity" android:parentActivityName=".activity.LoginActivity"></activity>
         <activity android:name=".activity.FindPasswordActivity" android:parentActivityName=".activity.LoginActivity"></activity>
-        <activity android:name=".activity.GalleryActivity"></activity>
         <activity android:name=".activity.SetPasswordActivity"></activity>
-        <activity android:name=".activity.SetPasswordTwoActivity"></activity>
         <activity android:name=".activity.KakaoMyPageActivity"></activity>
         <activity android:name=".activity.ChatActivity"></activity>
         <activity android:name=".activity.ImageChoicePopupActivity" android:theme="@android:style/Theme.Dialog"></activity>
         <activity android:name=".activity.ImageChoicePopupActivity2" android:theme="@android:style/Theme.Dialog"></activity>
         <activity android:name=".activity.CameraAppActivity"></activity>
+        <activity android:name=".activity.ProfileEditActivity"></activity>
+        <activity android:name=".activity.SettingBlockFriendsActivity" android:parentActivityName=".activity.MainActivity"></activity>
+        <activity android:name=".activity.SettingCustomerActivity" android:parentActivityName=".activity.MainActivity"></activity>
+        <activity android:name=".activity.SettingResetPasswordActivity" android:parentActivityName=".activity.MainActivity"></activity>
+        <activity android:name=".activity.SettingNotificationActivity" android:parentActivityName=".activity.MainActivity"></activity>
+        <activity android:name=".activity.SettingLeaveActivity" android:parentActivityName=".activity.MainActivity"></activity>
+        <activity android:name=".activity.SettingAppInfoActivity" android:parentActivityName=".activity.MainActivity"></activity>
+        <activity android:name=".activity.LogoutPopupActivity" android:theme="@android:style/Theme.Dialog"></activity>
         <activity android:name=".Expand_ImageView"></activity>
         <activity android:name=".Comment" />
 
@@ -59,6 +67,15 @@
                 android:resource="@xml/file_paths" />
 
         </provider>
+
+        <service
+            android:name=".MyFireBaseMessagingService"
+            android:stopWithTask="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
 
     </application>
 

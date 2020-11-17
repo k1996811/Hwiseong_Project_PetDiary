@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
                     startSignUpActivity();
                     break;
                 case R.id.findPasswordButton:
-                    startToast("비밀번호 찾기");
+                    //startToast("비밀번호 찾기");
                     startFindPasswordActivity();
                     break;
             }

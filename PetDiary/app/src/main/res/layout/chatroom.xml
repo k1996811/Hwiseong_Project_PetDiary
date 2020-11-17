@@ -8,15 +8,16 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/app_bar_main2"
     >
-    <TextView
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
         android:text="상대방 닉네임"
         android:background="@drawable/button"
         android:id="@+id/guest"
         />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="0dp"

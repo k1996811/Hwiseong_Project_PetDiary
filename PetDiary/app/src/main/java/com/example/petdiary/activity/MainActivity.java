@@ -8,16 +8,22 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.petdiary.R;
 import com.example.petdiary.fragment.*;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +31,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private String password = "";
 
     TextView toolbarNickName;
+    ImageView genter_icon;
     BottomNavigationView bottomNavigationView;
     FragmentMain fragmentMain;
     FragmentSub fragmentSub;
@@ -64,14 +75,19 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private View drawerView;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //getAppKeyHash();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        Intent intent = getIntent();
+        if(intent != null) {//푸시알림을 선택해서 실행한것이 아닌경우 예외처리
+            String notificationData = intent.getStringExtra("FCM_PetDiary");
+            if(notificationData != null)
+                Log.d("FCM_PetDiary", notificationData);
+        }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu);
@@ -80,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         drawerView = (View) findViewById(R.id.drawerView);
         drawerLayout.setDrawerListener(listener);
         toolbarNickName = findViewById(R.id.toolbar_nickName);
+        genter_icon = findViewById(R.id.genter_icon);
 
         if (user == null) {
             myStartActivity(LoginActivity.class);
@@ -96,35 +113,55 @@ public class MainActivity extends AppCompatActivity {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 햄버거메뉴
 
-    public void blockFriendOnClick(View view){
-        startToast("차단친구 메뉴");
+    public void blockFriendOnClick(View view) {
+        myStartActivity2(SettingBlockFriendsActivity.class);
+        //startToast("차단친구");
     }
 
     public void noticeOnClick(View view){
-        startToast("알림 설정 메뉴");
+        myStartActivity2(SettingNotificationActivity.class);
+        //startToast("알림 설정");
     }
 
     public void passwordSetOnClick(View view){
-        startToast("비밀번호 변경 메뉴");
+        myStartActivity2(SettingResetPasswordActivity.class);
+        //startToast("비밀번호 변경");
     }
 
     public void customerCenterOnClick(View view){
-        startToast("고객센터 메뉴");
+        myStartActivity2(SettingCustomerActivity.class);
+        //startToast("고객센터");
+    }
+
+    public void logOutOnClick(View view){
+        startPopupActivity();
+        //startToast("로그아웃");
     }
 
     public void unRegisterOnClick(View view){
-        startToast("회원탈퇴 메뉴");
+        myStartActivity2(SettingLeaveActivity.class);
+        //startToast("회원탈퇴");
     }
 
     public void AppInfoOnClick(View view){
-        startToast("앱 정보 메뉴");
+        myStartActivity2(SettingAppInfoActivity.class);
+        startToast("앱 정보");
+    }
+
+    private void startPopupActivity(){
+        Intent intent = new Intent(getApplicationContext(), LogoutPopupActivity.class);
+        startActivityForResult(intent, 0);
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
         switch(id){
             case android.R.id.home:
-                drawerLayout.openDrawer(drawerView);
+                if(drawerLayout.isDrawerOpen(drawerView)){
+                    drawerLayout.closeDrawer(drawerView);
+                } else {
+                    drawerLayout.openDrawer(drawerView);
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -137,12 +174,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDrawerOpened(@NonNull View drawerView) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
         }
 
         @Override
         public void onDrawerClosed(@NonNull View drawerView) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu);
         }
 
         @Override
@@ -309,6 +346,11 @@ public class MainActivity extends AppCompatActivity {
         return err;
     }
 
+    private void myStartActivity2(Class c) {
+        Intent intent = new Intent(this, c);
+        startActivity(intent);
+    }
+
     private void myStartActivity(Class c) {
         Intent intent = new Intent(this, c);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -328,6 +370,9 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                             password = document.getData().get("password").toString();
                             toolbarNickName.setText(document.getData().get("nickName").toString() + " 님");
+                            if(document.getData().get("profileImg").toString().length() > 0 ){
+                                setImg();
+                            }
                             Log.d("###1", password);
                             if (isValidPassword(password)) {
                                 setFirst();
@@ -346,29 +391,61 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void setImg() {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        StorageReference storageRef = storage.getReference();
+
+        storageRef.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+
+                String profileImg = uri.toString();
+//                while(profileImg.length() == 0){
+//                    continue;
+//                }
+                //Log.e("@@@!", profileImg);
+                setProfileImg(profileImg);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+    }
+
+    private void setProfileImg(String profileImg) {
+        Glide.with(this).load(profileImg).centerCrop().override(500).into(genter_icon);
+    }
 
     private long backKeyPressedTime = 0;
     private Toast toast;
 
     public void onBackPressed(){
         //super.onBackPressed();
-        // 마지막으로 뒤로가기 버튼을 눌렀던 시간에 2초를 더해 현재시간과 비교 후
-        // 마지막으로 뒤로가기 버튼을 눌렀던 시간이 2초가 지났으면 Toast Show
-        // 2000 milliseconds = 2 seconds
-        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
-            backKeyPressedTime = System.currentTimeMillis();
-            toast = Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT);
-            toast.show();
-            return;
-        }
-        // 마지막으로 뒤로가기 버튼을 눌렀던 시간에 2초를 더해 현재시간과 비교 후
-        // 마지막으로 뒤로가기 버튼을 눌렀던 시간이 2초가 지나지 않았으면 종료
-        // 현재 표시된 Toast 취소
-        if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
-            moveTaskToBack(true);
-            android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(1);
-            toast.cancel();
+
+        if(drawerLayout.isDrawerOpen(drawerView)){
+            drawerLayout.closeDrawer(drawerView);
+        } else {
+            // 마지막으로 뒤로가기 버튼을 눌렀던 시간에 2초를 더해 현재시간과 비교 후
+            // 마지막으로 뒤로가기 버튼을 눌렀던 시간이 2초가 지났으면 Toast Show
+            // 2000 milliseconds = 2 seconds
+            if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+                backKeyPressedTime = System.currentTimeMillis();
+                toast = Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }
+            // 마지막으로 뒤로가기 버튼을 눌렀던 시간에 2초를 더해 현재시간과 비교 후
+            // 마지막으로 뒤로가기 버튼을 눌렀던 시간이 2초가 지나지 않았으면 종료
+            // 현재 표시된 Toast 취소
+            if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
+                moveTaskToBack(true);
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(1);
+                toast.cancel();
+            }
         }
     }
 }

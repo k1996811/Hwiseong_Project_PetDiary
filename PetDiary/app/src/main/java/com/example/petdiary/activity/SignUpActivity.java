@@ -200,7 +200,7 @@ public class SignUpActivity extends AppCompatActivity {
                                             //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                                            MemberInfo memberInfo = new MemberInfo(email, password, nickName);
+                                            MemberInfo memberInfo = new MemberInfo(email, password, nickName, "");
                                             db.collection("users").document(user.getUid()).set(memberInfo)
                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override
@@ -226,7 +226,7 @@ public class SignUpActivity extends AppCompatActivity {
                                             //Log.w(TAG, "createUserWithEmail:failure", task.getException());
                                             //Log.w(TAG, task.getException());
                                             if(task.getException() != null){
-                                                startToast("이미 존재하는 아이디 입니다.");
+                                                startToast("이미 존재하는 이메일 입니다.");
                                             }
                                         }
                                     }

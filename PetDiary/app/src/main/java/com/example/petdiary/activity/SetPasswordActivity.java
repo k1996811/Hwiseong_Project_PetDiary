@@ -54,6 +54,7 @@ public class SetPasswordActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         findViewById(R.id.okButton).setOnClickListener(onClickListener);
+        findViewById(R.id.cancelButton).setOnClickListener(onClickListener);
 
         passwordEditText = findViewById(R.id.passwordEditText);
         passwordCheckEditText = findViewById(R.id.passwordCheckEditText);
@@ -76,6 +77,9 @@ public class SetPasswordActivity extends AppCompatActivity {
                 case R.id.okButton:
                     setInfo();
                     setPassword();
+                    break;
+                case R.id.cancelButton:
+                    finish();
                     break;
             }
         }
@@ -123,7 +127,7 @@ public class SetPasswordActivity extends AppCompatActivity {
         if(isValidPassword(password)){
             if(password.equals(passwordCheck)){
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String newPassword = password;
+                final String newPassword = password;
 
                 user.updatePassword(newPassword)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -133,27 +137,25 @@ public class SetPasswordActivity extends AppCompatActivity {
                                     startToast("비밀번호가 변경되었습니다.");
                                     Log.d(TAG, "User password updated.");
 
-                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                                    Log.d("@@@" , email + " / " + password + " / " + nickName);
-
-                                    MemberInfo memberInfo = new MemberInfo(email, password, nickName);
-                                    db.collection("users").document(user.getUid()).set(memberInfo)
+                                    DocumentReference washingtonRef = db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    washingtonRef
+                                            .update("password", newPassword)
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    startMainActivity();
-                                                    finish();
+                                                    Log.d(TAG, "DocumentSnapshot successfully updated!");
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
-                                                    startToast("입력 정보를 확인해주세요.");
-                                                    Log.w(TAG, "Error writing document", e);
+                                                    Log.w(TAG, "Error updating document", e);
                                                 }
                                             });
+                                    startMainActivity();
+                                    finish();
 
                                 } else {
                                     startToast("비밀번호 변경에 실패하였습니다.");

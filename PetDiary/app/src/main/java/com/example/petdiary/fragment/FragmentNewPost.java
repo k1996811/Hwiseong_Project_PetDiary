@@ -57,11 +57,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 public class FragmentNewPost extends Fragment {
 
-    private static final String TAG = "NewPostActivity";
+    private static final String TAG = "NewPost_Fragment";
 
     ImageView[] postImg = new ImageView[5];
     ImageView[] deletePostImg = new ImageView[5];
@@ -84,9 +85,28 @@ public class FragmentNewPost extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_newpost, container, false);
 
+//        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+//            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+//            if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)){
+//            } else {
+//                //startToast("권한을 허용해 주세요.");
+//            }
+//        }
+//        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+//            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 1);
+//            if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CAMERA)){
+//            } else {
+//                //startToast("권한을 허용해 주세요.");
+//            }
+//        }
+
+
         String[] items = {"강아지", "고양이", "앵무새", "두더지", "물고기"};
+        //ArrayList<String> itemss = new ArrayList<String>();
+        //itemss.add("가");
         spinner = (Spinner)viewGroup.findViewById(R.id.categorySpinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, items);
+        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, itemss);
         adapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(adapter);
 
@@ -183,16 +203,7 @@ public class FragmentNewPost extends Fragment {
                     post();
                     break;
                 case R.id.postImg1:
-                    if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                        if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)){
-                        } else {
-                            //startToast("권한을 허용해 주세요.");
-                        }
-                    } else {
-                        //myStartActivity(GalleryActivity.class);
-                        startPopupActivity();
-                    }
+                    startPopupActivity();
                     choiceNum = 0;
                     break;
                 case R.id.postImg2:
@@ -264,7 +275,7 @@ public class FragmentNewPost extends Fragment {
         switch(requestCode){
             case 1:
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    myStartActivity(GalleryActivity.class);
+                    //myStartActivity(GalleryActivity.class);
                 } else {
                     startToast("권한을 허용해 주세요.");
                 }
@@ -280,12 +291,9 @@ public class FragmentNewPost extends Fragment {
             case 0:
                 if(resultCode == RESULT_OK){
                     String postImgPath = data.getStringExtra("postImgPath");
-                    //Log.e("postImgPath", "postImgPath : " + postImgPath);
                     setPostImg(postImgPath);
-                    //Bitmap bmp = BitmapFactory.decodeFile(profilePath);
-                    //user_profileImage_ImageView.setImageBitmap(bmp);
-                } else {
-                    //Log.e("postImgPath", "실패!");
+                } else if(resultCode == RESULT_CANCELED) {
+                    Log.e("postImgPath", "실패!");
                 }
                 break;
         }
@@ -373,7 +381,14 @@ public class FragmentNewPost extends Fragment {
                 }
             }
         }
+
         saveImage();
+//        if(content.length() > 0 || img[0].length() > 0){
+//            saveImage();
+//        } else {
+//            startToast("내용을 입력해주세요.");
+//        }
+
     }
 
     private void setEmail(){
@@ -383,12 +398,10 @@ public class FragmentNewPost extends Fragment {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    //Log.d("@@@", FirebaseAuth.getInstance().getCurrentUser().getUid());
                     if (document != null) {
                         if (document.exists()) {
                             Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                             email = document.getData().get("email").toString();
-                            //Log.e("@@@", "email : " + email);
                         } else {
                             Log.d(TAG, "No such document");
                         }
@@ -414,7 +427,9 @@ public class FragmentNewPost extends Fragment {
         } else {
             for(int i=0; i<5; i++){
                 if(postImgCheck[i] == 1){
+
                     final Uri file = Uri.fromFile(new File(img[i]));
+
                     StorageReference riversRef = storageRef.child("images/"+date2+"_postImg_"+i);
                     uploadTask[0] = riversRef.putFile(file);
 
@@ -446,7 +461,6 @@ public class FragmentNewPost extends Fragment {
                                         Uri downloadUri = task.getResult();
                                         imgUri[finalI1] = downloadUri.toString();
                                         postNum++;
-                                        //Log.e("@@@", imgUri[0]);
                                         if(postNum == postNumCheck){
                                             postData();
                                         }
@@ -467,6 +481,7 @@ public class FragmentNewPost extends Fragment {
     Menu menu;
 
     private void postData(){
+        //Log.e("@@@!!", imgUri[0] + " / " + imgUri[1]);
         firebaseDatabase = FirebaseDatabase.getInstance();
 
         DatabaseReference images = firebaseDatabase.getReference().child("images").push();

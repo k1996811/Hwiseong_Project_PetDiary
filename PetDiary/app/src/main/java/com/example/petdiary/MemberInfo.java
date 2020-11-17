@@ -5,11 +5,13 @@ public class MemberInfo {
     private String email;
     private String nickName;
     private String password;
+    private String profileImg;
 
-    public MemberInfo(String email, String password, String nickName){
+    public MemberInfo(String email, String password, String nickName, String profileImg){
         this.email = email;
         this.password = password;
         this.nickName = nickName;
+        this.profileImg = profileImg;
     }
 
     public String getEmail() { return this.email; }
@@ -27,6 +29,13 @@ public class MemberInfo {
     }
     public void setNickName(String nickName){
         this.nickName = nickName;
+    }
+
+    public String getProfileImg(){
+        return this.profileImg;
+    }
+    public void setProfileImg(String profileImg){
+        this.profileImg = profileImg;
     }
 
 }

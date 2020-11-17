@@ -51,54 +51,6 @@ public class FragmentMain extends Fragment {
         return viewGroup;
     }
 
-//    View.OnClickListener onClickListener = new View.OnClickListener(){
-////
-////        @Override
-////        public void onClick(View v) {
-////            switch(v.getId()){
-////                case R.id.main_image:
-////                    myStartActivity(Expand_ImageView.class);
-////                    break;
-////                case R.id.button2:
-////                    myStartActivity(Comment.class);
-////                    break;
-////                case R.id.onPopupButton:
-////                    PopupMenu popup = new PopupMenu(getContext(), viewGroup);
-////
-////                    //설정한 popup XML을 inflate.
-////                    popup.getMenuInflater().inflate(R.menu.popup, popup.getMenu());
-////
-////                    //팝업메뉴 클릭 시 이벤트
-////                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-////                        public boolean onMenuItemClick(MenuItem item) {
-////                            switch (item.getItemId()) {
-////                                case R.id.edit:
-////                                    /* Search를 선택했을 때 이벤트 실행 코드 작성 */
-////                                    break;
-////
-////                                case R.id.Delete:
-////                                    /* Add를 선택했을 때 이벤트 실행 코드 작성 */
-////                                    break;
-////
-////                                case R.id.share:
-////                                    Intent msg = new Intent(Intent.ACTION_SEND);
-////                                    msg.addCategory(Intent.CATEGORY_DEFAULT);
-////                                    msg.putExtra(Intent.EXTRA_SUBJECT, "주제");
-////                                    msg.putExtra(Intent.EXTRA_TEXT, "내용");
-////                                    msg.putExtra(Intent.EXTRA_TITLE, "제목");
-////                                    msg.setType("text/plain");
-////                                    startActivity(Intent.createChooser(msg, "공유"));
-////                                    break;
-////                            }
-////                            /* Share를 선택했을 때 이벤트 실행 코드 작성 */
-////                            return true;
-////                        }
-////                    });
-////                    popup.show();
-////                    break;
-////            }
-////        }
-////    };
 
     private void myStartActivity(Class c){
         Intent intent = new Intent(getActivity(), c);
@@ -124,7 +76,10 @@ public class FragmentMain extends Fragment {
         List<String> listTitle = Arrays.asList("댕댕이", "네로", "냐옹", "알파카", "코알라" ,"휘리다"
         );
         List<String> listContent = Arrays.asList(
-                "댕댕이 너무 즐거워요 ㅎㅎㅎ #댕댕이 #산책",
+                "강아지와 산책을 했습니다 너무너무 즐거운 산책 내일또 하고시어용!sdasdasdadadasdsadasdsaasdsadasdasd" +
+                        "sdasdsadasdas" +
+                        "dasdasdasdasdasdasd" +
+                        "sdasdasdasdasdasdasdsadsad #강아지 #귀여워잉 #귀여워잉 #귀여워잉",
                 "저는 검은고양이 네로입니다 #검은고양이 #네로",
                 "냐옹 냐옹 나랑 놀아달라! #냥집사 #냥냥",
                 "알파카 처음보냐?! #침뱉기 #알파카",
