@@ -44,6 +44,7 @@
         <activity android:name=".activity.ImageChoicePopupActivity" android:theme="@android:style/Theme.Dialog"></activity>
         <activity android:name=".activity.ImageChoicePopupActivity2" android:theme="@android:style/Theme.Dialog"></activity>
         <activity android:name=".activity.CameraAppActivity"></activity>
+        <activity android:name=".activity.ProfileEditActivity"></activity>
         <activity android:name=".activity.SettingBlockFriendsActivity" android:parentActivityName=".activity.MainActivity"></activity>
         <activity android:name=".activity.SettingCustomerActivity" android:parentActivityName=".activity.MainActivity"></activity>
         <activity android:name=".activity.SettingResetPasswordActivity" android:parentActivityName=".activity.MainActivity"></activity>
