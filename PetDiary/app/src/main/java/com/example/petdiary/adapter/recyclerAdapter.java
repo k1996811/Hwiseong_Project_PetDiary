@@ -1,14 +1,16 @@
 package com.example.petdiary.adapter;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +18,7 @@ import com.example.petdiary.Comment;
 import com.example.petdiary.Data;
 import com.example.petdiary.Expand_ImageView;
 import com.example.petdiary.R;
+
 import java.util.ArrayList;
 
 
@@ -31,7 +34,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.ItemVi
         // return 인자는 ViewHolder 입니다.
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
 
-        view.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener(){
+        view.findViewById(R.id.Comment_btn).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Log.e("@@@re", "button2클릭");
@@ -48,27 +51,37 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.ItemVi
             }
         });
 
+
+
+
         view.findViewById(R.id.onPopupButton).setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(final View v) {
-                PopupMenu popup = new PopupMenu(v.getContext(), view);
+            public void onClick(final View view) {
 
-                //설정한 popup XML을 inflate.
-                popup.getMenuInflater().inflate(R.menu.popup, popup.getMenu());
+                CharSequence info[] = new CharSequence[] {"Edit", "Delete","Share" };
 
-                //팝업메뉴 클릭 시 이벤트
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.edit:
-                                /* Search를 선택했을 때 이벤트 실행 코드 작성 */
+                final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
+                builder.setTitle("");
+
+                builder.setItems(info, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch(which)
+                        {
+                            case 0:
+                                // 내정보
+                                Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
+
                                 break;
 
-                            case R.id.Delete:
-                                /* Add를 선택했을 때 이벤트 실행 코드 작성 */
+                            case 1:
+                                // 로그아웃
+                                Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
+
                                 break;
 
-                            case R.id.share:
+                            case 2:
                                 Intent msg = new Intent(Intent.ACTION_SEND);
                                 msg.addCategory(Intent.CATEGORY_DEFAULT);
                                 msg.putExtra(Intent.EXTRA_SUBJECT, "주제");
@@ -76,16 +89,26 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.ItemVi
                                 msg.putExtra(Intent.EXTRA_TITLE, "제목");
                                 msg.setType("text/plain");
 
-                                v.getContext().startActivity(Intent.createChooser(msg, "공유"));
+                                view.getContext().startActivity(Intent.createChooser(msg, "공유"));
 
+                                break;
                         }
-                        /* Share를 선택했을 때 이벤트 실행 코드 작성 */
-                        return true;
+
+                        dialog.dismiss();
                     }
                 });
-                popup.show();
+
+                builder.show();
+
             }
         });
+
+
+
+
+
+
+
 
         return new ItemViewHolder(view);
     }
@@ -94,6 +117,8 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.ItemVi
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         // Item을 하나, 하나 보여주는(bind 되는) 함수입니다.
         holder.onBind(listData.get(position));
+
+
     }
 
     @Override
@@ -129,5 +154,10 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.ItemVi
             imageView.setImageResource(data.getResId());
         }
     }
+
+
+
+
+
 
 }

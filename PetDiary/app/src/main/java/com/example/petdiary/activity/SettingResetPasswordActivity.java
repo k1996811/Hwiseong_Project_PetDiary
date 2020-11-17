@@ -30,16 +30,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SetPasswordTwoActivity extends AppCompatActivity {
+public class SettingResetPasswordActivity extends AppCompatActivity {
 
-    private static final String TAG = "SetPasswordActivity";
+    private static final String TAG = "SettingResetPassword";
     private FirebaseAuth mAuth;
 
     private String email;
     private String nickName;
     private String password;
     private String currentPassword;
-    private String profilePath;
 
     private boolean checkCurrentPassword = false;
 
@@ -57,7 +56,7 @@ public class SetPasswordTwoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_set_password_two);
+        setContentView(R.layout.activity_setting_password);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -118,7 +117,7 @@ public class SetPasswordTwoActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    Log.d("@@@", FirebaseAuth.getInstance().getCurrentUser().getUid()+"");
+                    //Log.d("@@@", FirebaseAuth.getInstance().getCurrentUser().getUid());
                     if (document != null) {
                         if (document.exists()) {
                             Log.d(TAG, "DocumentSnapshot data: " + document.getData());
@@ -142,24 +141,22 @@ public class SetPasswordTwoActivity extends AppCompatActivity {
 
         if(checkCurrentPassword){
             if(isValidPassword(password)){
-                if(password.equals(passwordCheck)){
+                if(password.equals(passwordCheck) && isValidPassword(passwordCheck)){
+
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     String newPassword = password;
+
 
                     user.updatePassword(newPassword)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    Log.d("@@@1", FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     if (task.isSuccessful()) {
-                                        Log.d("@@@2", FirebaseAuth.getInstance().getCurrentUser().getUid());
                                         startToast("비밀번호가 변경되었습니다.");
-                                        Log.d(TAG, "User password updated.");
+                                        //Log.d(TAG, "User password updated.");
 
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-                                        Log.d("@@@" , email + " / " + password + " / " + nickName);
 
                                         login();
 
@@ -179,9 +176,11 @@ public class SetPasswordTwoActivity extends AppCompatActivity {
                                                     }
                                                 });
 
+                                        finish();
+
                                     } else {
-                                        startToast("비밀번호 변경에 실패하였습니다.");
-                                        Log.d("TAG", task.getException().toString());
+                                        startToast(task.getException().toString());
+                                        //Log.d("@@@TAG", task.getException().toString());
                                     }
                                 }
                             });

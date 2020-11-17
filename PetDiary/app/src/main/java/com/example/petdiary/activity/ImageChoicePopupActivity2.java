@@ -2,45 +2,26 @@ package com.example.petdiary.activity;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.loader.content.CursorLoader;
 
-import com.bumptech.glide.Glide;
 import com.example.petdiary.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class ImageChoicePopupActivity2 extends Activity {
 
@@ -52,8 +33,8 @@ public class ImageChoicePopupActivity2 extends Activity {
         setContentView(R.layout.activity_image_choice_popup);
     }
 
-    public void goCamera(View v) {
 
+    public void goCamera(View v){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
             if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)){
@@ -62,118 +43,91 @@ public class ImageChoicePopupActivity2 extends Activity {
                 //startToast("권한을 허용해 주세요.");
             }
         } else {
-            Intent intent = new Intent(this, CameraAppActivity.class);
-            startActivityForResult(intent, 1);
+            myStartActivity(CameraAppActivity.class);
         }
     }
 
-    public void goGallery(View v) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            } else {
-                //startToast("권한을 허용해 주세요.");
-            }
-        } else {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            intent.setType("image/*");
-            startActivityForResult(intent, 2);
-        }
+    public void goGallery(View v){
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, 2);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case 1:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    myStartActivity();
-                } else {
-                    startToast("권한을 허용해 주세요.");
-                }
-        }
-    }
 
     private String postImgPath;
-    String[] sImg;
-    int PICK_IMAGE_MULTIPLE = 1;
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Get a non-default Storage bucket
-        FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
-        StorageReference storageRef = storage.getReference();
-        Intent resultIntent2 = new Intent();
-
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-        ClipData clipData = data.getClipData();
-
-        if (requestCode == PICK_IMAGE_MULTIPLE) {
-
-            if (data.getClipData() == null) {
-                Toast.makeText(this, "다중선택이 불가한 기기입니다", Toast.LENGTH_LONG).show();
-            } else {
-                if (clipData.getItemCount() > 9) {
-                    Toast.makeText(this, "사진은 9장까지만 선택 가능합니다", Toast.LENGTH_LONG).show();
-                } else {
-
+        switch(requestCode){
+            case 1:
+                if(resultCode == RESULT_OK){
                     postImgPath = data.getStringExtra("postImgPath");
-                    sImg = new String[clipData.getItemCount()];
-                    for (int i = 0; i < clipData.getItemCount(); i++) {
-
-                        Uri file = Uri.fromFile(new File(getPath(clipData.getItemAt(i).getUri())));
-                        //bitmap[i] = StringToBitmap(clipData.getItemAt(i).toString());
-                        sImg[i] = clipData.getItemAt(i).toString();
-                        Log.d("vcxz",sImg[i]);
-                        resultIntent2.putExtra("postImgPath" + i, clipData.getItemAt(i).getUri());
-
-
-                        StorageReference riversRef = storageRef.child("chatImage/" + file.getLastPathSegment());
-                        UploadTask uploadTask = riversRef.putFile(file);
-                        uploadTask.addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                // Handle unsuccessful uploads
-                            }
-                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                                // ...
-                            }
-                        });
-                    }
+                    Intent resultIntent2 = new Intent();
+                    resultIntent2.putExtra("postImgPath", postImgPath);
+                    setResult(Activity.RESULT_OK, resultIntent2);
+                    finish();
                 }
-            }
-
-            setResult(Activity.RESULT_OK, resultIntent2);
-            finish();
+                break;
+            case 2:
+                if (resultCode == RESULT_OK) {
+                    postImgPath = sendPicture(data.getData()); //갤러리에서 가져오기
+                    Intent resultIntent2 = new Intent();
+                    resultIntent2.putExtra("postImgPath", postImgPath);
+                    setResult(Activity.RESULT_OK, resultIntent2);
+                    finish();
+                }
+                break;
         }
     }
 
-    private void myStartActivity() {
-        //Intent intent = new Intent(this, c);
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+    private String sendPicture(Uri imgUri) {
+        String imagePath = getRealPathFromURI(imgUri); // path 경로
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        //int exifDegree = exifOrientationToDegrees(exifOrientation);
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
+        return imagePath;
+    }
+
+    private String getRealPathFromURI(Uri contentUri) {
+        int column_index=0;
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        if(cursor.moveToFirst()){
+            column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        }
+        return cursor.getString(column_index);
+    }
+
+    private void myStartActivity(Class c){
+        Intent intent = new Intent(this, c);
         startActivityForResult(intent, 1);
     }
 
-    private void startToast(String msg) {
+    private void startToast(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-
-    public String getPath(Uri uri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        CursorLoader cursorLoader = new CursorLoader(this, uri, proj, null, null, null);
-        Cursor cursor = cursorLoader.loadInBackground();
-        int index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-        cursor.moveToFirst();
-
-        return cursor.getString(index);
-    }
-
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        //바깥레이어 클릭시 안닫히게
+//        if(event.getAction()==MotionEvent.ACTION_OUTSIDE){
+//            return false;
+//        }
+//        return true;
+//    }
+//
+//    @Override
+//    public void onBackPressed() {
+//        //안드로이드 백버튼 막기
+//        return;
+//    }
 
 }
+
