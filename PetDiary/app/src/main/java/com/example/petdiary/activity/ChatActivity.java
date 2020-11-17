@@ -2,6 +2,7 @@ package com.example.petdiary.activity;
 
 import android.content.ClipData;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -16,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,7 +39,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -201,67 +205,103 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ChatActivity.this, ImageChoicePopupActivity2.class);
                 startActivityForResult(intent,0);
-
             }
         });
 
     }
+    private File tempFile;
     String [] sImg;
+    String [] bit;
     ImageView iv;
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        iv = findViewById(R.id.user_profileImage_ImageView);
+        iv = findViewById(R.id.guest);
         sImg = new String[9];
+        bit = new String[9];
         switch(requestCode){
             case 0:
-                Log.d("qqqqqqqqqqqqq","zzzzzzzzzzzzzz111z");
                 if(resultCode == RESULT_OK){
+
                     for(int i = 0; i < 9; i++) {
-                        if (data.getStringExtra("postImgPath"+i) == null) {
-                            Log.d("qqqqqqqqqqqqq","zzzzzzzzzzzzzz111z2");
-                            sImg[i] = data.getStringExtra("postImgPath" + i);
+                        sImg[i] = data.getStringExtra("postImgPath" + i + "");
+                        bit[i] = data.getStringExtra("bit" + i + "");
+                        if (sImg[i] != null) {
+                            Uri photoUri = Uri.parse(bit[i]);
+                            Cursor cursor = null;
+                            try {
+
+                                /*
+                                 *  Uri 스키마를
+                                 *  content:/// 에서 file:/// 로  변경한다.
+                                 */
+                                String[] proj = { MediaStore.Images.Media.DATA };
+
+                                assert photoUri != null;
+                                cursor = getContentResolver().
+                                        query(photoUri, proj, null, null, null);
+
+
+
+                                assert cursor != null;
+                                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+                                cursor.moveToFirst();
+                                tempFile = new File(cursor.getString(column_index));
+
+
+                            } finally {
+                                if (cursor != null) {
+                                    cursor.close();
+                                }
+                            }
+
 
                             FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
-                            StorageReference storageRef = storage.getReference();
-                            storageRef.child("chatImage/"+sImg[i]).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            final StorageReference storageRef = storage.getReference();
+                            storageRef.child("chatImage/"+sImg[i]).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
                                 @Override
-                                public void onSuccess(Uri uri) {
-                                    Log.d("qqqqqqqqqqqqq","zzzzzzzzzzzzzz111z3");
+                                public void onSuccess(Uri uri){
+
+
+                                    //iv.setImageBitmap(b);
                                     //이미지 로드 성공시
                                     Glide.with(getApplicationContext())
-                                            .load(uri)
+                                            .load(storageRef)
                                             .into(iv);
-
+                                    setImage();
+                                    Toast.makeText(getApplicationContext(), "다운로드 성공 : "+ uri, Toast.LENGTH_SHORT).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    //이미지 로드 실패시
+                                public void onFailure(@NonNull Exception e) {
                                     Toast.makeText(getApplicationContext(), "실패", Toast.LENGTH_SHORT).show();
                                 }
                             });
+
                         }
 
-//                        database = FirebaseDatabase.getInstance();
-////
-////                        Calendar c = Calendar.getInstance();
-////                        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-////                        String datetime = dateformat.format(c.getTime());
-////
-////                        DatabaseReference myRef = database.getReference("message").child(datetime);
-////
-////                        Hashtable<String, String> numbers
-////                                = new Hashtable<String, String>();
-////                        numbers.put("email", stEmail);
-////                        numbers.put("image", postImgPath);
-////                        myRef.setValue(numbers);
-////
-////                        recyclerView.post(new Runnable() {
-////                            @Override
-////                            public void run() {
-////                                recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
-////                            }
-////                        });
+                        database = FirebaseDatabase.getInstance();
+
+                        Calendar c = Calendar.getInstance();
+                        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        String datetime = dateformat.format(c.getTime());
+
+                        DatabaseReference myRef = database.getReference("message").child(datetime);
+
+                        Hashtable<String, String> numbers
+                                = new Hashtable<String, String>();
+                        numbers.put("email", stEmail);
+                        numbers.put("image", sImg[i]+"");
+                        myRef.setValue(numbers);
+
+                        recyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                            }
+                        });
+
                     }
 
 
@@ -269,8 +309,18 @@ public class ChatActivity extends AppCompatActivity {
 
                 } else {
                 }
+                iv.setVisibility(View.INVISIBLE);
                 break;
         }
+    }
+    private void setImage() {
+        ImageView imageView = findViewById(R.id.guest);
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
+
+        imageView.setImageBitmap(originalBm);
+
     }
 
 }
