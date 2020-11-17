@@ -44,9 +44,9 @@ import static android.app.Activity.RESULT_OK;
 
 public class FragmentMy extends Fragment {
 
-<<<<<<< HEAD
+
     private static final String TAG = "MyPage_Fragment";
-=======
+
     int[] imgs = {
             R.drawable.cat1,
             R.drawable.cat2,

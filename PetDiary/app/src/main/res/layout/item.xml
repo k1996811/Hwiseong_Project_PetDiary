@@ -19,16 +19,17 @@
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:layout_below="@+id/first_Square"
+        android:layout_above="@+id/third_Square"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
-        android:layout_height="375dp"
+        android:layout_height="match_parent"
         android:background="@drawable/button"/>
 
     <View
         android:id="@+id/third_Square"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
-        android:layout_below="@+id/second_Square"
+        android:layout_below="@+id/main_textView"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="75dp"
@@ -79,25 +80,29 @@
         android:layout_height="300dp"
         android:src="@drawable/dog"/>
 
+
+
     <kr.co.prnd.readmore.ReadMoreTextView
+        android:id="@+id/main_textView"
+        android:layout_marginBottom="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:id="@+id/main_textView"
-        android:layout_below="@id/main_image"
+        android:autoSizeTextType="uniform"
         android:textColor="#000000"
-        android:text="강아지와 산책을 했습니다 너무너무 즐거운 산책 내일또 하고시어용 #강아지 #귀여워잉"
+        android:text="강아지와 산책을 했습니다 너무너무 즐거운 산책 내일또 하고시어용 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다#강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다"
+        android:layout_below="@id/main_image"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         app:readMoreColor="@android:color/darker_gray"
-        app:readMoreMaxLine="4"
+        app:readMoreMaxLine="2"
         app:readMoreText="...더보기" />
 
     <CheckBox
         android:button="@android:color/transparent"
         android:id="@+id/Like_button"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="15dp"
         android:layout_below="@id/main_textView"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -107,7 +112,7 @@
         android:id="@+id/Comment_btn"
         android:layout_alignBaseline="@+id/Like_button"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="27dp"
+        android:layout_marginTop="17dp"
         android:layout_toRightOf="@+id/Like_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -115,7 +120,7 @@
 
     <CheckBox
         android:layout_marginRight="5dp"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="12dp"
         android:button="@android:color/transparent"
         android:id="@+id/bookmark_button"
         android:layout_below="@+id/main_textView"
