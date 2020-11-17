@@ -38,7 +38,7 @@ public class ImageChoicePopupActivity2 extends Activity {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
             if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)){
-                startToast("권한을 허용하셨습니다.");
+                //startToast("권한을 허용하셨습니다.");
             } else {
                 //startToast("권한을 허용해 주세요.");
             }

@@ -37,12 +37,13 @@ public class ImageChoicePopupActivity extends Activity {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
             if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)){
-                startToast("권한을 허용하셨습니다.");
+                //startToast("권한을 허용하셨습니다.");
             } else {
                 //startToast("권한을 허용해 주세요.");
             }
         } else {
             myStartActivity(CameraAppActivity.class);
+
         }
     }
 
@@ -50,7 +51,7 @@ public class ImageChoicePopupActivity extends Activity {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
             if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)){
-                startToast("권한을 허용하셨습니다.");
+                //startToast("권한을 허용하셨습니다.");
             } else {
                 //startToast("권한을 허용해 주세요.");
             }

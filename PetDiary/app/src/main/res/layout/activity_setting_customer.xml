@@ -82,7 +82,7 @@
 
                 <Spinner
                     android:spinnerMode="dropdown"
-                    android:id="@+id/categorySpinner"
+                    android:id="@+id/contactTypesSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -91,6 +91,7 @@
         </LinearLayout>
 
         <EditText
+            android:id="@+id/contents"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="10"

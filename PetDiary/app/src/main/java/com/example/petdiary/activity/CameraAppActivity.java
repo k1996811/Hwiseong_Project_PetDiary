@@ -79,7 +79,7 @@ public class CameraAppActivity extends AppCompatActivity {
 //        @Override
 //        public void onPermissionGranted() {
 //            //Toast.makeText(getApplicationContext(), "권한이 허용됨",Toast.LENGTH_SHORT).show();
-//        }
+//        }`
 //
 //        @Override
 //        public void onPermissionDenied(ArrayList<String> deniedPermissions) {

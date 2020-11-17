@@ -117,7 +117,7 @@ public class SettingResetPasswordActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    Log.d("@@@", FirebaseAuth.getInstance().getCurrentUser().getUid()+"");
+                    //Log.d("@@@", FirebaseAuth.getInstance().getCurrentUser().getUid());
                     if (document != null) {
                         if (document.exists()) {
                             Log.d(TAG, "DocumentSnapshot data: " + document.getData());
@@ -146,20 +146,17 @@ public class SettingResetPasswordActivity extends AppCompatActivity {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     String newPassword = password;
 
+
                     user.updatePassword(newPassword)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    Log.d("@@@12", FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     if (task.isSuccessful()) {
-                                        //Log.d("@@@2", FirebaseAuth.getInstance().getCurrentUser().getUid());
                                         startToast("비밀번호가 변경되었습니다.");
                                         //Log.d(TAG, "User password updated.");
 
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-                                        //Log.d("@@@" , email + " / " + password + " / " + nickName);
 
                                         login();
 
@@ -182,8 +179,8 @@ public class SettingResetPasswordActivity extends AppCompatActivity {
                                         finish();
 
                                     } else {
-                                        startToast("비밀번호 변경에 실패하였습니다.");
-                                        //Log.d("TAG", task.getException().toString());
+                                        startToast(task.getException().toString());
+                                        //Log.d("@@@TAG", task.getException().toString());
                                     }
                                 }
                             });
