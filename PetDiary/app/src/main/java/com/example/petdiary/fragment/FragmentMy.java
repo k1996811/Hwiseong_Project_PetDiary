@@ -1,5 +1,6 @@
 package com.example.petdiary.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,12 +8,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.example.petdiary.activity.*;
@@ -33,19 +38,51 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
 
 public class FragmentMy extends Fragment {
 
+<<<<<<< HEAD
     private static final String TAG = "MyPage_Fragment";
+=======
+    int[] imgs = {
+            R.drawable.cat1,
+            R.drawable.cat2,
+            R.drawable.dog,
 
-    TextView emailTextView;
-    TextView nickNameTextView;
-    TextView toolbarNickName;
-    ImageView user_profileImage_ImageView;
+            R.drawable.cat1,
+            R.drawable.cat2,
+            R.drawable.dog,
+            R.drawable.cat1,
+            R.drawable.cat2,
+            R.drawable.dog,
+            R.drawable.cat1,
+            R.drawable.cat2,
+            R.drawable.dog,
+            R.drawable.cat1,
+            R.drawable.cat2,
+            R.drawable.dog,
+            R.drawable.cat1,
+            R.drawable.cat2,
+            R.drawable.dog,
+    };
+>>>>>>> 43541485026cb134fb9783f37efbd26895f37812
 
+
+    private static final String TAG = "MyPageActivity";
+
+    //    TextView emailTextView;
+//    TextView nickNameTextView;
+//    TextView toolbarNickName;
+//    ImageView user_profileImage_ImageView;
     ViewGroup viewGroup;
+
+
+
+
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +91,7 @@ public class FragmentMy extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_mypage, container, false);
+        viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_mypage_kon, container, false);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -64,18 +101,52 @@ public class FragmentMy extends Fragment {
 
         }
 
-        viewGroup.findViewById(R.id.memberInfoInitButton).setOnClickListener(onClickListener);
-        viewGroup.findViewById(R.id.setProfileImg).setOnClickListener(onClickListener);
+//        viewGroup.findViewById(R.id.memberInfoInitButton).setOnClickListener(onClickListener);
+//        viewGroup.findViewById(R.id.setProfileImg).setOnClickListener(onClickListener);
+//
+//        emailTextView = viewGroup.findViewById(R.id.emailEditText);
+//        nickNameTextView = viewGroup.findViewById(R.id.nickNameEditText);
+//        toolbarNickName = viewGroup.findViewById(R.id.toolbar_nickName);
+//
+//        user_profileImage_ImageView = viewGroup.findViewById(R.id.user_profileImage_ImageView);
+//
+//        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    if (document != null) {
+//                        if (document.exists()) {
+//                            setImg();
+//                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+//                            //emailTextView.setText(document.getData().get("email").toString());
+//                            //nickNameTextView.setText(document.getData().get("nickName").toString());
+//                        } else {
+//                            Log.d(TAG, "No such document");
+//                        }
+//                    }
+//                } else {
+//                    Log.d(TAG, "get failed with ", task.getException());
+//                }
+//            }
+//        });
 
-        emailTextView = viewGroup.findViewById(R.id.emailEditText);
-        nickNameTextView = viewGroup.findViewById(R.id.nickNameEditText);
-        toolbarNickName = viewGroup.findViewById(R.id.toolbar_nickName);
 
-        user_profileImage_ImageView = viewGroup.findViewById(R.id.user_profileImage_ImageView);
+        ////////////// irang Start
+        GridView gridView = viewGroup.findViewById(R.id.gridView);
+        GridListAdapter adapter = new GridListAdapter();
+        gridView.setAdapter(adapter);
 
-        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        for(int i = 0; i<imgs.length; ++i) {
+            adapter.addItem(new MypageGridItem(imgs[i]));
+        }
+
+
+        ImageView addPetBtn = viewGroup.findViewById(R.id.profile_petAddBtn);
+        addPetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
+<<<<<<< HEAD
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
@@ -94,8 +165,61 @@ public class FragmentMy extends Fragment {
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
                 }
+=======
+            public void onClick(View v) {
+                Toast.makeText(getContext(),"Toast!! Click!@!!!!!",Toast.LENGTH_SHORT).show();
+
+>>>>>>> 43541485026cb134fb9783f37efbd26895f37812
             }
         });
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getContext(),position + "번째 아이템이 클릭되었다!!",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        // 프로필뷰 관련코드.
+        ImageView petAddBtn = viewGroup.findViewById(R.id.profile_petAddBtn);
+        CardView profileImage = viewGroup.findViewById(R.id.profile_image);
+        final TextView userName = viewGroup.findViewById(R.id.profile_name);
+        final TextView userMemo = viewGroup.findViewById(R.id.profile_memo);
+
+
+
+        // 프로필 이미지 수정
+        profileImage.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                String userId = "IAmTarget";//"IAmUser";
+                String targetId = "IAmTarget";
+
+                Intent intent = new Intent(getContext(), ProfileEditActivity.class);
+
+                intent.putExtra("targetId",targetId);
+                intent.putExtra("userId",userId);
+                intent.putExtra("userImage", R.drawable.cat1); // 임시로 넣은 이미지
+                intent.putExtra("userName", userName.getText().toString());
+                intent.putExtra("userMemo", userMemo.getText().toString());
+
+
+                startActivity(intent);
+                return true;
+            }
+        });
+
+
+        // 펫 추가 버튼
+        petAddBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "이제 당신이 해야 할 일은 버튼 기능을 추가하는 것 입니다.",Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         return viewGroup;
     }
@@ -104,6 +228,10 @@ public class FragmentMy extends Fragment {
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 43541485026cb134fb9783f37efbd26895f37812
     View.OnClickListener onClickListener = new View.OnClickListener() {
 
         @Override
@@ -203,6 +331,14 @@ public class FragmentMy extends Fragment {
         }
     }
 
+<<<<<<< HEAD
+=======
+    private void myStartActivity2(Class c) {
+        Intent intent = new Intent(getContext(), c);
+        startActivityForResult(intent, 0);
+    }
+
+>>>>>>> 43541485026cb134fb9783f37efbd26895f37812
     private void startPopupActivity() {
         Intent intent = new Intent(getContext(), ImageChoicePopupActivity.class);
         startActivityForResult(intent, 0);
@@ -233,9 +369,68 @@ public class FragmentMy extends Fragment {
     }
 
     private void setProfileImg(String profileImg) {
+<<<<<<< HEAD
         Glide.with(this).load(profileImg).centerCrop().override(500).into(user_profileImage_ImageView);
+=======
+        // Glide.with(this).load(profileImg).centerCrop().override(500).into(user_profileImage_ImageView);
+>>>>>>> 43541485026cb134fb9783f37efbd26895f37812
     }
 
 
-}
+    public class MypageGridItem {
+        int _imgName;
 
+        public MypageGridItem(int imgName) {
+            _imgName = imgName;
+            Log.d("test", "imgName :  " + imgName);
+        }
+    }
+
+
+    //irang temp -------------------------------------------------------
+    class GridListAdapter extends BaseAdapter {
+        Context context;
+        ArrayList<MypageGridItem> items = new ArrayList<MypageGridItem>();
+
+        public void addItem(MypageGridItem item) {
+            items.add(item);
+        }
+
+        @Override
+        public int getCount() {
+            return items.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return items.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            context = parent.getContext();
+            MypageGridItem listItem = items.get(position);
+
+            if (convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.item_mypage_temp, parent, false);
+            }
+
+            //xml의 ImageView 참조
+            ImageView image = convertView.findViewById(R.id.mypage_image);
+
+
+            image.setImageResource(listItem._imgName);
+
+            return convertView;
+
+        }
+    }
+
+}
