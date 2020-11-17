@@ -68,10 +68,8 @@ public class FragmentMy extends Fragment {
             R.drawable.cat2,
             R.drawable.dog,
     };
->>>>>>> 43541485026cb134fb9783f37efbd26895f37812
 
 
-    private static final String TAG = "MyPageActivity";
 
     //    TextView emailTextView;
 //    TextView nickNameTextView;
@@ -96,7 +94,7 @@ public class FragmentMy extends Fragment {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user == null) {
-            myStartActivity(SignUpActivity.class);
+            //myStartActivity(SignUpActivity.class);
         } else {
 
         }
@@ -144,34 +142,31 @@ public class FragmentMy extends Fragment {
 
 
         ImageView addPetBtn = viewGroup.findViewById(R.id.profile_petAddBtn);
-        addPetBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-<<<<<<< HEAD
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null) {
-                        if (document.exists()) {
-                            if(document.getData().get("profileImg").toString().length() > 0 ){
-                                setImg();
-                            }
-                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                            emailTextView.setText(document.getData().get("email").toString());
-                            nickNameTextView.setText(document.getData().get("nickName").toString());
-                        } else {
-                            Log.d(TAG, "No such document");
-                        }
-                    }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-=======
-            public void onClick(View v) {
-                Toast.makeText(getContext(),"Toast!! Click!@!!!!!",Toast.LENGTH_SHORT).show();
-
->>>>>>> 43541485026cb134fb9783f37efbd26895f37812
-            }
-        });
+//        addPetBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    if (document != null) {
+//                        if (document.exists()) {
+//                            if(document.getData().get("profileImg").toString().length() > 0 ){
+//                                setImg();
+//                            }
+//                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+//                            emailTextView.setText(document.getData().get("email").toString());
+//                            nickNameTextView.setText(document.getData().get("nickName").toString());
+//                        } else {
+//                            Log.d(TAG, "No such document");
+//                        }
+//                    }
+//                } else {
+//                    Log.d(TAG, "get failed with ", task.getException());
+//                }
+//            public void onClick(View v) {
+//                Toast.makeText(getContext(),"Toast!! Click!@!!!!!",Toast.LENGTH_SHORT).show();
+//
+//            }
+//        });
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -228,10 +223,6 @@ public class FragmentMy extends Fragment {
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 43541485026cb134fb9783f37efbd26895f37812
     View.OnClickListener onClickListener = new View.OnClickListener() {
 
         @Override
@@ -331,14 +322,10 @@ public class FragmentMy extends Fragment {
         }
     }
 
-<<<<<<< HEAD
-=======
     private void myStartActivity2(Class c) {
         Intent intent = new Intent(getContext(), c);
         startActivityForResult(intent, 0);
     }
-
->>>>>>> 43541485026cb134fb9783f37efbd26895f37812
     private void startPopupActivity() {
         Intent intent = new Intent(getContext(), ImageChoicePopupActivity.class);
         startActivityForResult(intent, 0);
@@ -369,11 +356,8 @@ public class FragmentMy extends Fragment {
     }
 
     private void setProfileImg(String profileImg) {
-<<<<<<< HEAD
-        Glide.with(this).load(profileImg).centerCrop().override(500).into(user_profileImage_ImageView);
-=======
-        // Glide.with(this).load(profileImg).centerCrop().override(500).into(user_profileImage_ImageView);
->>>>>>> 43541485026cb134fb9783f37efbd26895f37812
+     //   Glide.with(this).load(profileImg).centerCrop().override(500).into(user_profileImage_ImageView);
+
     }
 
 

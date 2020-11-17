@@ -64,6 +64,9 @@ public class ProfileEditActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
 
 
+
+        userImage.setOnClickListener(onClickListener);
+
         // 수정버튼
         editIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,6 +116,21 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     }
 
+    // 이벤트 리스너
+    View.OnClickListener onClickListener = new View.OnClickListener(){
+
+        @Override
+        public void onClick(View v) {
+            switch(v.getId())
+            {
+                case R.id.userPage_Image:
+                    Toast.makeText(getApplicationContext(), "ㅠㅠ눌렸다....", Toast.LENGTH_SHORT).show();
+                    startPopupActivity();
+                    break;
+
+            }
+        }
+    };
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -159,6 +177,16 @@ public class ProfileEditActivity extends AppCompatActivity {
             cancelBtn.setVisibility(View.INVISIBLE);
         }
     }
+
+
+
+
+
+    private void startPopupActivity() {
+        Intent intent = new Intent(getApplicationContext(), ImageChoicePopupActivity.class);
+        startActivityForResult(intent, 0);
+    }
+
 
 
 }
