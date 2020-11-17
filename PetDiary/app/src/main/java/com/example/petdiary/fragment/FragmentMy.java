@@ -142,7 +142,6 @@ public class FragmentMy extends Fragment {
             case 0:
                 if(resultCode == RESULT_OK){
                     String postImgPath = data.getStringExtra("postImgPath");
-
                     FirebaseStorage storage = FirebaseStorage.getInstance();
                     final StorageReference storageRef = storage.getReference();
                     final UploadTask[] uploadTask = new UploadTask[1];

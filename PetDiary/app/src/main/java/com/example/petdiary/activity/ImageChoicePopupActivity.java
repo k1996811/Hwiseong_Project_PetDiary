@@ -83,6 +83,7 @@ public class ImageChoicePopupActivity extends Activity {
             case 1:
                 if(resultCode == RESULT_OK){
                     postImgPath = data.getStringExtra("postImgPath");
+                    Log.d("abcde2",postImgPath+"");
                     //Log.e("@@@icp-gallery", profilePath);
 //                    FirebaseStorage storage = FirebaseStorage.getInstance();
 //                    final StorageReference storageRef = storage.getReference();
@@ -125,7 +126,6 @@ public class ImageChoicePopupActivity extends Activity {
     private void startToast(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
-
 //    @Override
 //    public boolean onTouchEvent(MotionEvent event) {
 //        //바깥레이어 클릭시 안닫히게
@@ -141,6 +141,5 @@ public class ImageChoicePopupActivity extends Activity {
 //        return;
 //    }
 
+
 }
-
-
