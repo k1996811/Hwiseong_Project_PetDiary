@@ -83,7 +83,7 @@ public class ImageChoicePopupActivity extends Activity {
             case 1:
                 if(resultCode == RESULT_OK){
                     postImgPath = data.getStringExtra("postImgPath");
-                    //Log.e("@@@icp-gallery", profilePath);
+//                    Log.e("@@@icp-gallery", profilePath);
 //                    FirebaseStorage storage = FirebaseStorage.getInstance();
 //                    final StorageReference storageRef = storage.getReference();
 //                    final UploadTask[] uploadTask = new UploadTask[1];

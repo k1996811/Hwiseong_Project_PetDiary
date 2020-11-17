@@ -3,6 +3,7 @@ package com.example.petdiary;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,9 +20,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView textView;
+        public ImageView imageView;
         public MyViewHolder(View v) {
             super(v);
             textView = v.findViewById(R.id.tvChat);
+            imageView = v.findViewById(R.id.ivChat);
         }
     }
 
@@ -63,7 +66,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.textView.setText(mDataset.get(position).getText());
-
+        //holder.imageView.setImageResource(mDataset.get(position).get);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
