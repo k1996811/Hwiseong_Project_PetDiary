@@ -27,8 +27,6 @@ public class FindPasswordActivity extends AppCompatActivity {
     EditText emailEditText;
     EditText nickNameEditText;
 
-    Button findPasswordButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,9 +37,9 @@ public class FindPasswordActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.emailEditText);
         nickNameEditText = findViewById(R.id.nickNameEditText);
 
-        findPasswordButton = findViewById(R.id.findPasswordButton);
+        findViewById(R.id.findPasswordButton).setOnClickListener(onClickListener);
+        findViewById(R.id.cancelButton).setOnClickListener(onClickListener);
 
-        findPasswordButton.setOnClickListener(onClickListener);
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener(){
@@ -96,6 +94,10 @@ public class FindPasswordActivity extends AppCompatActivity {
                                     }
                                 }
                             });
+                    break;
+                case R.id.cancelButton:
+                    finish();
+                    break;
             }
         }
     };

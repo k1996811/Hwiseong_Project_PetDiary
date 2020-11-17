@@ -144,7 +144,7 @@ public class SettingResetPasswordActivity extends AppCompatActivity {
                 if(password.equals(passwordCheck) && isValidPassword(passwordCheck)){
 
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    String newPassword = password;
+                    final String newPassword = password;
 
 
                     user.updatePassword(newPassword)
@@ -160,19 +160,19 @@ public class SettingResetPasswordActivity extends AppCompatActivity {
 
                                         login();
 
-                                        MemberInfo memberInfo = new MemberInfo(email, password, nickName);
-                                        db.collection("users").document(user.getUid()).set(memberInfo)
+                                        DocumentReference washingtonRef = db.collection("users").document(user.getUid());
+                                        washingtonRef
+                                                .update("password", newPassword)
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
-                                                        startMainActivity();
+                                                        Log.d(TAG, "DocumentSnapshot successfully updated!");
                                                     }
                                                 })
                                                 .addOnFailureListener(new OnFailureListener() {
                                                     @Override
                                                     public void onFailure(@NonNull Exception e) {
-                                                        startToast("입력 정보를 확인해주세요.");
-                                                        Log.w(TAG, "Error writing document", e);
+                                                        Log.w(TAG, "Error updating document", e);
                                                     }
                                                 });
 
