@@ -23,8 +23,6 @@ android {
     }
 }
 
-
-
 dependencies {
     implementation 'com.borjabravo:readmoretextview:2.1.0'
     implementation 'kr.co.prnd:readmore-textview:1.0.0'

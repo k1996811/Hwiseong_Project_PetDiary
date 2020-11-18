@@ -252,12 +252,9 @@ public class FragmentMy extends Fragment {
             case 0:
                 if (resultCode == RESULT_OK) {
                     String postImgPath = data.getStringExtra("postImgPath");
-<<<<<<< HEAD
-=======
                     final String[] profileImg = new String[1];
 
                     // 파이어베이스 스토리지에 이미지 저장
->>>>>>> 7b2c7a764316f448b16cd6d10d83862ff2190b5a
                     FirebaseStorage storage = FirebaseStorage.getInstance();
                     final StorageReference storageRef = storage.getReference();
                     final UploadTask[] uploadTask = new UploadTask[1];
