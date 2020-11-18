@@ -51,6 +51,7 @@
         <activity android:name=".activity.SettingNotificationActivity" android:parentActivityName=".activity.MainActivity"></activity>
         <activity android:name=".activity.SettingLeaveActivity" android:parentActivityName=".activity.MainActivity"></activity>
         <activity android:name=".activity.SettingAppInfoActivity" android:parentActivityName=".activity.MainActivity"></activity>
+        <activity android:name=".activity.LogoutPopupActivity" android:theme="@android:style/Theme.Dialog"></activity>
         <activity android:name=".Expand_ImageView"></activity>
         <activity android:name=".Comment" />
 

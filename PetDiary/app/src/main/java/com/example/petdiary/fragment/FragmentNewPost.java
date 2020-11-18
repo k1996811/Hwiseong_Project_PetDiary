@@ -62,7 +62,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class FragmentNewPost extends Fragment {
 
-    private static final String TAG = "NewPostActivity";
+    private static final String TAG = "NewPost_Fragment";
 
     ImageView[] postImg = new ImageView[5];
     ImageView[] deletePostImg = new ImageView[5];
@@ -427,10 +427,8 @@ public class FragmentNewPost extends Fragment {
         } else {
             for(int i=0; i<5; i++){
                 if(postImgCheck[i] == 1){
-                    Log.e("@@@!", img[i]);
 
                     final Uri file = Uri.fromFile(new File(img[i]));
-                    Log.e("@@@!", "___" + file.toString());
 
                     StorageReference riversRef = storageRef.child("images/"+date2+"_postImg_"+i);
                     uploadTask[0] = riversRef.putFile(file);
@@ -483,7 +481,7 @@ public class FragmentNewPost extends Fragment {
     Menu menu;
 
     private void postData(){
-        Log.e("@@@!!", imgUri[0] + " / " + imgUri[1]);
+        //Log.e("@@@!!", imgUri[0] + " / " + imgUri[1]);
         firebaseDatabase = FirebaseDatabase.getInstance();
 
         DatabaseReference images = firebaseDatabase.getReference().child("images").push();
