@@ -373,7 +373,6 @@ public class MainActivity extends AppCompatActivity {
                             if(document.getData().get("profileImg").toString().length() > 0 ){
                                 setImg();
                             }
-                            Log.d("###1", password);
                             if (isValidPassword(password)) {
                                 setFirst();
                             } else {
