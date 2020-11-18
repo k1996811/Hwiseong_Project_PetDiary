@@ -46,7 +46,10 @@ public class FragmentMy extends Fragment {
 
 
     private static final String TAG = "MyPage_Fragment";
+    String profileImg;   // 프로필이 로딩되면 null값이 아니게 됨
 
+
+    ImageView profileEditImg;
     int[] imgs = {
             R.drawable.cat1,
             R.drawable.cat2,
@@ -108,27 +111,31 @@ public class FragmentMy extends Fragment {
 //
 //        user_profileImage_ImageView = viewGroup.findViewById(R.id.user_profileImage_ImageView);
 //
-//        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-//        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//                    if (document != null) {
-//                        if (document.exists()) {
-//                            setImg();
-//                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-//                            //emailTextView.setText(document.getData().get("email").toString());
-//                            //nickNameTextView.setText(document.getData().get("nickName").toString());
-//                        } else {
-//                            Log.d(TAG, "No such document");
-//                        }
-//                    }
-//                } else {
-//                    Log.d(TAG, "get failed with ", task.getException());
-//                }
-//            }
-//        });
+
+        profileEditImg = viewGroup.findViewById(R.id.profile_image);
+
+
+                DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        if (document.exists()) {
+                            setImg();
+                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                            //emailTextView.setText(document.getData().get("email").toString());
+                            //nickNameTextView.setText(document.getData().get("nickName").toString());
+                        } else {
+                            Log.d(TAG, "No such document");
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
 
 
         ////////////// irang Start
@@ -142,6 +149,8 @@ public class FragmentMy extends Fragment {
 
 
         ImageView addPetBtn = viewGroup.findViewById(R.id.profile_petAddBtn);
+
+
 //        addPetBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -153,8 +162,8 @@ public class FragmentMy extends Fragment {
 //                                setImg();
 //                            }
 //                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-//                            emailTextView.setText(document.getData().get("email").toString());
-//                            nickNameTextView.setText(document.getData().get("nickName").toString());
+////                            emailTextView.setText(document.getData().get("email").toString());
+////                            nickNameTextView.setText(document.getData().get("nickName").toString());
 //                        } else {
 //                            Log.d(TAG, "No such document");
 //                        }
@@ -178,7 +187,7 @@ public class FragmentMy extends Fragment {
 
         // 프로필뷰 관련코드.
         ImageView petAddBtn = viewGroup.findViewById(R.id.profile_petAddBtn);
-        CardView profileImage = viewGroup.findViewById(R.id.profile_image);
+        final ImageView profileImage = viewGroup.findViewById(R.id.profile_image);
         final TextView userName = viewGroup.findViewById(R.id.profile_name);
         final TextView userMemo = viewGroup.findViewById(R.id.profile_memo);
 
@@ -194,9 +203,12 @@ public class FragmentMy extends Fragment {
 
                 Intent intent = new Intent(getContext(), ProfileEditActivity.class);
 
+
+
+
                 intent.putExtra("targetId",targetId);
                 intent.putExtra("userId",userId);
-                intent.putExtra("userImage", R.drawable.cat1); // 임시로 넣은 이미지
+                intent.putExtra("userImage", profileImg); // 임시로 넣은 이미지
                 intent.putExtra("userName", userName.getText().toString());
                 intent.putExtra("userMemo", userMemo.getText().toString());
 
@@ -340,7 +352,7 @@ public class FragmentMy extends Fragment {
             @Override
             public void onSuccess(Uri uri) {
 
-                String profileImg = uri.toString();
+                profileImg = uri.toString();
 //                while(profileImg.length() == 0){
 //                    continue;
 //                }
@@ -356,7 +368,7 @@ public class FragmentMy extends Fragment {
     }
 
     private void setProfileImg(String profileImg) {
-     //   Glide.with(this).load(profileImg).centerCrop().override(500).into(user_profileImage_ImageView);
+        Glide.with(this).load(profileImg).centerCrop().override(500).into(profileEditImg);
 
     }
 
