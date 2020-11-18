@@ -4,7 +4,6 @@ public class Chat {
     String email;
     String text;
 
-
     public String getEmail() {
         return email;
     }
