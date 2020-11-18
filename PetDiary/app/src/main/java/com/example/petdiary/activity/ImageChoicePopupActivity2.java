@@ -85,10 +85,11 @@ public class ImageChoicePopupActivity2 extends Activity {
 
                     postImgPath = data.getStringExtra("postImgPath");
                     sImg = new String[clipData.getItemCount()];
-                    for (int i = 0; i < clipData.getItemCount(); i++) {
-                        name = new String[clipData.getItemCount()];
-                        name[i] = getImageNameToUri(data.getData());
+                    name = new String[clipData.getItemCount()];
 
+                    for (int i = 0; i < clipData.getItemCount(); i++) {
+
+                        name[i] = getImageNameToUri(data.getData());
                         Uri file = Uri.fromFile(new File(getPath(clipData.getItemAt(i).getUri())));
                         sImg[i] = clipData.getItemAt(i).getUri().toString();
                         Log.d("vcxz", sImg[i]);
