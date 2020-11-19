@@ -1,11 +1,14 @@
 package com.example.petdiary;
 
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -32,10 +35,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public int getItemViewType(int position) {
 //        return super.getItemViewType(position);
         if (mDataset.get(position).email.equals(stMyEmail)) {
-            return 1;
+            if(mDataset.get(position).getImage() == null){
+                return 1;
+            }else if(mDataset.get(position).getText() == null)
+                return 2;
+
         } else {
-            return 2;
+            if(mDataset.get(position).getImage() == null) {
+                return 3;
+            }else if(mDataset.get(position).getText() == null)
+                return 4;
         }
+        return 0;
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
@@ -50,22 +61,40 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                                                      int viewType) {
         // create a new view
         View v =  LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.my_text_view, parent, false);
-        if(viewType == 1){
+                .inflate(R.layout.right_text_view, parent, false);
+        if(viewType == 2){
             v =  LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.right_text_view, parent, false);
+                    .inflate(R.layout.right_image_view, parent, false);
+        }
+        else if(viewType == 3){
+            v =  LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.my_text_view, parent, false);
+        }
+        else if(viewType == 4){
+            v =  LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.my_image_view, parent, false);
         }
 
         MyViewHolder vh = new MyViewHolder(v);
         return vh;
     }
 
+
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.textView.setText(mDataset.get(position).getText());
+
+
+        if(mDataset.get(position).getImage() == null){
+            holder.textView.setText(mDataset.get(position).getText());
+            //holder.textView.setBackgroundDrawable(ContextCompat.getDrawable(holder.textView.getContext(),R.drawable.chat_bubble));
+        }
+        else if (mDataset.get(position).getText() == null){
+            Uri i = Uri.parse(mDataset.get(position).getImage()+"");
+            holder.imageView.setImageURI(i);
+        }
         //holder.imageView.setImageResource(mDataset.get(position).get);
     }
 

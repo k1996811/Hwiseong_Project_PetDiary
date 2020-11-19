@@ -48,7 +48,6 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -62,90 +61,16 @@ public class ChatActivity extends AppCompatActivity {
     EditText etText;
     Button btnSend, picture;
     String stEmail;
-    String [] sImg;
-    String [] bit;
-    ImageView iv;
-    TextView tv;
 
     ArrayList<Chat> chatArrayList;
     MyAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        sImg = new String[9];
-        bit = new String[9];
-        iv = findViewById(R.id.ivChat);
-        tv = findViewById(R.id.tvChat);
-
-        switch(requestCode){
-            case 0:
-                if(resultCode == RESULT_OK){
-                    tv.setVisibility(View.INVISIBLE);
-
-                    for(int i = 0; i < 9; i++) {
-                        sImg[i] = data.getStringExtra("postImgPath" + i + "");
-                        bit[i] = data.getStringExtra("bit" + i + "");
-                        if (sImg[i] != null) {
-
-
-                            FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
-                            final StorageReference storageRef = storage.getReference();
-                            storageRef.child("chatImage/"+sImg[i]).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
-
-                                @Override
-                                public void onSuccess(Uri uri){
-                                    //iv.setImageBitmap(b);
-                                    //이미지 로드 성공시
-
-                                    Glide.with(getApplicationContext())
-                                            .load(uri)
-                                            .into(iv);
-
-                                    database = FirebaseDatabase.getInstance();
-
-                                    Calendar c = Calendar.getInstance();
-                                    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                                    String datetime = dateformat.format(c.getTime());
-
-                                    DatabaseReference myRef = database.getReference("message").child(datetime);
-
-                                    Hashtable<String, String> numbers
-                                            = new Hashtable<String, String>();
-                                    numbers.put("email", stEmail);
-                                    numbers.put("image", "image");
-                                    myRef.setValue(numbers);
-
-                                    recyclerView.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
-                                        }
-                                    });
-                                    Toast.makeText(getApplicationContext(), "다운로드 성공 : "+ uri, Toast.LENGTH_SHORT).show();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getApplicationContext(), "실패", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                        }
-
-
-                    }
-
-                } else {
-                }
-                break;
-        }
-    }
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chatroom);
+
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
@@ -170,6 +95,7 @@ public class ChatActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+        Log.d("xxx", "cccc1" + stEmail);
         mAdapter = new MyAdapter(chatArrayList, stEmail);
         recyclerView.setAdapter(mAdapter);
 
@@ -241,33 +167,35 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String stText = etText.getText().toString();
-                Toast.makeText(ChatActivity.this, "MSG : " + stText, Toast.LENGTH_SHORT).show();
-                etText.getText().clear();
+                if (etText.getText().toString().length() > 0) {
+                    String stText = etText.getText().toString();
 
-                // Write a message to the database
-                database = FirebaseDatabase.getInstance();
+                    Toast.makeText(ChatActivity.this, "MSG : " + stText, Toast.LENGTH_SHORT).show();
+                    etText.getText().clear();
 
-                Calendar c = Calendar.getInstance();
-                SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                String datetime = dateformat.format(c.getTime());
+                    // Write a message to the database
+                    database = FirebaseDatabase.getInstance();
 
-                DatabaseReference myRef = database.getReference("message").child(datetime);
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
+                    String datetime = dateformat.format(c.getTime());
 
-                Hashtable<String, String> numbers
-                        = new Hashtable<String, String>();
-                numbers.put("email", stEmail);
-                numbers.put("text", stText);
-                myRef.setValue(numbers);
+                    DatabaseReference myRef = database.getReference("message").child(datetime);
 
-                recyclerView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
-                    }
-                });
+                    Hashtable<String, String> numbers
+                            = new Hashtable<String, String>();
+                    numbers.put("email", stEmail);
+                    numbers.put("text", stText);
+                    myRef.setValue(numbers);
 
+                    recyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                        }
+                    });
 
+                }
             }
         });
 
@@ -281,6 +209,93 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    String [] sImg;
+    String [] bit;
+    ImageView iv;
+    String ca;
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        sImg = new String[9];
+        bit = new String[9];
+        ca = new String();
+        iv= findViewById(R.id.ivChat);
+        switch(requestCode){
+            case 0:
+                if(resultCode == RESULT_OK){
+
+                    for(int i = 0; i < 9; i++) {
+                        sImg[i] = data.getStringExtra("postImgPath" + i + "");
+                        bit[i] = data.getStringExtra("bit" + i + "");
+
+
+                        if (sImg[i] != null) {
+
+                            FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
+                            final StorageReference storageRef = storage.getReference();
+                            setImage(bit[i]);
+
+                            database = FirebaseDatabase.getInstance();
+
+                            Calendar c = Calendar.getInstance();
+                            SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
+                            String datetime = dateformat.format(c.getTime());
+
+                            DatabaseReference myRef = database.getReference("message").child(datetime);
+
+                            Hashtable<String, String> numbers
+                                    = new Hashtable<String, String>();
+                            numbers.put("email", stEmail);
+                            numbers.put("image", bit[i]+"");
+                            myRef.setValue(numbers);
+
+                            recyclerView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                                }
+                            });
+                        }
+
+                    }
+
+
+                } else {
+                    ca = data.getStringExtra("camera");
+                    FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
+                    final StorageReference storageRef = storage.getReference();
+                    setImage(ca);
+
+                    database = FirebaseDatabase.getInstance();
+
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
+                    String datetime = dateformat.format(c.getTime());
+
+                    DatabaseReference myRef = database.getReference("message").child(datetime);
+
+                    Hashtable<String, String> numbers
+                            = new Hashtable<String, String>();
+                    numbers.put("email", stEmail);
+                    numbers.put("image", ca);
+                    myRef.setValue(numbers);
+
+                    recyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                        }
+                    });
+
+                }
+                break;
+
+        }
+    }
+    private void setImage(String bit){
+        Glide.with(this).load(bit).into(iv);
     }
 
 
