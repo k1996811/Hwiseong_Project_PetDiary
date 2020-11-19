@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
@@ -37,7 +36,7 @@ public class CameraAppActivity extends AppCompatActivity {
             try {
                 photoFile = createImageFile();
             } catch (IOException e) {
-            //Log.e("@@@", photoFile.toString());
+
             }
             if (photoFile != null) {
                 photoUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName(), photoFile);
@@ -53,7 +52,11 @@ public class CameraAppActivity extends AppCompatActivity {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "PetDiary" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
         imageFilePath = image.getAbsolutePath();
         return image;
     }
