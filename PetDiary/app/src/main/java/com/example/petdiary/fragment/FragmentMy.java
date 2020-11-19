@@ -198,6 +198,8 @@ public class FragmentMy extends Fragment {
             @Override
             public boolean onLongClick(View v) {
 
+                setImg();
+
                 String userId = "IAmTarget";//"IAmUser";
                 String targetId = "IAmTarget";
 
@@ -208,12 +210,14 @@ public class FragmentMy extends Fragment {
 
                 intent.putExtra("targetId",targetId);
                 intent.putExtra("userId",userId);
+
                 intent.putExtra("userImage", profileImg); // 임시로 넣은 이미지
                 intent.putExtra("userName", userName.getText().toString());
                 intent.putExtra("userMemo", userMemo.getText().toString());
 
 
-                startActivity(intent);
+            //    startActivity(intent);
+                startActivityForResult(intent, 0);
                 return true;
             }
         });
@@ -244,10 +248,7 @@ public class FragmentMy extends Fragment {
                     //myStartActivity(MemberInfoEditActivity.class);
                     startToast("회원정보수정");
                     break;
-                case R.id.setProfileImg:
-                    //myStartActivity2(ImageChoicePopupActivity.class);
-                    startPopupActivity();
-                    break;
+
             }
         }
     };
@@ -258,13 +259,23 @@ public class FragmentMy extends Fragment {
         startActivity(intent);
     }
 
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 0:
                 if (resultCode == RESULT_OK) {
+
+
+
                     String postImgPath = data.getStringExtra("postImgPath");
+                    this.profileImg = postImgPath;
+
                     final String[] profileImg = new String[1];
+
+                    if(postImgPath == null)
+                        break;
+
 
                     // 파이어베이스 스토리지에 이미지 저장
                     FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -334,14 +345,83 @@ public class FragmentMy extends Fragment {
         }
     }
 
-    private void myStartActivity2(Class c) {
-        Intent intent = new Intent(getContext(), c);
-        startActivityForResult(intent, 0);
-    }
-    private void startPopupActivity() {
-        Intent intent = new Intent(getContext(), ImageChoicePopupActivity.class);
-        startActivityForResult(intent, 0);
-    }
+
+//
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        switch (requestCode) {
+//            case 0:
+//                if (resultCode == RESULT_OK) {
+//                    String postImgPath = data.getStringExtra("postImgPath");
+//                    final String[] profileImg = new String[1];
+//
+//                    // 파이어베이스 스토리지에 이미지 저장
+//                    FirebaseStorage storage = FirebaseStorage.getInstance();
+//                    final StorageReference storageRef = storage.getReference();
+//                    final UploadTask[] uploadTask = new UploadTask[1];
+//
+//                    final Uri file = Uri.fromFile(new File(postImgPath));
+//                    StorageReference riversRef = storageRef.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg");
+//                    uploadTask[0] = riversRef.putFile(file);
+//
+//                    uploadTask[0].addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception exception) {
+//                        }
+//                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//
+//                            // 파이어베이스의 스토리지에 저장한 이미지의 다운로드 경로를 가져옴
+//                            final StorageReference ref = storageRef.child("users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg");
+//                            uploadTask[0] = ref.putFile(file);
+//
+//                            Task<Uri> urlTask = uploadTask[0].continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//                                @Override
+//                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//                                    if (!task.isSuccessful()) {
+//                                        throw task.getException();
+//                                    }
+//                                    return ref.getDownloadUrl();
+//                                }
+//                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Uri> task) {
+//                                    if (task.isSuccessful()) {
+//                                        Uri downloadUri = task.getResult();
+//                                        profileImg[0] = downloadUri.toString();
+//
+//                                        // 클라우드 파이어스토어의 users에 프로필 이미지 주소 저장
+//                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//                                        DocumentReference washingtonRef = db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//                                        washingtonRef
+//                                                .update("profileImg", profileImg[0])
+//                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                    @Override
+//                                                    public void onSuccess(Void aVoid) {
+//                                                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+//                                                    }
+//                                                })
+//                                                .addOnFailureListener(new OnFailureListener() {
+//                                                    @Override
+//                                                    public void onFailure(@NonNull Exception e) {
+//                                                        Log.w(TAG, "Error updating document", e);
+//                                                    }
+//                                                });
+//                                    } else {
+//                                    }
+//                                }
+//                            });
+//
+//                        }
+//                    });
+//
+//                    setProfileImg(postImgPath);
+//                } else {
+//                }
+//                break;
+//        }
+//    }
 
     private void setImg() {
         FirebaseStorage storage = FirebaseStorage.getInstance();

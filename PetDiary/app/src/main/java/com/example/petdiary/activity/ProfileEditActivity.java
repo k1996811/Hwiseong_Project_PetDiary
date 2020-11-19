@@ -2,10 +2,9 @@
 
 package com.example.petdiary.activity;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,13 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
 import com.bumptech.glide.Glide;
 import com.example.petdiary.R;
 import com.google.android.gms.tasks.Continuation;
@@ -31,7 +25,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -59,6 +52,9 @@ public class ProfileEditActivity extends AppCompatActivity {
 
 
 
+    boolean isImageEdit = false;
+    String postImgPath;  // 갤러리 눌러서 가져온 파일 이름
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_edit);
@@ -77,9 +73,10 @@ public class ProfileEditActivity extends AppCompatActivity {
         targetId = intent.getExtras().getString("targetId");
         userName.setText(intent.getExtras().getString("userName"));
         userMemo.setText(intent.getExtras().getString("userMemo"));
-        userImage.setImageResource(intent.getExtras().getInt("userImage"));
+        //userImage.setImageResource(intent.getExtras().getInt("userImage"));
 
-        setProfileImg(intent.getExtras().getString("userImage"));
+        preImage = intent.getExtras().getString("userImage");
+        setProfileImg(preImage);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
@@ -128,6 +125,75 @@ public class ProfileEditActivity extends AppCompatActivity {
                 // 이미지 변경은 이미 된 상태이기에 하지 않음
                 setEditIcon(true);
                 setEditMode(false);
+
+
+//                if(isImageEdit)
+//                {
+//
+//                    final String[] profileImg = new String[1];
+//                    // 파이어베이스 스토리지에 이미지 저장
+//                    FirebaseStorage storage = FirebaseStorage.getInstance();
+//                    final StorageReference storageRef = storage.getReference();
+//                    final UploadTask[] uploadTask = new UploadTask[1];
+//
+//                    final Uri file = Uri.fromFile(new File(postImgPath));
+//                    StorageReference riversRef = storageRef.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg");
+//                    uploadTask[0] = riversRef.putFile(file);
+//
+//                    uploadTask[0].addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception exception) {
+//                        }
+//                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//
+//                            // 파이어베이스의 스토리지에 저장한 이미지의 다운로드 경로를 가져옴
+//                            final StorageReference ref = storageRef.child("users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg");
+//                            uploadTask[0] = ref.putFile(file);
+//
+//                            Task<Uri> urlTask = uploadTask[0].continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//                                @Override
+//                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//                                    if (!task.isSuccessful()) {
+//                                        throw task.getException();
+//                                    }
+//                                    return ref.getDownloadUrl();
+//                                }
+//                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Uri> task) {
+//                                    if (task.isSuccessful()) {
+//                                        Uri downloadUri = task.getResult();
+//                                        profileImg[0] = downloadUri.toString();
+//
+//                                        // 클라우드 파이어스토어의 users에 프로필 이미지 주소 저장
+//                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//                                        DocumentReference washingtonRef = db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//                                        washingtonRef
+//                                                .update("profileImg", profileImg[0])
+//                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                    @Override
+//                                                    public void onSuccess(Void aVoid) {
+//                                                        Log.d("ProfileEditActivity", "DocumentSnapshot successfully updated!");
+//                                                    }
+//                                                })
+//                                                .addOnFailureListener(new OnFailureListener() {
+//                                                    @Override
+//                                                    public void onFailure(@NonNull Exception e) {
+//                                                        Log.w("ProfileEditActivity", "Error updating document", e);
+//                                                    }
+//                                                });
+//                                    } else {
+//                                    }
+//                                }
+//                            });
+//
+//                        }
+//                    });
+
+                    setProfileImg(postImgPath);
+            //    }
             }
         });
 
@@ -147,31 +213,6 @@ public class ProfileEditActivity extends AppCompatActivity {
         } else {
 
         }
-
-
-
-//        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-//        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//                    if (document != null) {
-//                        if (document.exists()) {
-//                            setImg();
-//                            Log.d("ProfileEditActivity", "DocumentSnapshot data: " + document.getData());
-//                            //emailTextView.setText(document.getData().get("email").toString());
-//                            //nickNameTextView.setText(document.getData().get("nickName").toString());
-//                        } else {
-//                            Log.d("ProfileEditActivity", "No such document");
-//                        }
-//                    }
-//                } else {
-//                    Log.d("ProfileEditActivity", "get failed with ", task.getException());
-//                }
-//            }
-//        });
-
 
     }
 
@@ -199,6 +240,14 @@ public class ProfileEditActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("postImgPath",postImgPath);
+        setResult(Activity.RESULT_OK, intent);
+        super.onBackPressed();
     }
 
     private void setEditIcon(boolean isShown) {
@@ -246,72 +295,9 @@ public class ProfileEditActivity extends AppCompatActivity {
         switch (requestCode) {
             case 0:
                 if (resultCode == RESULT_OK) {
-                    String postImgPath = data.getStringExtra("postImgPath");
-                    final String[] profileImg = new String[1];
-
-                    // 파이어베이스 스토리지에 이미지 저장
-                    FirebaseStorage storage = FirebaseStorage.getInstance();
-                    final StorageReference storageRef = storage.getReference();
-                    final UploadTask[] uploadTask = new UploadTask[1];
-
-                    final Uri file = Uri.fromFile(new File(postImgPath));
-                    StorageReference riversRef = storageRef.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg");
-                    uploadTask[0] = riversRef.putFile(file);
-
-                    uploadTask[0].addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                            // 파이어베이스의 스토리지에 저장한 이미지의 다운로드 경로를 가져옴
-                            final StorageReference ref = storageRef.child("users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg");
-                            uploadTask[0] = ref.putFile(file);
-
-                            Task<Uri> urlTask = uploadTask[0].continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                                @Override
-                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                    if (!task.isSuccessful()) {
-                                        throw task.getException();
-                                    }
-                                    return ref.getDownloadUrl();
-                                }
-                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        Uri downloadUri = task.getResult();
-                                        profileImg[0] = downloadUri.toString();
-
-                                        // 클라우드 파이어스토어의 users에 프로필 이미지 주소 저장
-                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                        DocumentReference washingtonRef = db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                        washingtonRef
-                                                .update("profileImg", profileImg[0])
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        Log.d("ProfileEditActivity", "DocumentSnapshot successfully updated!");
-                                                    }
-                                                })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Log.w("ProfileEditActivity", "Error updating document", e);
-                                                    }
-                                                });
-                                    } else {
-                                    }
-                                }
-                            });
-
-                        }
-                    });
-
+                    isImageEdit = true;
+                    postImgPath = data.getStringExtra("postImgPath");
                     setProfileImg(postImgPath);
-                } else {
                 }
                 break;
         }
@@ -344,6 +330,7 @@ public class ProfileEditActivity extends AppCompatActivity {
     private void setProfileImg(String profileImg) {
         Log.d("setProfileImg!!!!!", "setProfileImg: " + profileImg);
            Glide.with(this).load(profileImg).centerCrop().override(500).into(userImage);
+
 
     }
 
