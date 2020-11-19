@@ -427,6 +427,8 @@ public class FragmentNewPost extends Fragment {
                     uploadTask[0].addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
+                            Log.e("###1", finalI + "에서 에러@@@@");
+                            Log.e("###11", exception.toString());
                         }
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -439,6 +441,7 @@ public class FragmentNewPost extends Fragment {
                                 @Override
                                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                                     if (!task.isSuccessful()) {
+                                        Log.e("###2", finalI + "에서 통과");
                                         throw task.getException();
                                     }
                                     return ref.getDownloadUrl();
@@ -454,6 +457,7 @@ public class FragmentNewPost extends Fragment {
                                             postData();
                                         }
                                     } else {
+                                        Log.e("###3", finalI + "에서 에러@@@@");
                                     }
                                 }
                             });
@@ -504,7 +508,28 @@ public class FragmentNewPost extends Fragment {
         menu.findItem(R.id.tab1).setChecked(true);
 
         /////메인 타임라인으로 프래그먼트 이동
+
+        setDirEmpty();
+
         ((MainActivity)getActivity()).replaceFragment();
+    }
+
+    public void setDirEmpty(){
+        String path = "/storage/emulated/0/Android/data/com.example.petdiary/files/Pictures";
+        File dir = new File(path);
+        File[] childFileList = dir.listFiles();
+        if (dir.exists()) {
+            for (File childFile : childFileList) {
+                if (childFile.isDirectory()) {
+                    //setDirEmpty(childFile.getAbsolutePath());
+                    //하위 디렉토리
+                } else {
+                    childFile.delete();
+                    //하위 파일
+                }
+            }
+            dir.delete();
+        }
     }
 
     private void startToast(String msg){

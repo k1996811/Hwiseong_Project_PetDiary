@@ -46,8 +46,6 @@ public class CameraAppActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setDirEmpty();
-
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
             File photoFile = null;
@@ -63,25 +61,6 @@ public class CameraAppActivity extends AppCompatActivity {
             }
         }
     }
-
-    public void setDirEmpty(){
-        String path = "/storage/emulated/0/Android/data/com.example.petdiary/files/Pictures";
-        File dir = new File(path);
-        File[] childFileList = dir.listFiles();
-        if (dir.exists()) {
-            for (File childFile : childFileList) {
-                if (childFile.isDirectory()) {
-                    //setDirEmpty(childFile.getAbsolutePath());
-                    //하위 디렉토리
-                } else {
-                    childFile.delete();
-                    //하위 파일
-                }
-            }
-            dir.delete();
-        }
-    }
-
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
