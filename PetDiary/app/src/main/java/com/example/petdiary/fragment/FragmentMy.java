@@ -44,7 +44,6 @@ import static android.app.Activity.RESULT_OK;
 
 public class FragmentMy extends Fragment {
 
-
     private static final String TAG = "MyPage_Fragment";
     String profileImg;   // 프로필이 로딩되면 null값이 아니게 됨
 
@@ -73,17 +72,11 @@ public class FragmentMy extends Fragment {
     };
 
 
-
     //    TextView emailTextView;
 //    TextView nickNameTextView;
 //    TextView toolbarNickName;
 //    ImageView user_profileImage_ImageView;
     ViewGroup viewGroup;
-
-
-
-
-
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,8 +107,7 @@ public class FragmentMy extends Fragment {
 
         profileEditImg = viewGroup.findViewById(R.id.profile_image);
 
-
-                DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -143,7 +135,7 @@ public class FragmentMy extends Fragment {
         GridListAdapter adapter = new GridListAdapter();
         gridView.setAdapter(adapter);
 
-        for(int i = 0; i<imgs.length; ++i) {
+        for (int i = 0; i < imgs.length; ++i) {
             adapter.addItem(new MypageGridItem(imgs[i]));
         }
 
@@ -180,7 +172,7 @@ public class FragmentMy extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(),position + "번째 아이템이 클릭되었다!!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), position + "번째 아이템이 클릭되었다!!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -192,31 +184,24 @@ public class FragmentMy extends Fragment {
         final TextView userMemo = viewGroup.findViewById(R.id.profile_memo);
 
 
-
         // 프로필 이미지 수정
         profileImage.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
 
                 setImg();
-
                 String userId = "IAmTarget";//"IAmUser";
                 String targetId = "IAmTarget";
-
                 Intent intent = new Intent(getContext(), ProfileEditActivity.class);
-
-
-
-
-                intent.putExtra("targetId",targetId);
-                intent.putExtra("userId",userId);
+                intent.putExtra("targetId", targetId);
+                intent.putExtra("userId", userId);
 
                 intent.putExtra("userImage", profileImg); // 임시로 넣은 이미지
                 intent.putExtra("userName", userName.getText().toString());
                 intent.putExtra("userMemo", userMemo.getText().toString());
 
 
-            //    startActivity(intent);
+                //    startActivity(intent);
                 startActivityForResult(intent, 0);
                 return true;
             }
@@ -227,10 +212,9 @@ public class FragmentMy extends Fragment {
         petAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "이제 당신이 해야 할 일은 버튼 기능을 추가하는 것 입니다.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "이제 당신이 해야 할 일은 버튼 기능을 추가하는 것 입니다.", Toast.LENGTH_SHORT).show();
             }
         });
-
 
         return viewGroup;
     }
@@ -265,17 +249,12 @@ public class FragmentMy extends Fragment {
         switch (requestCode) {
             case 0:
                 if (resultCode == RESULT_OK) {
-
-
-
                     String postImgPath = data.getStringExtra("postImgPath");
-                    this.profileImg = postImgPath;
-
-                    final String[] profileImg = new String[1];
-
-                    if(postImgPath == null)
+                    Log.d("IR", "postImgPath: " + postImgPath);
+                    if (postImgPath == null)
                         break;
-
+                    this.profileImg = postImgPath;
+                    final String[] profileImg = new String[1];
 
                     // 파이어베이스 스토리지에 이미지 저장
                     FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -295,7 +274,7 @@ public class FragmentMy extends Fragment {
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                             // 파이어베이스의 스토리지에 저장한 이미지의 다운로드 경로를 가져옴
-                            final StorageReference ref = storageRef.child("users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg");
+                            final StorageReference ref = storageRef.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg");
                             uploadTask[0] = ref.putFile(file);
 
                             Task<Uri> urlTask = uploadTask[0].continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -346,6 +325,93 @@ public class FragmentMy extends Fragment {
     }
 
 
+
+    private void setImg() {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        StorageReference storageRef = storage.getReference();
+
+        storageRef.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+
+                profileImg = uri.toString();
+//                while(profileImg.length() == 0){
+//                    continue;
+//                }
+                //Log.e("@@@!", profileImg);
+                setProfileImg(profileImg);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+    }
+
+    private void setProfileImg(String profileImg) {
+        Glide.with(this).load(profileImg).centerCrop().override(500).into(profileEditImg);
+
+    }
+
+
+
+    //irang temp -------------------------------------------------------
+
+    public class MypageGridItem {
+        int _imgName;
+
+        public MypageGridItem(int imgName) {
+            _imgName = imgName;
+            Log.d("test", "imgName :  " + imgName);
+        }
+    }
+
+
+
+    class GridListAdapter extends BaseAdapter {
+        Context context;
+        ArrayList<MypageGridItem> items = new ArrayList<MypageGridItem>();
+
+        public void addItem(MypageGridItem item) {
+            items.add(item);
+        }
+
+        @Override
+        public int getCount() {
+            return items.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return items.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            context = parent.getContext();
+            MypageGridItem listItem = items.get(position);
+
+            if (convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.item_mypage_temp, parent, false);
+            }
+
+            //xml의 ImageView 참조
+            ImageView image = convertView.findViewById(R.id.mypage_image);
+
+            image.setImageResource(listItem._imgName);
+
+            return convertView;
+
+        }
+    }
 //
 //    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
@@ -422,91 +488,5 @@ public class FragmentMy extends Fragment {
 //                break;
 //        }
 //    }
-
-    private void setImg() {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-
-        StorageReference storageRef = storage.getReference();
-
-        storageRef.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-
-                profileImg = uri.toString();
-//                while(profileImg.length() == 0){
-//                    continue;
-//                }
-                //Log.e("@@@!", profileImg);
-                setProfileImg(profileImg);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-            }
-        });
-    }
-
-    private void setProfileImg(String profileImg) {
-        Glide.with(this).load(profileImg).centerCrop().override(500).into(profileEditImg);
-
-    }
-
-
-    public class MypageGridItem {
-        int _imgName;
-
-        public MypageGridItem(int imgName) {
-            _imgName = imgName;
-            Log.d("test", "imgName :  " + imgName);
-        }
-    }
-
-
-    //irang temp -------------------------------------------------------
-    class GridListAdapter extends BaseAdapter {
-        Context context;
-        ArrayList<MypageGridItem> items = new ArrayList<MypageGridItem>();
-
-        public void addItem(MypageGridItem item) {
-            items.add(item);
-        }
-
-        @Override
-        public int getCount() {
-            return items.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return items.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            context = parent.getContext();
-            MypageGridItem listItem = items.get(position);
-
-            if (convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.item_mypage_temp, parent, false);
-            }
-
-            //xml의 ImageView 참조
-            ImageView image = convertView.findViewById(R.id.mypage_image);
-
-
-            image.setImageResource(listItem._imgName);
-
-            return convertView;
-
-        }
-    }
 
 }

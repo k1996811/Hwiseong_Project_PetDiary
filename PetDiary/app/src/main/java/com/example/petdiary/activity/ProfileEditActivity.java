@@ -13,8 +13,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
 import com.example.petdiary.R;
 import com.google.android.gms.tasks.Continuation;
@@ -51,13 +53,15 @@ public class ProfileEditActivity extends AppCompatActivity {
     String preMemo;
 
 
-
     boolean isImageEdit = false;
     String postImgPath;  // 갤러리 눌러서 가져온 파일 이름
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_edit);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
 
         editIcon = findViewById(R.id.userPage_editIcon);
         userImage = findViewById(R.id.userPage_Image);
@@ -78,125 +82,10 @@ public class ProfileEditActivity extends AppCompatActivity {
         preImage = intent.getExtras().getString("userImage");
         setProfileImg(preImage);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
-
-
-
         userImage.setOnClickListener(onClickListener);
-
-        // 수정버튼
-        editIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (editIcon.isClickable()) {
-                    isEdit = true;
-
-                    preName = userName.getText().toString();
-                    preMemo = userMemo.getText().toString();
-
-
-                    setEditIcon(false);
-                    setEditMode(true);
-
-                }
-
-            }
-        });
-
-        // 취소버튼
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setProfileImg(preImage);
-                userName.setText(preName);
-                userMemo.setText(preMemo);
-
-
-                setEditIcon(true);
-                setEditMode(false);
-            }
-        });
-
-        // 저장버튼
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 이미지 변경은 이미 된 상태이기에 하지 않음
-                setEditIcon(true);
-                setEditMode(false);
-
-
-//                if(isImageEdit)
-//                {
-//
-//                    final String[] profileImg = new String[1];
-//                    // 파이어베이스 스토리지에 이미지 저장
-//                    FirebaseStorage storage = FirebaseStorage.getInstance();
-//                    final StorageReference storageRef = storage.getReference();
-//                    final UploadTask[] uploadTask = new UploadTask[1];
-//
-//                    final Uri file = Uri.fromFile(new File(postImgPath));
-//                    StorageReference riversRef = storageRef.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg");
-//                    uploadTask[0] = riversRef.putFile(file);
-//
-//                    uploadTask[0].addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception exception) {
-//                        }
-//                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//
-//                            // 파이어베이스의 스토리지에 저장한 이미지의 다운로드 경로를 가져옴
-//                            final StorageReference ref = storageRef.child("users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg");
-//                            uploadTask[0] = ref.putFile(file);
-//
-//                            Task<Uri> urlTask = uploadTask[0].continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-//                                @Override
-//                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-//                                    if (!task.isSuccessful()) {
-//                                        throw task.getException();
-//                                    }
-//                                    return ref.getDownloadUrl();
-//                                }
-//                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<Uri> task) {
-//                                    if (task.isSuccessful()) {
-//                                        Uri downloadUri = task.getResult();
-//                                        profileImg[0] = downloadUri.toString();
-//
-//                                        // 클라우드 파이어스토어의 users에 프로필 이미지 주소 저장
-//                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//                                        DocumentReference washingtonRef = db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-//                                        washingtonRef
-//                                                .update("profileImg", profileImg[0])
-//                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                    @Override
-//                                                    public void onSuccess(Void aVoid) {
-//                                                        Log.d("ProfileEditActivity", "DocumentSnapshot successfully updated!");
-//                                                    }
-//                                                })
-//                                                .addOnFailureListener(new OnFailureListener() {
-//                                                    @Override
-//                                                    public void onFailure(@NonNull Exception e) {
-//                                                        Log.w("ProfileEditActivity", "Error updating document", e);
-//                                                    }
-//                                                });
-//                                    } else {
-//                                    }
-//                                }
-//                            });
-//
-//                        }
-//                    });
-
-                    setProfileImg(postImgPath);
-            //    }
-            }
-        });
-
+        editIcon.setOnClickListener(onClickListener);
+        cancelBtn.setOnClickListener(onClickListener);
+        saveBtn.setOnClickListener(onClickListener);
 
         if (userId.equals(targetId)) {
             setEditIcon(true);
@@ -204,30 +93,45 @@ public class ProfileEditActivity extends AppCompatActivity {
             setEditIcon(false);
         }
 
-
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
         if (user == null) {
             //myStartActivity(SignUpActivity.class);
         } else {
-
         }
 
     }
 
     // 이벤트 리스너
-    View.OnClickListener onClickListener = new View.OnClickListener(){
-
+    View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch(v.getId())
-            {
-                case R.id.userPage_Image:
-                    if(isEdit)
+            switch (v.getId()) {
+                case R.id.userPage_editIcon:  // 편집 버튼 선택
+                    if (editIcon.isClickable()) {
+                        isEdit = true;
+                        preName = userName.getText().toString();
+                        preMemo = userMemo.getText().toString();
+                        setEditIcon(false);
+                        setEditMode(true);
+                    }
+                    break;
+                case R.id.userPage_Image:   // 프로필 사진 선택
+                    if (isEdit)
                         startPopupActivity();
                     break;
-
+                case R.id.userPage_save:    // 저장 버튼 선택
+                    setEditIcon(true);
+                    setEditMode(false);
+                    setProfileImg(postImgPath);
+                    break;
+                case R.id.userPage_cancel:  // 취소 버튼 선택
+                    isImageEdit = false;
+                    setProfileImg(preImage);
+                    userName.setText(preName);
+                    userMemo.setText(preMemo);
+                    setEditIcon(true);
+                    setEditMode(false);
+                    break;
             }
         }
     };
@@ -242,14 +146,21 @@ public class ProfileEditActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent();
-        intent.putExtra("postImgPath",postImgPath);
-        setResult(Activity.RESULT_OK, intent);
-        super.onBackPressed();
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 0: // 갤러리에서 이미지 선택시
+                if (resultCode == RESULT_OK) {
+                    isImageEdit = true;
+                    postImgPath = data.getStringExtra("postImgPath");
+                    setProfileImg(postImgPath);
+                }
+                break;
+        }
     }
 
+
+    // 편집버튼 상태 변경 on/off
     private void setEditIcon(boolean isShown) {
         if (isShown)
             editIcon.setVisibility(View.VISIBLE);
@@ -257,16 +168,14 @@ public class ProfileEditActivity extends AppCompatActivity {
             editIcon.setVisibility(View.INVISIBLE);
 
         editIcon.setClickable(isShown);
-
     }
 
-
+    // 편집 버튼 상태에 따른 이름, 메모, 저장, 취소버튼 상태 변경
     private void setEditMode(boolean isEditMode) {
         if (isEditMode) {
-            isEdit= true;
+            isEdit = true;
             userName.setBackgroundColor(getBaseContext().getResources().getColor(R.color.colorAccent));
             userName.setFocusableInTouchMode(true);
-
 
             userMemo.setBackgroundColor(getBaseContext().getResources().getColor(R.color.colorAccent));
             userMemo.setFocusableInTouchMode(true);
@@ -274,7 +183,7 @@ public class ProfileEditActivity extends AppCompatActivity {
             saveBtn.setVisibility(View.VISIBLE);
             cancelBtn.setVisibility(View.VISIBLE);
         } else {
-            isEdit=false;
+            isEdit = false;
             userName.setBackground(null);
             userName.setFocusableInTouchMode(false);
             userName.setFocusable(false);
@@ -289,19 +198,30 @@ public class ProfileEditActivity extends AppCompatActivity {
     }
 
 
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case 0:
-                if (resultCode == RESULT_OK) {
-                    isImageEdit = true;
-                    postImgPath = data.getStringExtra("postImgPath");
-                    setProfileImg(postImgPath);
-                }
-                break;
-        }
+    // 프로필 이미지 변경 함수
+    private void setProfileImg(String profileImg) {
+        Log.d("IR", "setProfileImg: " + profileImg);
+        Glide.with(this).load(profileImg).centerCrop().override(500).into(userImage);
     }
+
+
+    // 갤러리 열기 위한 팝업생성 함수 
+    private void startPopupActivity() {
+        Intent intent = new Intent(getApplicationContext(), ImageChoicePopupActivity.class);
+        startActivityForResult(intent, 0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isImageEdit) {
+            Intent intent = new Intent();
+            intent.putExtra("postImgPath", postImgPath);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
+        }
+        super.onBackPressed();
+    }
+
 
     private void setImg() {
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -326,20 +246,4 @@ public class ProfileEditActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void setProfileImg(String profileImg) {
-        Log.d("setProfileImg!!!!!", "setProfileImg: " + profileImg);
-           Glide.with(this).load(profileImg).centerCrop().override(500).into(userImage);
-
-
-    }
-
-
-    private void startPopupActivity() {
-        Intent intent = new Intent(getApplicationContext(), ImageChoicePopupActivity.class);
-        startActivityForResult(intent, 0);
-    }
-
-
-
 }
