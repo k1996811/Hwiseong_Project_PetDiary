@@ -68,24 +68,22 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:layout_width="300dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="15dp"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="30dp"
                 android:layout_marginRight="20dp">
 
                 <RelativeLayout
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_marginRight="20dp">
+                    android:layout_width="80dp"
+                    android:layout_height="60dp">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         app:cardCornerRadius="10dp"
                         android:id="@+id/cardView2"
-                        android:layout_centerInParent="true"
                         android:background="@drawable/button">
 
                         <ImageView
@@ -102,22 +100,20 @@
                         android:layout_height="20dp"
                         android:src="@drawable/cancel"
                         android:layout_alignTop="@id/cardView2"
-                        android:layout_alignRight="@id/cardView2"
+                        android:layout_toRightOf="@+id/cardView2"
                         android:visibility="invisible"/>
 
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_marginRight="20dp">
+                    android:layout_width="80dp"
+                    android:layout_height="60dp">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         app:cardCornerRadius="10dp"
                         android:id="@+id/cardView3"
-                        android:layout_centerInParent="true"
                         android:background="@drawable/button">
 
                         <ImageView
@@ -134,22 +130,20 @@
                         android:layout_height="20dp"
                         android:src="@drawable/cancel"
                         android:layout_alignTop="@id/cardView3"
-                        android:layout_alignRight="@id/cardView3"
+                        android:layout_toRightOf="@id/cardView3"
                         android:visibility="invisible"/>
 
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_marginRight="20dp">
+                    android:layout_width="80dp"
+                    android:layout_height="60dp">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         app:cardCornerRadius="10dp"
                         android:id="@+id/cardView4"
-                        android:layout_centerInParent="true"
                         android:background="@drawable/button">
 
                         <ImageView
@@ -166,22 +160,20 @@
                         android:layout_height="20dp"
                         android:src="@drawable/cancel"
                         android:layout_alignTop="@id/cardView4"
-                        android:layout_alignRight="@id/cardView4"
+                        android:layout_toRightOf="@id/cardView4"
                         android:visibility="invisible"/>
 
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_marginRight="20dp">
+                    android:layout_width="80dp"
+                    android:layout_height="60dp">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         app:cardCornerRadius="10dp"
                         android:id="@+id/cardView5"
-                        android:layout_centerInParent="true"
                         android:background="@drawable/button">
 
                         <ImageView
@@ -198,7 +190,7 @@
                         android:layout_height="20dp"
                         android:src="@drawable/cancel"
                         android:layout_alignTop="@id/cardView5"
-                        android:layout_alignRight="@id/cardView5"
+                        android:layout_toRightOf="@id/cardView5"
                         android:visibility="invisible"/>
 
                 </RelativeLayout>

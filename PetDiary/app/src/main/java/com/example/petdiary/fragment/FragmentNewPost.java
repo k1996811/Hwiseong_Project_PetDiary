@@ -245,7 +245,7 @@ public class FragmentNewPost extends Fragment {
         }
         if(count == 1){
             postImgCheck[0] = 0;
-            postImg[0].setImageResource(R.mipmap.ic_launcher);
+            postImg[0].setImageResource(R.drawable.ic_baseline_add_24);
             deletePostImg[0].setVisibility(View.INVISIBLE);
         } else {
             for(int i=a; i<count; i++){
@@ -253,7 +253,7 @@ public class FragmentNewPost extends Fragment {
                 Glide.with(getContext()).load(img[i-1]).centerCrop().override(500).into(postImg[i-1]);
             }
             postImgCheck[count-1] = 0;
-            postImg[count-1].setImageResource(R.mipmap.ic_launcher);
+            postImg[count-1].setImageResource(R.drawable.ic_baseline_add_24);
             deletePostImg[count-1].setVisibility(View.INVISIBLE);
             img[count-1] = null;
         }
@@ -363,7 +363,7 @@ public class FragmentNewPost extends Fragment {
 
         hashTag = new ArrayList<String>();
         if(content.length() > 0){
-            String[] word = content.split(" ");
+            String[] word = content.split(" |\\n");
 
             for(int i=0; i<word.length; i++){
                 if(word[i].charAt(0) == '#'){
@@ -417,7 +417,6 @@ public class FragmentNewPost extends Fragment {
         } else {
             for(int i=0; i<5; i++){
                 if(postImgCheck[i] == 1){
-
                     final Uri file = Uri.fromFile(new File(img[i]));
 
                     StorageReference riversRef = storageRef.child("images/"+date2+"_postImg_"+i);
@@ -464,6 +463,7 @@ public class FragmentNewPost extends Fragment {
             }
         }
     }
+
 
     long maxid = 0;
     private FirebaseDatabase firebaseDatabase;

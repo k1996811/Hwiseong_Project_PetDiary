@@ -33,6 +33,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
             String notificationData = intent.getStringExtra("FCM_PetDiary");
             if(notificationData != null)
                 Log.d("FCM_PetDiary", notificationData);
+                Log.d("FCM_PetDiary", FirebaseMessaging.getInstance().toString());
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -124,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void passwordSetOnClick(View view){
-        myStartActivity2(SettingResetPasswordActivity.class);
+        myStartActivity2(LoginConfirmActivity.class);
         //startToast("비밀번호 변경");
     }
 
@@ -145,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void AppInfoOnClick(View view){
         myStartActivity2(SettingAppInfoActivity.class);
-        startToast("앱 정보");
+        //startToast("앱 정보");
     }
 
     private void startPopupActivity(){
