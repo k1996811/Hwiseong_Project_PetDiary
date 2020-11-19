@@ -2,10 +2,10 @@
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <cache-path
         name="cache"
-        path="Android/data/com.example.petdiary/files/Cache" /> <!--Context.getCacheDir() 내부 저장소-->
+        path="." /> <!--Context.getCacheDir() 내부 저장소-->
     <files-path
         name="files"
-        path="Android/data/com.example.petdiary/files/Pictures" /> <!--Context.getFilesDir() 내부 저장소-->
+        path="." /> <!--Context.getFilesDir() 내부 저장소-->
 
     <external-path
         name="external"

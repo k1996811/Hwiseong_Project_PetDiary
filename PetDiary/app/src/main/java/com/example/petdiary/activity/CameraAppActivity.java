@@ -1,30 +1,42 @@
 package com.example.petdiary.activity;
 
-import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import com.example.petdiary.MediaScanner;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static android.os.Environment.DIRECTORY_PICTURES;
 
 public class CameraAppActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 672;
     private String imageFilePath;
     private Uri photoUri;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +48,10 @@ public class CameraAppActivity extends AppCompatActivity {
             try {
                 photoFile = createImageFile();
             } catch (IOException e) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8b3f74b4ecf8bd0bc713384078add93321232a1a
             }
             if (photoFile != null) {
                 photoUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName(), photoFile);
@@ -44,23 +59,25 @@ public class CameraAppActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
             }
         }
-
-
     }
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "PetDiary" + timeStamp + "_";
+<<<<<<< HEAD
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,
                 ".jpg",
                 storageDir
         );
+=======
+        File storageDir = getExternalFilesDir(DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+>>>>>>> 8b3f74b4ecf8bd0bc713384078add93321232a1a
         imageFilePath = image.getAbsolutePath();
         return image;
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -70,49 +87,9 @@ public class CameraAppActivity extends AppCompatActivity {
             resultIntent.putExtra("postImgPath", imageFilePath);
             setResult(Activity.RESULT_OK, resultIntent);
             finish();
-        } else if(resultCode == RESULT_CANCELED){
+        } else if (resultCode == RESULT_CANCELED) {
             finish();
         }
     }
-
-//    PermissionListener permissionListener = new PermissionListener() {
-//        @Override
-//        public void onPermissionGranted() {
-//            //Toast.makeText(getApplicationContext(), "권한이 허용됨",Toast.LENGTH_SHORT).show();
-//        }`
-//
-//        @Override
-//        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-//            //Toast.makeText(getApplicationContext(), "권한이 거부됨",Toast.LENGTH_SHORT).show();
-//        }
-//    };
-
-
-//    private long backKeyPressedTime = 0;
-//    private Toast toast;
-//
-//    public void onBackPressed(){
-//        //super.onBackPressed();
-//        // 마지막으로 뒤로가기 버튼을 눌렀던 시간에 2초를 더해 현재시간과 비교 후
-//        // 마지막으로 뒤로가기 버튼을 눌렀던 시간이 2초가 지났으면 Toast Show
-//        // 2000 milliseconds = 2 seconds
-//        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
-//            backKeyPressedTime = System.currentTimeMillis();
-//            toast = Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 카메라가 종료됩니다.", Toast.LENGTH_SHORT);
-//            toast.show();
-//            return;
-//        }
-//        // 마지막으로 뒤로가기 버튼을 눌렀던 시간에 2초를 더해 현재시간과 비교 후
-//        // 마지막으로 뒤로가기 버튼을 눌렀던 시간이 2초가 지나지 않았으면 종료
-//        // 현재 표시된 Toast 취소
-//        if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
-//
-//            Intent resultIntent = new Intent();
-//            resultIntent.putExtra("exit", "exit");
-//            setResult(999, resultIntent);
-//
-//            finish();
-//        }
-//    }
 
 }

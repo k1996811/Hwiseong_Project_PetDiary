@@ -85,22 +85,6 @@ public class FragmentNewPost extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_newpost, container, false);
 
-//        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-//            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-//            if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)){
-//            } else {
-//                //startToast("권한을 허용해 주세요.");
-//            }
-//        }
-//        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
-//            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 1);
-//            if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CAMERA)){
-//            } else {
-//                //startToast("권한을 허용해 주세요.");
-//            }
-//        }
-
-
         String[] items = {"강아지", "고양이", "앵무새", "두더지", "물고기"};
         //ArrayList<String> itemss = new ArrayList<String>();
         //itemss.add("가");
@@ -184,6 +168,12 @@ public class FragmentNewPost extends Fragment {
         deletePostImg[3].setOnClickListener(onClickListener);
         deletePostImg[4] = viewGroup.findViewById(R.id.deletePostImg5);
         deletePostImg[4].setOnClickListener(onClickListener);
+
+        deletePostImg[0].bringToFront();
+        deletePostImg[1].bringToFront();
+        deletePostImg[2].bringToFront();
+        deletePostImg[3].bringToFront();
+        deletePostImg[4].bringToFront();
 
         for(int i=0; i<5; i++){
             imgUri[i] = "";
