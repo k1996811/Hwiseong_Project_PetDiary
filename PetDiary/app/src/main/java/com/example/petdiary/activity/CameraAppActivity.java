@@ -54,10 +54,7 @@ public class CameraAppActivity extends AppCompatActivity {
             try {
                 photoFile = createImageFile();
             } catch (IOException e) {
-<<<<<<< HEAD
 
-=======
->>>>>>> 8b3f74b4ecf8bd0bc713384078add93321232a1a
             }
             if (photoFile != null) {
                 photoUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName(), photoFile);
@@ -89,17 +86,8 @@ public class CameraAppActivity extends AppCompatActivity {
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "PetDiary" + timeStamp + "_";
-<<<<<<< HEAD
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
-=======
         File storageDir = getExternalFilesDir(DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
->>>>>>> 8b3f74b4ecf8bd0bc713384078add93321232a1a
         imageFilePath = image.getAbsolutePath();
         return image;
     }
