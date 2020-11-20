@@ -87,8 +87,10 @@ public class FragmentMy extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_mypage_kon, container, false);
 
+        //  유저
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+        String uid = user.getUid();
+        
         if (user == null) {
             //myStartActivity(SignUpActivity.class);
         } else {
@@ -106,9 +108,17 @@ public class FragmentMy extends Fragment {
 //
 
         profileEditImg = viewGroup.findViewById(R.id.profile_image);
+        final TextView profileName = viewGroup.findViewById(R.id.profile_name);
+        final TextView profileMemo = viewGroup.findViewById(R.id.profile_memo);
 
-        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        // 프로필 이미지, 닉네임, 메모 가져오기,
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("users").document();
+        DocumentReference documentUserReference = db.collection("users").document(uid);
+
+
+        documentUserReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -119,6 +129,9 @@ public class FragmentMy extends Fragment {
                             Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                             //emailTextView.setText(document.getData().get("email").toString());
                             //nickNameTextView.setText(document.getData().get("nickName").toString());
+                            profileName.setText(document.getData().get("nickName").toString());
+                            profileMemo.setText(document.getData().get("memo").toString());
+
                         } else {
                             Log.d(TAG, "No such document");
                         }
@@ -143,31 +156,35 @@ public class FragmentMy extends Fragment {
         ImageView addPetBtn = viewGroup.findViewById(R.id.profile_petAddBtn);
 
 
-//        addPetBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//                    if (document != null) {
-//                        if (document.exists()) {
-//                            if(document.getData().get("profileImg").toString().length() > 0 ){
-//                                setImg();
-//                            }
-//                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-////                            emailTextView.setText(document.getData().get("email").toString());
-////                            nickNameTextView.setText(document.getData().get("nickName").toString());
-//                        } else {
-//                            Log.d(TAG, "No such document");
-//                        }
-//                    }
-//                } else {
-//                    Log.d(TAG, "get failed with ", task.getException());
-//                }
-//            public void onClick(View v) {
-//                Toast.makeText(getContext(),"Toast!! Click!@!!!!!",Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
+        // 메모가져오는 연습
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        DocumentReference docRef = db.collection("users").document();
+
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        if (document.exists()) {
+                            if (document.getData().get("users").toString().length() > 0) {
+                                //   setImg();
+                            }
+                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+
+//                            emailTextView.setText(document.getData().get("email").toString());
+//                            nickNameTextView.setText(document.getData().get("nickName").toString());
+                        } else {
+                            Log.d(TAG, "No such document");
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+
+            }
+        });
+
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -325,7 +342,6 @@ public class FragmentMy extends Fragment {
     }
 
 
-
     private void setImg() {
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -356,7 +372,6 @@ public class FragmentMy extends Fragment {
     }
 
 
-
     //irang temp -------------------------------------------------------
 
     public class MypageGridItem {
@@ -367,7 +382,6 @@ public class FragmentMy extends Fragment {
             Log.d("test", "imgName :  " + imgName);
         }
     }
-
 
 
     class GridListAdapter extends BaseAdapter {
