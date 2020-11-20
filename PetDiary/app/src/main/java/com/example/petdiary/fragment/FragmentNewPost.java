@@ -1,6 +1,5 @@
 package com.example.petdiary.fragment;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -24,13 +23,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
-import com.example.petdiary.ContentDTO;
+import com.example.petdiary.PostInfo;
 import com.example.petdiary.activity.*;
 import com.example.petdiary.R;
 import com.google.android.gms.tasks.Continuation;
@@ -356,8 +352,8 @@ public class FragmentNewPost extends Fragment {
         tag = "";
         long now = System.currentTimeMillis();
         Date nowdate = new Date(now);
-        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        SimpleDateFormat sdfNow2 = new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss");
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd kk:mm:ss");
+        SimpleDateFormat sdfNow2 = new SimpleDateFormat("yyyy.MM.dd_kk.mm.ss");
         date = sdfNow.format(nowdate);
         date2 = sdfNow2.format(nowdate);
 
@@ -480,23 +476,23 @@ public class FragmentNewPost extends Fragment {
 
         DatabaseReference images = firebaseDatabase.getReference().child("images").push();
 
-        ContentDTO contentDTO = new ContentDTO();
-        contentDTO.setNum((int)maxid+1);
+        PostInfo postInfo = new PostInfo();
+        postInfo.setNum((int)maxid+1);
 
-        contentDTO.setImageUrl1(imgUri[0]);
-        contentDTO.setImageUrl2(imgUri[1]);
-        contentDTO.setImageUrl3(imgUri[2]);
-        contentDTO.setImageUrl4(imgUri[3]);
-        contentDTO.setImageUrl5(imgUri[4]);
-        contentDTO.setUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        contentDTO.setContent(content);
-        contentDTO.setEmail(email);
-        contentDTO.setCategory(category);
-        contentDTO.setDate(date);
-        contentDTO.setHashTag(hashTag);
+        postInfo.setImageUrl1(imgUri[0]);
+        postInfo.setImageUrl2(imgUri[1]);
+        postInfo.setImageUrl3(imgUri[2]);
+        postInfo.setImageUrl4(imgUri[3]);
+        postInfo.setImageUrl5(imgUri[4]);
+        postInfo.setUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        postInfo.setContent(content);
+        postInfo.setEmail(email);
+        postInfo.setCategory(category);
+        postInfo.setDate(date);
+        postInfo.setHashTag(hashTag);
 
         //게시물을 데이터를 생성 및 엑티비티 종료
-        images.setValue(contentDTO);
+        images.setValue(postInfo);
 
         getActivity().setResult(RESULT_OK);
         startToast("게시글을 등록하였습니다.");
@@ -535,12 +531,6 @@ public class FragmentNewPost extends Fragment {
     private void startToast(String msg){
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
-
-    private void myStartActivity(Class c){
-        Intent intent = new Intent(getContext(), c);
-        startActivityForResult(intent, 0);
-    }
-
 
 }
 

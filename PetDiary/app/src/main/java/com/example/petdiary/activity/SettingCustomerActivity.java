@@ -117,7 +117,7 @@ public class SettingCustomerActivity extends AppCompatActivity {
         contents = ((EditText) findViewById(R.id.contents)).getText().toString();
         long now = System.currentTimeMillis();
         Date nowdate = new Date(now);
-        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd kk:mm:ss");
         date = sdfNow.format(nowdate);
 
         DatabaseReference customerCenter = firebaseDatabase.getReference().child("customerCenter").push();

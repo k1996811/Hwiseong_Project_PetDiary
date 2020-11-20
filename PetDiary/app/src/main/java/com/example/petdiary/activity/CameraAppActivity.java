@@ -63,7 +63,7 @@ public class CameraAppActivity extends AppCompatActivity {
     }
 
     private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_kkmmss").format(new Date());
         String imageFileName = "PetDiary" + timeStamp + "_";
         File storageDir = getExternalFilesDir(DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
@@ -121,7 +121,7 @@ public class CameraAppActivity extends AppCompatActivity {
         Bitmap exifBit = Bitmap.createBitmap( bitmap, 0, 0, bitmap.getWidth( ), bitmap.getHeight( ), matrix, true );
         ContentValues values = new ContentValues( );
         //실제 앨범에 저장될 이미지이름
-        values.put( MediaStore.Images.Media.DISPLAY_NAME, "PetDiary_" + new SimpleDateFormat( "yyyyMMdd_HHmmss", Locale.US ).format( new Date( ) ) + ".jpg" );
+        values.put( MediaStore.Images.Media.DISPLAY_NAME, "PetDiary_" + new SimpleDateFormat( "yyyyMMdd_kkmmss", Locale.US ).format( new Date( ) ) + ".jpg" );
         values.put( MediaStore.Images.Media.MIME_TYPE, "image/*" );
         //저장될 경로
         values.put( MediaStore.Images.Media.RELATIVE_PATH, "DCIM/PetDiary" );
