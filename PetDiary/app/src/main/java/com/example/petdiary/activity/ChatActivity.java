@@ -95,7 +95,6 @@ public class ChatActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        Log.d("xxx", "cccc1" + stEmail);
         mAdapter = new MyAdapter(chatArrayList, stEmail);
         recyclerView.setAdapter(mAdapter);
 
@@ -109,6 +108,8 @@ public class ChatActivity extends AppCompatActivity {
                 String commentKey = dataSnapshot.getKey();
                 String stEmail = chat.getEmail();
                 String stText = chat.getText();
+                String stImage = chat.getImage();
+                Log.d(TAG, "stImage:" + stImage+"");
                 Log.d(TAG, "stEmail:" + stEmail);
                 Log.d(TAG, "stText:" + stText);
                 chatArrayList.add(chat);
@@ -173,6 +174,7 @@ public class ChatActivity extends AppCompatActivity {
                     Toast.makeText(ChatActivity.this, "MSG : " + stText, Toast.LENGTH_SHORT).show();
                     etText.getText().clear();
 
+
                     // Write a message to the database
                     database = FirebaseDatabase.getInstance();
 
@@ -205,14 +207,13 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ChatActivity.this, ImageChoicePopupActivity2.class);
-                startActivityForResult(intent,0);
+                startActivityForResult(intent, 0);
             }
         });
-
     }
 
-    String [] sImg;
-    String [] bit;
+    String[] sImg;
+    String[] bit;
     ImageView iv;
     String ca;
 
@@ -221,17 +222,17 @@ public class ChatActivity extends AppCompatActivity {
         sImg = new String[9];
         bit = new String[9];
         ca = new String();
-        iv= findViewById(R.id.ivChat);
-        switch(requestCode){
+        iv = findViewById(R.id.ivChat);
+        switch (requestCode) {
             case 0:
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
 
-                    for(int i = 0; i < 9; i++) {
+
+                    for (int i = 0; i < 9; i++) {
                         sImg[i] = data.getStringExtra("postImgPath" + i + "");
                         bit[i] = data.getStringExtra("bit" + i + "");
 
-
-                        if (sImg[i] != null) {
+                        if (bit[i] != null) {
 
                             FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
                             final StorageReference storageRef = storage.getReference();
@@ -240,7 +241,7 @@ public class ChatActivity extends AppCompatActivity {
                             database = FirebaseDatabase.getInstance();
 
                             Calendar c = Calendar.getInstance();
-                            SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
+                            SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss" + "_" + i);
                             String datetime = dateformat.format(c.getTime());
 
                             DatabaseReference myRef = database.getReference("message").child(datetime);
@@ -248,7 +249,7 @@ public class ChatActivity extends AppCompatActivity {
                             Hashtable<String, String> numbers
                                     = new Hashtable<String, String>();
                             numbers.put("email", stEmail);
-                            numbers.put("image", bit[i]+"");
+                            numbers.put("image", bit[i] + "");
                             myRef.setValue(numbers);
 
                             recyclerView.post(new Runnable() {
@@ -261,8 +262,7 @@ public class ChatActivity extends AppCompatActivity {
 
                     }
 
-
-                } else {
+                } else if (resultCode == 2) {
                     ca = data.getStringExtra("camera");
                     FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
                     final StorageReference storageRef = storage.getReference();
@@ -291,12 +291,11 @@ public class ChatActivity extends AppCompatActivity {
 
                 }
                 break;
-
         }
     }
-    private void setImage(String bit){
+
+    private void setImage(String bit) {
         Glide.with(this).load(bit).into(iv);
     }
-
 
 }

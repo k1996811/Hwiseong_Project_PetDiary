@@ -12,6 +12,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:id="@+id/ivChat"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="5dp"
         android:background="@drawable/chat_bubble"
         android:visibility="visible"/>
 
