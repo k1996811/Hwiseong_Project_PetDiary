@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.petdiary.CustomAdapter;
 import com.example.petdiary.Data;
@@ -32,12 +33,15 @@ public class FragmentMain extends Fragment {
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
     private View view;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_main, container, false);
+        mSwipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_layout);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true); // 리사이클러뷰 기존성능 강화
         layoutManager = new LinearLayoutManager(getContext());
@@ -53,7 +57,7 @@ public class FragmentMain extends Fragment {
                 arrayList.clear(); // 기존 배열리스트가 존재하지않게 초기화
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) { // 반복문으로 데이터 List를 추출해냄
                     Data Datalist = snapshot.getValue(Data.class); // 만들어뒀던 User 객체에 데이터를 담는다.
-                    arrayList.add(Datalist); // 담은 데이터들을 배열리스트에 넣고 리사이클러뷰로 보낼 준비
+                    arrayList.add(0,Datalist); // 담은 데이터들을 배열리스트에 넣고 리사이클러뷰로 보낼 준비
                 }
                 adapter.notifyDataSetChanged(); // 리스트 저장 및 새로고침해야 반영이 됨
             }
@@ -66,6 +70,38 @@ public class FragmentMain extends Fragment {
         });
         adapter = new CustomAdapter(arrayList, getContext());
         recyclerView.setAdapter(adapter); // 리사이클러뷰에 어댑터 연결
+
+        //새로고침
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                database = FirebaseDatabase.getInstance(); // 파이어베이스 데이터베이스 연동
+                databaseReference = database.getReference("images"); // DB 테이블 연결
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        // 파이어베이스 데이터베이스의 데이터를 받아오는 곳
+                        arrayList.clear(); // 기존 배열리스트가 존재하지않게 초기화
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) { // 반복문으로 데이터 List를 추출해냄
+                            Data Datalist = snapshot.getValue(Data.class); // 만들어뒀던 User 객체에 데이터를 담는다.
+                            arrayList.add(0,Datalist); // 담은 데이터들을 배열리스트에 넣고 리사이클러뷰로 보낼 준비
+                        }
+                        adapter.notifyDataSetChanged(); // 리스트 저장 및 새로고침해야 반영이 됨
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // 디비를 가져오던중 에러 발생 시
+                        Log.e("FragmentMain", String.valueOf(databaseError.toException())); // 에러문 출력
+                    }
+                });
+                // 동글동글 도는거 사라짐
+                mSwipeRefreshLayout.setRefreshing(false);
+
+                // TODO : input your code
+            }
+        });
 
         return view;
     }
