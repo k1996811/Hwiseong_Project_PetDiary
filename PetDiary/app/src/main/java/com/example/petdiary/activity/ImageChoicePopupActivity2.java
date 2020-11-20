@@ -100,6 +100,7 @@ public class ImageChoicePopupActivity2 extends Activity {
 
 
                         StorageReference riversRef = storageRef.child("chatImage/" + file.getLastPathSegment());
+
                         UploadTask uploadTask = riversRef.putFile(file);
                         uploadTask.addOnFailureListener(new OnFailureListener() {
                             @Override
