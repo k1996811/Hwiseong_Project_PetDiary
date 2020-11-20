@@ -98,8 +98,51 @@ public class SignUpActivity extends AppCompatActivity {
                     finish();
                     break;
                 case R.id.signUpButton:
-                    //Log.e("클릭", "클릭");
-                    signup();
+                    String email = ((EditText)findViewById(R.id.emailEditText)).getText().toString();
+                    String password = ((EditText)findViewById(R.id.passwordEditText)).getText().toString();
+                    String passwordCheck = ((EditText)findViewById(R.id.passwordCheckEditText)).getText().toString();
+                    final String nickName = ((EditText)findViewById(R.id.nickNameEditText)).getText().toString();
+                    if(isValidEmail(email)){
+                        if(isValidPassword(password)){
+                            if(password.equals(passwordCheck) && isValidPassword(passwordCheck)){
+                                if(isValidNickName(nickName)){
+                                    final int[] check = {0};
+                                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                    db.collection("users")
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                            //Log.d(TAG, document.getId() + " => " + document.getData());
+                                                            if(nickName.equals(document.getData().get("nickName").toString())){
+                                                                check[0]++;
+                                                                break;
+                                                            }
+                                                        }
+                                                    } else {
+                                                        //Log.d(TAG, "Error getting documents: ", task.getException());
+                                                    }
+                                                    if(check[0] == 0){
+                                                        signup();
+                                                    } else {
+                                                        startToast("중복된 닉네임 입니다.");
+                                                    }
+                                                }
+                                            });
+                                } else {
+                                    startToast("닉네임을 확인해 주세요.");
+                                }
+                            } else {
+                                startToast("비밀번호가 일치하지 않습니다.");
+                            }
+                        } else {
+                            startToast("비밀번호를 확인해 주세요.(8~20 글자, 영문, 숫자, 특수문자 1자리 필수)");
+                        }
+                    } else {
+                        startToast("이메일 주소를 확인해 주세요.");
+                    }
                     break;
                 case R.id.kakaoSignUpButton:
                     startToast("카카오톡 회원가입");
@@ -138,33 +181,10 @@ public class SignUpActivity extends AppCompatActivity {
 
     public static boolean isValidNickName(final String nickName){
         boolean err = false;
-        final int[] check = {0};
-
-        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document();
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null) {
-                        if (document.exists()) {
-                            if(nickName == document.getData().get("nickName").toString()){
-                               check[0]++;
-                            }
-                        } else {
-                            Log.d(TAG, "No such document");
-                        }
-                    }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
-
         String regex = "^[a-zA-Z0-9]*$";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(nickName);
-        if(m.matches() && check[0] == 0){
+        if(m.matches()){
             if(nickName.length() > 1 && nickName.length() < 9){
                 err = true;
             }
@@ -172,89 +192,59 @@ public class SignUpActivity extends AppCompatActivity {
         return err;
     }
 
-
     private void signup(){
         String email = ((EditText)findViewById(R.id.emailEditText)).getText().toString();
         String password = ((EditText)findViewById(R.id.passwordEditText)).getText().toString();
-        String passwordCheck = ((EditText)findViewById(R.id.passwordCheckEditText)).getText().toString();
-        String nickName = ((EditText)findViewById(R.id.nickNameEditText)).getText().toString();
 
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            //Log.d(TAG, "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
 
-        if(isValidEmail(email)){
-            if(isValidPassword(password)){
-                if(password.equals(passwordCheck) && isValidPassword(passwordCheck)){
-                    if(isValidNickName(nickName)){
-                        mAuth.createUserWithEmailAndPassword(email, password)
-                                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        if (task.isSuccessful()) {
-                                            // Sign in success, update UI with the signed-in user's information
-                                            //Log.d(TAG, "createUserWithEmail:success");
-                                            FirebaseUser user = mAuth.getCurrentUser();
+                            String email = ((EditText)findViewById(R.id.emailEditText)).getText().toString();
+                            String password = ((EditText)findViewById(R.id.passwordEditText)).getText().toString();
+                            String nickName = ((EditText)findViewById(R.id.nickNameEditText)).getText().toString();
 
-                                            String email = ((EditText)findViewById(R.id.emailEditText)).getText().toString();
-                                            String password = ((EditText)findViewById(R.id.passwordEditText)).getText().toString();
-                                            String nickName = ((EditText)findViewById(R.id.nickNameEditText)).getText().toString();
+                            //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                                            //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                            FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-                                            MemberInfo memberInfo = new MemberInfo(email, password, nickName, "");
-                                            db.collection("users").document(user.getUid()).set(memberInfo)
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            startToast("회원가입에 성공하였습니다.");
-                                                            //startToast("회원정보등록을 성공하였습니다.");
-                                                            Log.d(TAG, "DocumentSnapshot successfully written!");
-                                                            FirebaseAuth.getInstance().signOut();
-                                                            startLoginActivity();
-                                                            finishAffinity();
-                                                        }
-                                                    })
-                                                    .addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            startToast("입력 정보를 확인해주세요.");
-                                                            Log.w(TAG, "Error writing document", e);
-                                                        }
-                                                    });
-
-                                        } else {
-                                            // If sign in fails, display a message to the user.
-                                            //Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                            //Log.w(TAG, task.getException());
-                                            if(task.getException() != null){
-                                                startToast("이미 존재하는 이메일 입니다.");
-                                            }
+                            MemberInfo memberInfo = new MemberInfo(email, password, nickName, "");
+                            db.collection("users").document(user.getUid()).set(memberInfo)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            startToast("회원가입에 성공하였습니다.");
+                                            //startToast("회원정보등록을 성공하였습니다.");
+                                            Log.d(TAG, "DocumentSnapshot successfully written!");
+                                            FirebaseAuth.getInstance().signOut();
+                                            startLoginActivity();
+                                            finishAffinity();
                                         }
-                                    }
-                                });
-                    } else {
-                        startToast("닉네임을 확인해 주세요.");
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            startToast("입력 정보를 확인해주세요.");
+                                            Log.w(TAG, "Error writing document", e);
+                                        }
+                                    });
+
+                        } else {
+                            if(task.getException() != null){
+                                startToast("이미 존재하는 이메일 입니다.");
+                            }
+                        }
                     }
-                } else {
-                    startToast("비밀번호가 일치하지 않습니다.");
-                }
-            } else {
-                startToast("비밀번호를 확인해 주세요.(8~20 글자, 영문, 숫자, 특수문자 1자리 필수)");
-            }
-        } else {
-            startToast("이메일 주소를 확인해 주세요.");
-        }
+                });
     }
 
     private void startToast(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
-
-//    public void onBackPressed(){
-//        super.onBackPressed();
-//        moveTaskToBack(true);
-//        android.os.Process.killProcess(android.os.Process.myPid());
-//        System.exit(1);
-//    }
 
     private final TextWatcher textWatcherEmail = new TextWatcher() {
         @Override
