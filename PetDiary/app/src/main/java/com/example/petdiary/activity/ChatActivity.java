@@ -161,7 +161,7 @@ public class ChatActivity extends AppCompatActivity {
         DatabaseReference ref = database.getReference("message");
         ref.addChildEventListener(childEventListener);
 
-        
+
         //보내기Send
 
         btnSend.setOnClickListener(new View.OnClickListener() {
