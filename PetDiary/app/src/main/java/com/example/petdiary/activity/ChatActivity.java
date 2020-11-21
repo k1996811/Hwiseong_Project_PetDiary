@@ -213,14 +213,14 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     String[] sImg;
-    String[] bit;
+    String[] uri;
     ImageView iv;
     String ca;
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         sImg = new String[9];
-        bit = new String[9];
+        uri = new String[9];
         ca = new String();
         iv = findViewById(R.id.ivChat);
         switch (requestCode) {
@@ -230,13 +230,13 @@ public class ChatActivity extends AppCompatActivity {
 
                     for (int i = 0; i < 9; i++) {
                         sImg[i] = data.getStringExtra("postImgPath" + i + "");
-                        bit[i] = data.getStringExtra("bit" + i + "");
+                        uri[i] = data.getStringExtra("bit" + i + "");
 
-                        if (bit[i] != null) {
+                        if (uri[i] != null) {
 
                             FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
                             final StorageReference storageRef = storage.getReference();
-                            setImage(bit[i]);
+                            setImage(uri[i]);
 
                             database = FirebaseDatabase.getInstance();
 
@@ -249,7 +249,7 @@ public class ChatActivity extends AppCompatActivity {
                             Hashtable<String, String> numbers
                                     = new Hashtable<String, String>();
                             numbers.put("email", stEmail);
-                            numbers.put("image", bit[i] + "");
+                            numbers.put("image", uri[i] + "");
                             myRef.setValue(numbers);
 
                             recyclerView.post(new Runnable() {
@@ -294,8 +294,8 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void setImage(String bit) {
-        Glide.with(this).load(bit).into(iv);
+    private void setImage(String uri) {
+        Glide.with(this).load(uri).into(iv);
     }
 
 }

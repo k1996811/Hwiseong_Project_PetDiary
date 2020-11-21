@@ -93,10 +93,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         }
         else if (mDataset.get(position).getText() == null){
             Uri i = Uri.parse(mDataset.get(position).getImage()+"");
-<<<<<<< HEAD
             System.out.println(mDataset.get(position).getImage()+"qqqq");
-=======
->>>>>>> c6f64bf4c6cf99b29f1fcc1673ea9d8b0f43bf10
             holder.imageView.setImageURI(i);
         }
         //holder.imageView.setImageResource(mDataset.get(position).get);

@@ -97,7 +97,7 @@ public class ImageChoicePopupActivity2 extends Activity {
                         sImg[i] = sendPicture(clipData.getItemAt(i).getUri());
                         Log.d("vcxz", sImg[i]);
                         resultIntent2.putExtra("postImgPath" + i + "", name[i]);
-                        resultIntent2.putExtra("bit" + i + "", sImg[i]);
+                        resultIntent2.putExtra("uri" + i + "", sImg[i]);
 
 
                         StorageReference riversRef = storageRef.child("chatImage/" + file.getLastPathSegment());
