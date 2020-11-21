@@ -38,16 +38,11 @@ public class SettingResetPasswordActivity extends AppCompatActivity {
     private String email;
     private String nickName;
     private String password;
-    private String currentPassword;
 
-    private boolean checkCurrentPassword = false;
 
-    EditText currentPasswordEditText;
     EditText passwordEditText;
     EditText passwordCheckEditText;
 
-    ImageView currentPasswordCheckedImg;
-    ImageView currentPasswordUnCheckedImg;
     ImageView passwordCheckedImg;
     ImageView passwordUnCheckedImg;
     ImageView passwordCheckCheckedImg;
@@ -66,16 +61,12 @@ public class SettingResetPasswordActivity extends AppCompatActivity {
         findViewById(R.id.okButton).setOnClickListener(onClickListener);
         findViewById(R.id.cancelButton).setOnClickListener(onClickListener);
 
-        currentPasswordEditText = findViewById(R.id.currentPasswordEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         passwordCheckEditText = findViewById(R.id.passwordCheckEditText);
 
-        currentPasswordEditText.addTextChangedListener(textWatcherCurrentPassword);
         passwordEditText.addTextChangedListener(textWatcherPassword);
         passwordCheckEditText.addTextChangedListener(textWatcherPasswordCheck);
 
-        currentPasswordCheckedImg = findViewById(R.id.currentPasswordCheckedImg);
-        currentPasswordUnCheckedImg = findViewById(R.id.currentPasswordUnCheckedImg);
         passwordCheckedImg = findViewById(R.id.passwordCheckedImg);
         passwordUnCheckedImg = findViewById(R.id.passwordUnCheckedImg);
         passwordCheckCheckedImg = findViewById(R.id.passwordCheckCheckedImg);
@@ -88,7 +79,7 @@ public class SettingResetPasswordActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.okButton:
-                    setInfo();
+                    //setInfo();
                     setPassword();
                     break;
                 case R.id.cancelButton:
@@ -110,91 +101,84 @@ public class SettingResetPasswordActivity extends AppCompatActivity {
         return err;
     }
 
-    private void setInfo(){
-        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    //Log.d("@@@", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    if (document != null) {
-                        if (document.exists()) {
-                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                            email = document.getData().get("email").toString();
-                            nickName = document.getData().get("nickName").toString();
-                            currentPassword = document.getData().get("password").toString();
-                        } else {
-                            Log.d(TAG, "No such document");
-                        }
-                    }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
-    }
+//    private void setInfo(){
+//        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    //Log.d("@@@", FirebaseAuth.getInstance().getCurrentUser().getUid());
+//                    if (document != null) {
+//                        if (document.exists()) {
+//                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+//                            email = document.getData().get("email").toString();
+//                            nickName = document.getData().get("nickName").toString();
+//                        } else {
+//                            Log.d(TAG, "No such document");
+//                        }
+//                    }
+//                } else {
+//                    Log.d(TAG, "get failed with ", task.getException());
+//                }
+//            }
+//        });
+//    }
 
     private void setPassword(){
         password = ((EditText)findViewById(R.id.passwordEditText)).getText().toString();
         String passwordCheck = ((EditText)findViewById(R.id.passwordCheckEditText)).getText().toString();
 
-        if(checkCurrentPassword){
-            if(isValidPassword(password)){
-                if(password.equals(passwordCheck) && isValidPassword(passwordCheck)){
+        if(isValidPassword(password)){
+            if(password.equals(passwordCheck) && isValidPassword(passwordCheck)){
 
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    final String newPassword = password;
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                final String newPassword = password;
 
 
-                    user.updatePassword(newPassword)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        startToast("비밀번호가 변경되었습니다.");
-                                        //Log.d(TAG, "User password updated.");
+                user.updatePassword(newPassword)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    startToast("비밀번호가 변경되었습니다.");
+                                    //Log.d(TAG, "User password updated.");
 
-                                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                                        login();
+                                    login();
 
-                                        DocumentReference washingtonRef = db.collection("users").document(user.getUid());
-                                        washingtonRef
-                                                .update("password", newPassword)
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        Log.d(TAG, "DocumentSnapshot successfully updated!");
-                                                    }
-                                                })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Log.w(TAG, "Error updating document", e);
-                                                    }
-                                                });
+                                    DocumentReference washingtonRef = db.collection("users").document(user.getUid());
+                                    washingtonRef
+                                            .update("password", newPassword)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w(TAG, "Error updating document", e);
+                                                }
+                                            });
 
-                                        finish();
+                                    finish();
 
-                                    } else {
-                                        startToast(task.getException().toString());
-                                        //Log.d("@@@TAG", task.getException().toString());
-                                    }
+                                } else {
+                                    startToast(task.getException().toString());
+                                    //Log.d("@@@TAG", task.getException().toString());
                                 }
-                            });
-                } else {
-                    startToast("비밀번호가 일치하지 않습니다.");
-                }
+                            }
+                        });
             } else {
-                startToast("비밀번호를 확인해 주세요.(8~20 글자, 영문, 숫자, 특수문자 1자리 필수)");
+                startToast("비밀번호가 일치하지 않습니다.");
             }
         } else {
-            startToast("현재 비밀번호를 확인해주세요.");
+            startToast("비밀번호를 확인해 주세요.(8~20 글자, 영문, 숫자, 특수문자 1자리 필수)");
         }
-
-
     }
 
     private void login(){
@@ -218,38 +202,11 @@ public class SettingResetPasswordActivity extends AppCompatActivity {
                 });
     }
 
-
-    private void startMainActivity(){
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
-
     private void startToast(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    private final TextWatcher textWatcherCurrentPassword = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            setInfo();
-            if(currentPasswordEditText.getText().toString().equals(currentPassword)){
-                checkCurrentPassword = true;
-                currentPasswordUnCheckedImg.setVisibility(View.INVISIBLE);
-                currentPasswordCheckedImg.setVisibility(View.VISIBLE);
-            } else {
-                checkCurrentPassword = false;
-                currentPasswordCheckedImg.setVisibility(View.INVISIBLE);
-                currentPasswordUnCheckedImg.setVisibility(View.VISIBLE);
-            }
-        }
-        @Override
-        public void afterTextChanged(Editable s) {
-        }
-    };
+
 
     private final TextWatcher textWatcherPassword = new TextWatcher() {
         @Override

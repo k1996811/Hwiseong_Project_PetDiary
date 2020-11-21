@@ -2,10 +2,10 @@
 
 package com.example.petdiary.activity;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
+
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -13,14 +13,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 
+import com.bumptech.glide.Glide;
 import com.example.petdiary.R;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
 
 public class ProfileEditActivity extends AppCompatActivity {
     ImageView editIcon;
@@ -36,13 +48,20 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     //State
     boolean isEdit = false;
+    String preImage;
     String preName;
     String preMemo;
 
 
+    boolean isImageEdit = false;
+    String postImgPath;  // 갤러리 눌러서 가져온 파일 이름
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_edit);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
 
         editIcon = findViewById(R.id.userPage_editIcon);
         userImage = findViewById(R.id.userPage_Image);
@@ -58,55 +77,15 @@ public class ProfileEditActivity extends AppCompatActivity {
         targetId = intent.getExtras().getString("targetId");
         userName.setText(intent.getExtras().getString("userName"));
         userMemo.setText(intent.getExtras().getString("userMemo"));
-        userImage.setImageResource(intent.getExtras().getInt("userImage"));
+        //userImage.setImageResource(intent.getExtras().getInt("userImage"));
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
-
-
+        preImage = intent.getExtras().getString("userImage");
+        setProfileImg(preImage);
 
         userImage.setOnClickListener(onClickListener);
-
-        // 수정버튼
-        editIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (editIcon.isClickable()) {
-                    isEdit = true;
-
-                    preName = userName.getText().toString();
-                    preMemo = userMemo.getText().toString();
-
-                    setEditIcon(false);
-                    setEditMode(true);
-
-                }
-
-            }
-        });
-
-        // 취소버튼
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                userName.setText(preName);
-                userMemo.setText(preMemo);
-
-                setEditIcon(true);
-                setEditMode(false);
-            }
-        });
-
-        // 저장버튼
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 서버에 변경된 데이터 보내는 코드 필요
-                setEditIcon(true);
-                setEditMode(false);
-            }
-        });
-
+        editIcon.setOnClickListener(onClickListener);
+        cancelBtn.setOnClickListener(onClickListener);
+        saveBtn.setOnClickListener(onClickListener);
 
         if (userId.equals(targetId)) {
             setEditIcon(true);
@@ -114,20 +93,45 @@ public class ProfileEditActivity extends AppCompatActivity {
             setEditIcon(false);
         }
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            //myStartActivity(SignUpActivity.class);
+        } else {
+        }
+
     }
 
     // 이벤트 리스너
-    View.OnClickListener onClickListener = new View.OnClickListener(){
-
+    View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch(v.getId())
-            {
-                case R.id.userPage_Image:
-                    Toast.makeText(getApplicationContext(), "ㅠㅠ눌렸다....", Toast.LENGTH_SHORT).show();
-                    startPopupActivity();
+            switch (v.getId()) {
+                case R.id.userPage_editIcon:  // 편집 버튼 선택
+                    if (editIcon.isClickable()) {
+                        isEdit = true;
+                        preName = userName.getText().toString();
+                        preMemo = userMemo.getText().toString();
+                        setEditIcon(false);
+                        setEditMode(true);
+                    }
                     break;
-
+                case R.id.userPage_Image:   // 프로필 사진 선택
+                    if (isEdit)
+                        startPopupActivity();
+                    break;
+                case R.id.userPage_save:    // 저장 버튼 선택
+                    setEditIcon(true);
+                    setEditMode(false);
+                    setProfileImg(postImgPath);
+                    break;
+                case R.id.userPage_cancel:  // 취소 버튼 선택
+                    isImageEdit = false;
+                    setProfileImg(preImage);
+                    userName.setText(preName);
+                    userMemo.setText(preMemo);
+                    setEditIcon(true);
+                    setEditMode(false);
+                    break;
             }
         }
     };
@@ -142,6 +146,21 @@ public class ProfileEditActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 0: // 갤러리에서 이미지 선택시
+                if (resultCode == RESULT_OK) {
+                    isImageEdit = true;
+                    postImgPath = data.getStringExtra("postImgPath");
+                    setProfileImg(postImgPath);
+                }
+                break;
+        }
+    }
+
+
+    // 편집버튼 상태 변경 on/off
     private void setEditIcon(boolean isShown) {
         if (isShown)
             editIcon.setVisibility(View.VISIBLE);
@@ -149,15 +168,14 @@ public class ProfileEditActivity extends AppCompatActivity {
             editIcon.setVisibility(View.INVISIBLE);
 
         editIcon.setClickable(isShown);
-
     }
 
-
+    // 편집 버튼 상태에 따른 이름, 메모, 저장, 취소버튼 상태 변경
     private void setEditMode(boolean isEditMode) {
         if (isEditMode) {
+            isEdit = true;
             userName.setBackgroundColor(getBaseContext().getResources().getColor(R.color.colorAccent));
             userName.setFocusableInTouchMode(true);
-
 
             userMemo.setBackgroundColor(getBaseContext().getResources().getColor(R.color.colorAccent));
             userMemo.setFocusableInTouchMode(true);
@@ -165,6 +183,7 @@ public class ProfileEditActivity extends AppCompatActivity {
             saveBtn.setVisibility(View.VISIBLE);
             cancelBtn.setVisibility(View.VISIBLE);
         } else {
+            isEdit = false;
             userName.setBackground(null);
             userName.setFocusableInTouchMode(false);
             userName.setFocusable(false);
@@ -179,14 +198,52 @@ public class ProfileEditActivity extends AppCompatActivity {
     }
 
 
+    // 프로필 이미지 변경 함수
+    private void setProfileImg(String profileImg) {
+        Log.d("IR", "setProfileImg: " + profileImg);
+        Glide.with(this).load(profileImg).centerCrop().override(500).into(userImage);
+    }
 
 
-
+    // 갤러리 열기 위한 팝업생성 함수 
     private void startPopupActivity() {
         Intent intent = new Intent(getApplicationContext(), ImageChoicePopupActivity.class);
         startActivityForResult(intent, 0);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isImageEdit) {
+            Intent intent = new Intent();
+            intent.putExtra("postImgPath", postImgPath);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
+        }
+        super.onBackPressed();
+    }
 
 
+    private void setImg() {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        StorageReference storageRef = storage.getReference();
+
+        storageRef.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+
+                String profileImg = uri.toString();
+//                while(profileImg.length() == 0){
+//                    continue;
+//                }
+                //Log.e("@@@!", profileImg);
+                setProfileImg(profileImg);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+    }
 }

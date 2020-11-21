@@ -35,6 +35,7 @@ import java.io.IOException;
 
 public class ImageChoicePopupActivity2 extends Activity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,11 +67,13 @@ public class ImageChoicePopupActivity2 extends Activity {
     String[] sImg;
     int PICK_IMAGE_MULTIPLE = 1;
     String[] name;
+    String ca;
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Get a non-default Storage bucket
         FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
         StorageReference storageRef = storage.getReference();
         Intent resultIntent2 = new Intent();
+        ca = new String();
 
         super.onActivityResult(requestCode, resultCode, data);
         ClipData clipData = data.getClipData();
@@ -90,13 +93,15 @@ public class ImageChoicePopupActivity2 extends Activity {
                         name[i] = getImageNameToUri(data.getData());
 
                         Uri file = Uri.fromFile(new File(getPath(clipData.getItemAt(i).getUri())));
-                        sImg[i] = clipData.getItemAt(i).getUri().toString();
+                        //sImg[i] = clipData.getItemAt(i).getUri().toString();
+                        sImg[i] = sendPicture(clipData.getItemAt(i).getUri());
                         Log.d("vcxz", sImg[i]);
                         resultIntent2.putExtra("postImgPath" + i + "", name[i]);
                         resultIntent2.putExtra("bit" + i + "", sImg[i]);
 
 
                         StorageReference riversRef = storageRef.child("chatImage/" + file.getLastPathSegment());
+
                         UploadTask uploadTask = riversRef.putFile(file);
                         uploadTask.addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -110,11 +115,20 @@ public class ImageChoicePopupActivity2 extends Activity {
                                 // ...
                             }
                         });
+
                     }
                 }
             }
             setResult(Activity.RESULT_OK, resultIntent2);
             finish();
+        }else{
+            if(resultCode == RESULT_OK){
+                postImgPath = data.getStringExtra("postImgPath");
+                resultIntent2 = new Intent();
+                resultIntent2.putExtra("camera", postImgPath);
+                setResult(2, resultIntent2);
+                finish();
+            }
         }
     }
 
@@ -131,6 +145,7 @@ public class ImageChoicePopupActivity2 extends Activity {
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
         return imagePath;
     }
+
 
     private String getRealPathFromURI(Uri contentUri) {
         int column_index = 0;
@@ -152,7 +167,7 @@ public class ImageChoicePopupActivity2 extends Activity {
 
     private void StartActivity(Class c){
         Intent intent = new Intent(this, c);
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, 2);
     }
     private void startToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
@@ -191,6 +206,7 @@ public class ImageChoicePopupActivity2 extends Activity {
         cursor.moveToFirst(); String imgPath = cursor.getString(column_index);
         String imgName = imgPath.substring(imgPath.lastIndexOf("/")+1); return imgName;
     }
+
 
 
 

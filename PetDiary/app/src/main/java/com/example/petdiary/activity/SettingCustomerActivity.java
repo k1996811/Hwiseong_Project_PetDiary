@@ -1,35 +1,25 @@
 package com.example.petdiary.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.petdiary.ContentDTO;
 import com.example.petdiary.CostomerCenterInfo;
-import com.example.petdiary.MemberInfo;
 import com.example.petdiary.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -43,6 +33,8 @@ public class SettingCustomerActivity extends AppCompatActivity {
     private String contents;
     private String date;
 
+    TextView contentsLengthTextView;
+    EditText content;
 
     private FirebaseDatabase firebaseDatabase;
     RelativeLayout loaderLayout;
@@ -53,6 +45,28 @@ public class SettingCustomerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting_customer);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        contentsLengthTextView = (TextView) findViewById(R.id.contentsLengthTextView);
+
+        content = (EditText) findViewById(R.id.contents);
+
+        content.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String input = content.getText().toString();
+                contentsLengthTextView.setText(input.length()+" / 100");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         String[] items = {"회원정보", "게시글", "신고", "제안"};
         spinner = (Spinner) findViewById(R.id.contactTypesSpinner);
@@ -103,7 +117,7 @@ public class SettingCustomerActivity extends AppCompatActivity {
         contents = ((EditText) findViewById(R.id.contents)).getText().toString();
         long now = System.currentTimeMillis();
         Date nowdate = new Date(now);
-        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd kk:mm:ss");
         date = sdfNow.format(nowdate);
 
         DatabaseReference customerCenter = firebaseDatabase.getReference().child("customerCenter").push();

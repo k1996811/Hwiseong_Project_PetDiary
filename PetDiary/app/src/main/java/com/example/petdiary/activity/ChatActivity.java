@@ -61,7 +61,6 @@ public class ChatActivity extends AppCompatActivity {
     EditText etText;
     Button btnSend, picture;
     String stEmail;
-    ImageView ivUser;
 
     ArrayList<Chat> chatArrayList;
     MyAdapter mAdapter;
@@ -72,6 +71,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chatroom);
 
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         ActionBar actionBar = getSupportActionBar();
@@ -80,7 +80,6 @@ public class ChatActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-
 
         chatArrayList = new ArrayList<>();
         //stEmail = getIntent().getStringExtra("email");
@@ -96,7 +95,6 @@ public class ChatActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        Log.d("xxx", "cccc1" + stEmail);
         mAdapter = new MyAdapter(chatArrayList, stEmail);
         recyclerView.setAdapter(mAdapter);
 
@@ -110,6 +108,8 @@ public class ChatActivity extends AppCompatActivity {
                 String commentKey = dataSnapshot.getKey();
                 String stEmail = chat.getEmail();
                 String stText = chat.getText();
+                String stImage = chat.getImage();
+                Log.d(TAG, "stImage:" + stImage+"");
                 Log.d(TAG, "stEmail:" + stEmail);
                 Log.d(TAG, "stText:" + stText);
                 chatArrayList.add(chat);
@@ -161,40 +161,43 @@ public class ChatActivity extends AppCompatActivity {
         DatabaseReference ref = database.getReference("message");
         ref.addChildEventListener(childEventListener);
 
-
+        
         //보내기Send
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String stText = etText.getText().toString();
-                Toast.makeText(ChatActivity.this, "MSG : " + stText, Toast.LENGTH_SHORT).show();
-                etText.getText().clear();
+                if (etText.getText().toString().length() > 0) {
+                    String stText = etText.getText().toString();
 
-                // Write a message to the database
-                database = FirebaseDatabase.getInstance();
-
-                Calendar c = Calendar.getInstance();
-                SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                String datetime = dateformat.format(c.getTime());
-
-                DatabaseReference myRef = database.getReference("message").child(datetime);
-
-                Hashtable<String, String> numbers
-                        = new Hashtable<String, String>();
-                numbers.put("email", stEmail);
-                numbers.put("text", stText);
-                myRef.setValue(numbers);
-
-                recyclerView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
-                    }
-                });
+                    Toast.makeText(ChatActivity.this, "MSG : " + stText, Toast.LENGTH_SHORT).show();
+                    etText.getText().clear();
 
 
+                    // Write a message to the database
+                    database = FirebaseDatabase.getInstance();
+
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
+                    String datetime = dateformat.format(c.getTime());
+
+                    DatabaseReference myRef = database.getReference("message").child(datetime);
+
+                    Hashtable<String, String> numbers
+                            = new Hashtable<String, String>();
+                    numbers.put("email", stEmail);
+                    numbers.put("text", stText);
+                    myRef.setValue(numbers);
+
+                    recyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                        }
+                    });
+
+                }
             }
         });
 
@@ -204,123 +207,95 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ChatActivity.this, ImageChoicePopupActivity2.class);
-                startActivityForResult(intent,0);
+                startActivityForResult(intent, 0);
             }
         });
-
     }
-    private File tempFile;
-    String [] sImg;
-    String [] bit;
+
+    String[] sImg;
+    String[] bit;
     ImageView iv;
+    String ca;
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        iv = findViewById(R.id.guest);
         sImg = new String[9];
         bit = new String[9];
-        switch(requestCode){
+        ca = new String();
+        iv = findViewById(R.id.ivChat);
+        switch (requestCode) {
             case 0:
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
 
-                    for(int i = 0; i < 9; i++) {
+
+                    for (int i = 0; i < 9; i++) {
                         sImg[i] = data.getStringExtra("postImgPath" + i + "");
                         bit[i] = data.getStringExtra("bit" + i + "");
-                        if (sImg[i] != null) {
-                            Uri photoUri = Uri.parse(bit[i]);
-                            Cursor cursor = null;
-                            try {
 
-                                /*
-                                 *  Uri 스키마를
-                                 *  content:/// 에서 file:/// 로  변경한다.
-                                 */
-                                String[] proj = { MediaStore.Images.Media.DATA };
-
-                                assert photoUri != null;
-                                cursor = getContentResolver().
-                                        query(photoUri, proj, null, null, null);
-
-
-
-                                assert cursor != null;
-                                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-                                cursor.moveToFirst();
-                                tempFile = new File(cursor.getString(column_index));
-
-
-                            } finally {
-                                if (cursor != null) {
-                                    cursor.close();
-                                }
-                            }
-
+                        if (bit[i] != null) {
 
                             FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
                             final StorageReference storageRef = storage.getReference();
-                            storageRef.child("chatImage/"+sImg[i]).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
-                                @Override
-                                public void onSuccess(Uri uri){
+                            setImage(bit[i]);
 
+                            database = FirebaseDatabase.getInstance();
 
-                                    //iv.setImageBitmap(b);
-                                    //이미지 로드 성공시
-                                    Glide.with(getApplicationContext())
-                                            .load(storageRef)
-                                            .into(iv);
-                                    setImage();
-                                    Toast.makeText(getApplicationContext(), "다운로드 성공 : "+ uri, Toast.LENGTH_SHORT).show();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
+                            Calendar c = Calendar.getInstance();
+                            SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss" + "_" + i);
+                            String datetime = dateformat.format(c.getTime());
+
+                            DatabaseReference myRef = database.getReference("message").child(datetime);
+
+                            Hashtable<String, String> numbers
+                                    = new Hashtable<String, String>();
+                            numbers.put("email", stEmail);
+                            numbers.put("image", bit[i] + "");
+                            myRef.setValue(numbers);
+
+                            recyclerView.post(new Runnable() {
                                 @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getApplicationContext(), "실패", Toast.LENGTH_SHORT).show();
+                                public void run() {
+                                    recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
                                 }
                             });
-
                         }
-
-                        database = FirebaseDatabase.getInstance();
-
-                        Calendar c = Calendar.getInstance();
-                        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                        String datetime = dateformat.format(c.getTime());
-
-                        DatabaseReference myRef = database.getReference("message").child(datetime);
-
-                        Hashtable<String, String> numbers
-                                = new Hashtable<String, String>();
-                        numbers.put("email", stEmail);
-                        numbers.put("image", sImg[i]+"");
-                        myRef.setValue(numbers);
-
-                        recyclerView.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
-                            }
-                        });
 
                     }
 
+                } else if (resultCode == 2) {
+                    ca = data.getStringExtra("camera");
+                    FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
+                    final StorageReference storageRef = storage.getReference();
+                    setImage(ca);
 
+                    database = FirebaseDatabase.getInstance();
 
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
+                    String datetime = dateformat.format(c.getTime());
 
-                } else {
+                    DatabaseReference myRef = database.getReference("message").child(datetime);
+
+                    Hashtable<String, String> numbers
+                            = new Hashtable<String, String>();
+                    numbers.put("email", stEmail);
+                    numbers.put("image", ca);
+                    myRef.setValue(numbers);
+
+                    recyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                        }
+                    });
+
                 }
-                iv.setVisibility(View.INVISIBLE);
                 break;
         }
     }
-    private void setImage() {
-        ImageView imageView = findViewById(R.id.guest);
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
-
-        imageView.setImageBitmap(originalBm);
-
+    private void setImage(String bit) {
+        Glide.with(this).load(bit).into(iv);
     }
 
 }

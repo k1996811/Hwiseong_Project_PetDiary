@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ContentDTO {
+public class PostInfo {
 
     private int num;
     private String uid;

@@ -1,17 +1,17 @@
 package com.example.petdiary;
 
 public class Data {
-
-    private String title;
+    private String imageUrl1;
     private String content;
-    private int resId;
 
-    public String getTitle() {
-        return title;
+    public Data() { }
+
+    public String getImageUrl1() {
+        return imageUrl1;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setImageUrl1(String imageUrl1) {
+        this.imageUrl1 = imageUrl1;
     }
 
     public String getContent() {
@@ -20,13 +20,5 @@ public class Data {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public int getResId() {
-        return resId;
-    }
-
-    public void setResId(int resId) {
-        this.resId = resId;
     }
 }

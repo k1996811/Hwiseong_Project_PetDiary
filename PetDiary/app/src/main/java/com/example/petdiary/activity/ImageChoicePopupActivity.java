@@ -11,6 +11,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
@@ -71,28 +72,6 @@ public class ImageChoicePopupActivity extends Activity {
             case 1:
                 if(resultCode == RESULT_OK){
                     postImgPath = data.getStringExtra("postImgPath");
-<<<<<<< HEAD
-                    Log.d("abcde2",postImgPath+"");
-                    //Log.e("@@@icp-gallery", profilePath);
-//                    FirebaseStorage storage = FirebaseStorage.getInstance();
-//                    final StorageReference storageRef = storage.getReference();
-//                    final UploadTask[] uploadTask = new UploadTask[1];
-//
-//                    final Uri file = Uri.fromFile(new File(profilePath));
-//                    StorageReference riversRef = storageRef.child("users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid() +"_profileImage.jpg");
-//                    uploadTask[0] = riversRef.putFile(file);
-//
-//                    uploadTask[0].addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception exception) {
-//                        }
-//                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                        }
-//                    });
-=======
->>>>>>> 7b2c7a764316f448b16cd6d10d83862ff2190b5a
                     Intent resultIntent2 = new Intent();
                     resultIntent2.putExtra("postImgPath", postImgPath);
                     setResult(Activity.RESULT_OK, resultIntent2);
@@ -143,6 +122,7 @@ public class ImageChoicePopupActivity extends Activity {
     private void startToast(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
+
 //    @Override
 //    public boolean onTouchEvent(MotionEvent event) {
 //        //바깥레이어 클릭시 안닫히게
@@ -158,10 +138,5 @@ public class ImageChoicePopupActivity extends Activity {
 //        return;
 //    }
 
-<<<<<<< HEAD
-
-}
-=======
 }
 
->>>>>>> 7b2c7a764316f448b16cd6d10d83862ff2190b5a

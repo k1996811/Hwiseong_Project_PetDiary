@@ -1,6 +1,6 @@
-package com.example.petdiary.adapter;
-
+package com.example.petdiary;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
@@ -14,25 +14,28 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.petdiary.Comment;
-import com.example.petdiary.Data;
-import com.example.petdiary.Expand_ImageView;
-import com.example.petdiary.R;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
+public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomViewHolder> {
 
-public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.ItemViewHolder> {
+    private ArrayList<Data> arrayList;
+    private Context context;
+    //어댑터에서 액티비티 액션을 가져올 때 context가 필요한데 어댑터에는 context가 없다.
+    //선택한 액티비티에 대한 context를 가져올 때 필요하다.
 
-    // adapter에 들어갈 list 입니다.
-    private ArrayList<Data> listData = new ArrayList<>();
+    public CustomAdapter(ArrayList<Data> arrayList, Context context) {
+        this.arrayList = arrayList;
+        this.context = context;
+    }
 
     @NonNull
     @Override
-    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // LayoutInflater를 이용하여 전 단계에서 만들었던 item.xml을 inflate 시킵니다.
-        // return 인자는 ViewHolder 입니다.
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
+    //실제 리스트뷰가 어댑터에 연결된 다음에 뷰 홀더를 최초로 만들어낸다.
+    public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
+        CustomViewHolder holder = new CustomViewHolder(view);
 
         view.findViewById(R.id.Comment_btn).setOnClickListener(new View.OnClickListener(){
             @Override
@@ -46,12 +49,11 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.ItemVi
         view.findViewById(R.id.main_image).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(v.getContext(), Expand_ImageView.class);
                 v.getContext().startActivity(intent);
             }
         });
-
-
 
 
         view.findViewById(R.id.onPopupButton).setOnClickListener(new View.OnClickListener(){
@@ -103,61 +105,34 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.ItemVi
             }
         });
 
-
-
-
-
-
-
-
-        return new ItemViewHolder(view);
+        return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        // Item을 하나, 하나 보여주는(bind 되는) 함수입니다.
-        holder.onBind(listData.get(position));
-
+    public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
+        Glide.with(holder.itemView)
+                .load(arrayList.get(position).getImageUrl1())
+                .into(holder.imageUrl1);
+        holder.content.setText(arrayList.get(position).getContent());
 
     }
 
     @Override
     public int getItemCount() {
-        // RecyclerView의 총 개수 입니다.
-        return listData.size();
+        // 삼항 연산자
+        return (arrayList != null ? arrayList.size() : 0);
     }
 
-    public void addItem(Data data) {
-        // 외부에서 item을 추가시킬 함수입니다.
-        listData.add(data);
-    }
+    public class CustomViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageUrl1;
+        TextView content;
 
-    // RecyclerView의 핵심인 ViewHolder 입니다.
-    // 여기서 subView를 setting 해줍니다.
-    class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView textView1;
-        private TextView textView2;
-        private ImageView imageView;
-
-        ItemViewHolder(View itemView) {
+        public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
+            this.imageUrl1 = itemView.findViewById(R.id.main_image);
+            this.content = itemView.findViewById(R.id.main_textView);
 
-            textView1 = itemView.findViewById(R.id.Profile_Name);
-            textView2 = itemView.findViewById(R.id.main_textView);
-            imageView = itemView.findViewById(R.id.main_image);
-        }
-
-        void onBind(Data data) {
-            textView1.setText(data.getTitle());
-            textView2.setText(data.getContent());
-            imageView.setImageResource(data.getResId());
         }
     }
-
-
-
-
-
-
 }

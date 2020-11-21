@@ -1,5 +1,6 @@
 package com.example.petdiary.activity;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -12,6 +13,7 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.petdiary.PreferenceManager;
 import com.example.petdiary.R;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class SettingNotificationActivity extends AppCompatActivity {
 
@@ -86,10 +88,12 @@ public class SettingNotificationActivity extends AppCompatActivity {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if(isChecked){
                 PreferenceManager.setString(mContext, "pushCkecked", "true");
+                FirebaseMessaging.getInstance().subscribeToTopic("1");
                 startToast("푸쉬알림 ON");
             }
             else {
                 PreferenceManager.setString(mContext, "pushCkecked", "false");
+                FirebaseMessaging.getInstance().unsubscribeFromTopic("1");
                 startToast("푸쉬알림 OFF");
             }
 

@@ -1,30 +1,46 @@
 package com.example.petdiary.activity;
 
-import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import com.example.petdiary.MediaScanner;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
+import static android.os.Environment.DIRECTORY_PICTURES;
 
 public class CameraAppActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 672;
     private String imageFilePath;
     private Uri photoUri;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,23 +60,16 @@ public class CameraAppActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
             }
         }
-
-
     }
 
     private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_kkmmss").format(new Date());
         String imageFileName = "PetDiary" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
+        File storageDir = getExternalFilesDir(DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
         imageFilePath = image.getAbsolutePath();
         return image;
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -69,50 +78,93 @@ public class CameraAppActivity extends AppCompatActivity {
             Intent resultIntent = new Intent();
             resultIntent.putExtra("postImgPath", imageFilePath);
             setResult(Activity.RESULT_OK, resultIntent);
+
+            if (Build.VERSION.SDK_INT >= 29) {
+                // Sdk 21버전부터 실행할 코드
+                AlbumAdd(imageFilePath);
+            }
+
             finish();
-        } else if(resultCode == RESULT_CANCELED){
+        } else if (resultCode == RESULT_CANCELED) {
             finish();
         }
     }
 
-//    PermissionListener permissionListener = new PermissionListener() {
-//        @Override
-//        public void onPermissionGranted() {
-//            //Toast.makeText(getApplicationContext(), "권한이 허용됨",Toast.LENGTH_SHORT).show();
-//        }`
-//
-//        @Override
-//        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-//            //Toast.makeText(getApplicationContext(), "권한이 거부됨",Toast.LENGTH_SHORT).show();
-//        }
-//    };
 
+    //앨범에 추가
+    public void AlbumAdd( String cacheFilePath ) {
+        if ( cacheFilePath == null ) return;
+        BitmapFactory.Options options = new BitmapFactory.Options( );
+        ExifInterface exifInterface = null;
+        try {
+            exifInterface = new ExifInterface( cacheFilePath );
+        } catch ( Exception e ) {
+            e.printStackTrace( );
+        }
+        int exifOrientation;
+        int exifDegree = 0;
+        //사진 회전값 구하기
+        if ( exifInterface != null ) {
+            exifOrientation = exifInterface.getAttributeInt( ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL );
 
-//    private long backKeyPressedTime = 0;
-//    private Toast toast;
-//
-//    public void onBackPressed(){
-//        //super.onBackPressed();
-//        // 마지막으로 뒤로가기 버튼을 눌렀던 시간에 2초를 더해 현재시간과 비교 후
-//        // 마지막으로 뒤로가기 버튼을 눌렀던 시간이 2초가 지났으면 Toast Show
-//        // 2000 milliseconds = 2 seconds
-//        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
-//            backKeyPressedTime = System.currentTimeMillis();
-//            toast = Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 카메라가 종료됩니다.", Toast.LENGTH_SHORT);
-//            toast.show();
-//            return;
-//        }
-//        // 마지막으로 뒤로가기 버튼을 눌렀던 시간에 2초를 더해 현재시간과 비교 후
-//        // 마지막으로 뒤로가기 버튼을 눌렀던 시간이 2초가 지나지 않았으면 종료
-//        // 현재 표시된 Toast 취소
-//        if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
-//
-//            Intent resultIntent = new Intent();
-//            resultIntent.putExtra("exit", "exit");
-//            setResult(999, resultIntent);
-//
-//            finish();
-//        }
-//    }
+            if ( exifOrientation == ExifInterface.ORIENTATION_ROTATE_90 ) {
+                exifDegree = 90;
+            } else if ( exifOrientation == ExifInterface.ORIENTATION_ROTATE_180 ) {
+                exifDegree = 180;
+            } else if ( exifOrientation == ExifInterface.ORIENTATION_ROTATE_270 ) {
+                exifDegree = 270;
+            }
+        }
+        Bitmap bitmap = BitmapFactory.decodeFile( cacheFilePath, options );
+        Matrix matrix = new Matrix( );
+        matrix.postRotate( exifDegree );
+        Bitmap exifBit = Bitmap.createBitmap( bitmap, 0, 0, bitmap.getWidth( ), bitmap.getHeight( ), matrix, true );
+        ContentValues values = new ContentValues( );
+        //실제 앨범에 저장될 이미지이름
+        values.put( MediaStore.Images.Media.DISPLAY_NAME, "PetDiary_" + new SimpleDateFormat( "yyyyMMdd_kkmmss", Locale.US ).format( new Date( ) ) + ".jpg" );
+        values.put( MediaStore.Images.Media.MIME_TYPE, "image/*" );
+        //저장될 경로
+        values.put( MediaStore.Images.Media.RELATIVE_PATH, "DCIM/PetDiary" );
+        values.put( MediaStore.Images.Media.ORIENTATION, exifDegree );
+        values.put( MediaStore.Images.Media.IS_PENDING, 1 );
+
+        Uri u = MediaStore.Images.Media.getContentUri( MediaStore.VOLUME_EXTERNAL );
+        Uri uri = getContentResolver( ).insert( u, values );
+
+        try {
+            ParcelFileDescriptor parcelFileDescriptor = getContentResolver( ).openFileDescriptor( uri, "w", null );
+            if ( parcelFileDescriptor == null ) return;
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream( );
+            exifBit.compress( Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream );
+            byte[] b = byteArrayOutputStream.toByteArray( );
+            InputStream inputStream = new ByteArrayInputStream( b );
+
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream( );
+            int bufferSize = 1024;
+            byte[] buffers = new byte[ bufferSize ];
+
+            int len = 0;
+            while ( ( len = inputStream.read( buffers ) ) != -1 ) {
+                buffer.write( buffers, 0, len );
+            }
+
+            byte[] bs = buffer.toByteArray( );
+            FileOutputStream fileOutputStream = new FileOutputStream( parcelFileDescriptor.getFileDescriptor( ) );
+            fileOutputStream.write( bs );
+            fileOutputStream.close( );
+            inputStream.close( );
+            parcelFileDescriptor.close( );
+
+            getContentResolver( ).update( uri, values, null, null );
+
+        } catch ( Exception e ) {
+            e.printStackTrace( );
+        }
+
+        values.clear( );
+        values.put( MediaStore.Images.Media.IS_PENDING, 0 );
+        getContentResolver( ).update( uri, values, null, null );
+    }
 
 }
