@@ -90,7 +90,7 @@ public class ImageChoicePopupActivity2 extends Activity {
                     sImg = new String[clipData.getItemCount()];
                     for (int i = 0; i < clipData.getItemCount(); i++) {
                         name = new String[clipData.getItemCount()];
-                        name[i] = getImageNameToUri(data.getData());
+                        name[i] = getImageNameToUri(clipData.getItemAt(i).getUri());
 
                         Uri file = Uri.fromFile(new File(getPath(clipData.getItemAt(i).getUri())));
                         //sImg[i] = clipData.getItemAt(i).getUri().toString();

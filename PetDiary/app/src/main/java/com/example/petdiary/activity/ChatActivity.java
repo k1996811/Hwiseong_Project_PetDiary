@@ -227,7 +227,6 @@ public class ChatActivity extends AppCompatActivity {
             case 0:
                 if (resultCode == RESULT_OK) {
 
-
                     for (int i = 0; i < 9; i++) {
                         sImg[i] = data.getStringExtra("postImgPath" + i + "");
                         uri[i] = data.getStringExtra("uri" + i + "");
