@@ -82,7 +82,7 @@ public class ChatActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
 
         chatArrayList = new ArrayList<>();
-        //stEmail = getIntent().getStringExtra("email");
+
         FirebaseUser user = mAuth.getCurrentUser();
         stEmail = user.getEmail();
 
@@ -230,16 +230,11 @@ public class ChatActivity extends AppCompatActivity {
 
                     for (int i = 0; i < 9; i++) {
                         sImg[i] = data.getStringExtra("postImgPath" + i + "");
-                        uri[i] = data.getStringExtra("bit" + i + "");
+                        uri[i] = data.getStringExtra("uri" + i + "");
 
                         if (uri[i] != null) {
 
-                            FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
-                            final StorageReference storageRef = storage.getReference();
-                            setImage(uri[i]);
-
                             database = FirebaseDatabase.getInstance();
-
                             Calendar c = Calendar.getInstance();
                             SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss" + "_" + i);
                             String datetime = dateformat.format(c.getTime());
@@ -249,7 +244,7 @@ public class ChatActivity extends AppCompatActivity {
                             Hashtable<String, String> numbers
                                     = new Hashtable<String, String>();
                             numbers.put("email", stEmail);
-                            numbers.put("image", uri[i] + "");
+                            numbers.put("image", sImg[i] + "");
                             myRef.setValue(numbers);
 
                             recyclerView.post(new Runnable() {
@@ -266,7 +261,6 @@ public class ChatActivity extends AppCompatActivity {
                     ca = data.getStringExtra("camera");
                     FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
                     final StorageReference storageRef = storage.getReference();
-                    setImage(ca);
 
                     database = FirebaseDatabase.getInstance();
 
@@ -294,8 +288,5 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void setImage(String uri) {
-        Glide.with(this).load(uri).into(iv);
-    }
 
 }

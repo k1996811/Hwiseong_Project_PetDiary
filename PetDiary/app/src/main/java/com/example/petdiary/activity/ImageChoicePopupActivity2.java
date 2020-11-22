@@ -95,22 +95,26 @@ public class ImageChoicePopupActivity2 extends Activity {
                         Uri file = Uri.fromFile(new File(getPath(clipData.getItemAt(i).getUri())));
                         //sImg[i] = clipData.getItemAt(i).getUri().toString();
                         sImg[i] = sendPicture(clipData.getItemAt(i).getUri());
-                        Log.d("vcxz", sImg[i]);
+                        Log.d("vcxz", name[i]);
+                        Log.d("zxcv", sImg[i]);
                         resultIntent2.putExtra("postImgPath" + i + "", name[i]);
                         resultIntent2.putExtra("uri" + i + "", sImg[i]);
 
 
                         StorageReference riversRef = storageRef.child("chatImage/" + file.getLastPathSegment());
 
+                        System.out.println(file.getLastPathSegment()+"qwer");
                         UploadTask uploadTask = riversRef.putFile(file);
                         uploadTask.addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception exception) {
+                                System.out.println("tlfvo");
                                 // Handle unsuccessful uploads
                             }
                         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                System.out.println("tjdrhd");
                                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                                 // ...
                             }
