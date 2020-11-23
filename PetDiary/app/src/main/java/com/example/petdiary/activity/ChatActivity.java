@@ -174,7 +174,6 @@ public class ChatActivity extends AppCompatActivity {
                     Toast.makeText(ChatActivity.this, "MSG : " + stText, Toast.LENGTH_SHORT).show();
                     etText.getText().clear();
 
-
                     // Write a message to the database
                     database = FirebaseDatabase.getInstance();
 
@@ -223,67 +222,68 @@ public class ChatActivity extends AppCompatActivity {
         uri = new String[9];
         ca = new String();
         iv = findViewById(R.id.ivChat);
-        switch (requestCode) {
-            case 0:
-                if (resultCode == RESULT_OK) {
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
 
-                    for (int i = 0; i < 9; i++) {
-                        sImg[i] = data.getStringExtra("postImgPath" + i + "");
-                        uri[i] = data.getStringExtra("uri" + i + "");
+                for (int i = 0; i < 9; i++) {
+                    sImg[i] = data.getStringExtra("postImgPath" + i + "");
+                    uri[i] = data.getStringExtra("uri" + i + "");
 
-                        if (uri[i] != null) {
+                    if (uri[i] != null) {
 
-                            database = FirebaseDatabase.getInstance();
-                            Calendar c = Calendar.getInstance();
-                            SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss" + "_" + i);
-                            String datetime = dateformat.format(c.getTime());
+                        database = FirebaseDatabase.getInstance();
+                        Calendar c = Calendar.getInstance();
+                        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss" + "_" + i);
+                        String datetime = dateformat.format(c.getTime());
 
-                            DatabaseReference myRef = database.getReference("message").child(datetime);
+                        DatabaseReference myRef = database.getReference("message").child(datetime);
 
-                            Hashtable<String, String> numbers
-                                    = new Hashtable<String, String>();
-                            numbers.put("email", stEmail);
-                            numbers.put("image", sImg[i] + "");
-                            myRef.setValue(numbers);
+                        Hashtable<String, String> numbers
+                                = new Hashtable<String, String>();
+                        numbers.put("email", stEmail);
+                        numbers.put("image", sImg[i] + "");
+                        myRef.setValue(numbers);
 
-                            recyclerView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
-                                }
-                            });
-                        }
-
+                        recyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                            }
+                        });
                     }
 
-                } else if (resultCode == 2) {
-                    ca = data.getStringExtra("camera");
-                    FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
-                    final StorageReference storageRef = storage.getReference();
-
-                    database = FirebaseDatabase.getInstance();
-
-                    Calendar c = Calendar.getInstance();
-                    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
-                    String datetime = dateformat.format(c.getTime());
-
-                    DatabaseReference myRef = database.getReference("message").child(datetime);
-
-                    Hashtable<String, String> numbers
-                            = new Hashtable<String, String>();
-                    numbers.put("email", stEmail);
-                    numbers.put("image", ca);
-                    myRef.setValue(numbers);
-
-                    recyclerView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
-                        }
-                    });
-
                 }
-                break;
+
+            } else if (resultCode == 2) {
+                ca = data.getStringExtra("camera");
+                FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
+                final StorageReference storageRef = storage.getReference();
+
+                database = FirebaseDatabase.getInstance();
+
+                Calendar c = Calendar.getInstance();
+                SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
+                String datetime = dateformat.format(c.getTime());
+
+                DatabaseReference myRef = database.getReference("message").child(datetime);
+
+                Hashtable<String, String> numbers
+                        = new Hashtable<String, String>();
+                numbers.put("email", stEmail);
+                numbers.put("image", ca);
+                myRef.setValue(numbers);
+
+                recyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                    }
+                });
+
+            }
+
+        }else{
+
         }
     }
 

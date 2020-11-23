@@ -28,9 +28,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class ImageChoicePopupActivity2 extends Activity {
@@ -46,6 +49,7 @@ public class ImageChoicePopupActivity2 extends Activity {
 
 
     public void goCamera(View v) {
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
@@ -58,57 +62,86 @@ public class ImageChoicePopupActivity2 extends Activity {
         }
     }
 
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
+        switch(requestCode){
+            case 1:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    //myStartActivity(GalleryActivity.class);
+                } else {
+                    startToast("권한을 허용해 주세요.");
+                }
+        }
+    }
+
     public void goGallery(View v) {
-        myStartActivity();
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)){
+                //startToast("권한을 허용하셨습니다.");
+            } else {
+                //startToast("권한을 허용해 주세요.");
+            }
+        } else {
+            myStartActivity();
+        }
+
     }
 
 
     private String postImgPath;
     String[] sImg;
-    int PICK_IMAGE_MULTIPLE = 1;
+    int PICK_IMAGE_MULTIPLE = 1001;
     String[] name;
     String ca;
+    ClipData clipData;
+
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Get a non-default Storage bucket
         FirebaseStorage storage = FirebaseStorage.getInstance("gs://petdiary-794c6.appspot.com");
         StorageReference storageRef = storage.getReference();
         Intent resultIntent2 = new Intent();
         ca = new String();
-
         super.onActivityResult(requestCode, resultCode, data);
-        ClipData clipData = data.getClipData();
 
         if (requestCode == PICK_IMAGE_MULTIPLE) {
+            System.out.println(data.getData()+"wwqq");
+
+            clipData = data.getClipData();
             if (data.getClipData() == null) {
                 Toast.makeText(this, "다중선택이 불가한 기기입니다", Toast.LENGTH_LONG).show();
             } else {
                 if (clipData.getItemCount() > 9) {
                     Toast.makeText(this, "사진은 9장까지만 선택 가능합니다", Toast.LENGTH_LONG).show();
                 } else {
-
+                    System.out.println(clipData+"aj");
                     postImgPath = data.getStringExtra("postImgPath");
                     sImg = new String[clipData.getItemCount()];
                     for (int i = 0; i < clipData.getItemCount(); i++) {
                         name = new String[clipData.getItemCount()];
                         name[i] = getImageNameToUri(clipData.getItemAt(i).getUri());
+                        System.out.println(clipData.getItemAt(i).getUri()+"qqww");
 
                         Uri file = Uri.fromFile(new File(getPath(clipData.getItemAt(i).getUri())));
+
                         //sImg[i] = clipData.getItemAt(i).getUri().toString();
+                        System.out.println(file+"nnnn");
                         sImg[i] = sendPicture(clipData.getItemAt(i).getUri());
                         Log.d("vcxz", name[i]);
                         Log.d("zxcv", sImg[i]);
                         resultIntent2.putExtra("postImgPath" + i + "", name[i]);
                         resultIntent2.putExtra("uri" + i + "", sImg[i]);
 
-
                         StorageReference riversRef = storageRef.child("chatImage/" + file.getLastPathSegment());
 
-                        System.out.println(file.getLastPathSegment()+"qwer");
+                        System.out.println(file.getLastPathSegment() + "qwer");
                         UploadTask uploadTask = riversRef.putFile(file);
                         uploadTask.addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception exception) {
                                 System.out.println("tlfvo");
+                                Log.e("### ImageChoice2", exception.toString());
                                 // Handle unsuccessful uploads
                             }
                         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -125,14 +158,15 @@ public class ImageChoicePopupActivity2 extends Activity {
             }
             setResult(Activity.RESULT_OK, resultIntent2);
             finish();
-        }else{
-            if(resultCode == RESULT_OK){
-                postImgPath = data.getStringExtra("postImgPath");
-                resultIntent2 = new Intent();
-                resultIntent2.putExtra("camera", postImgPath);
-                setResult(2, resultIntent2);
-                finish();
-            }
+        } else if (requestCode == 2) {
+
+            ca = data.getStringExtra("name");
+            System.out.println(ca+"nulll");
+            resultIntent2 = new Intent();
+            resultIntent2.putExtra("camera", ca);
+            setResult(2, resultIntent2);
+            finish();
+
         }
     }
 
@@ -166,13 +200,14 @@ public class ImageChoicePopupActivity2 extends Activity {
         intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, PICK_IMAGE_MULTIPLE);
     }
 
-    private void StartActivity(Class c){
+    private void StartActivity(Class c) {
         Intent intent = new Intent(this, c);
         startActivityForResult(intent, 2);
     }
+
     private void startToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
@@ -203,15 +238,37 @@ public class ImageChoicePopupActivity2 extends Activity {
 
         return cursor.getString(index);
     }
+
     public String getImageNameToUri(Uri data) {
-        String[] proj = { MediaStore.Images.Media.DATA };
+        String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(data, proj, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst(); String imgPath = cursor.getString(column_index);
-        String imgName = imgPath.substring(imgPath.lastIndexOf("/")+1); return imgName;
+        cursor.moveToFirst();
+        String imgPath = cursor.getString(column_index);
+        String imgName = imgPath.substring(imgPath.lastIndexOf("/") + 1);
+        return imgName;
     }
+    private void tedPermission() {
 
+        PermissionListener permissionListener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                // 권한 요청 성공
 
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                // 권한 요청 실패
+            }
+        };
+
+        TedPermission.with(this)
+                .setPermissionListener(permissionListener)
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .check();
+
+    }
 
 
 }
