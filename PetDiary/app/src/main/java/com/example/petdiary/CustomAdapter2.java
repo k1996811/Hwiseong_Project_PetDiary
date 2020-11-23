@@ -115,6 +115,10 @@ public class CustomAdapter2 extends RecyclerView.Adapter<CustomAdapter2.CustomVi
 //        Glide.with(holder.itemView)
 //                .load(arrayList.get(position).getImageUrl1())
 //                .into(holder.imageUrl1);
+        viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
+        viewPageAdapter = new ViewPageAdapter(arrayList.get(position).getImageUrl1(), arrayList.get(position).getImageUrl2(),
+                arrayList.get(position).getImageUrl3(), arrayList.get(position).getImageUrl4(), arrayList.get(position).getImageUrl5(), context);
+        viewPager.setAdapter(viewPageAdapter);
         holder.content.setText(arrayList.get(position).getContent());
 
     }
@@ -135,15 +139,6 @@ public class CustomAdapter2 extends RecyclerView.Adapter<CustomAdapter2.CustomVi
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.content = itemView.findViewById(R.id.main_textView);
-
-            viewPager = (ViewPager) itemView.findViewById(R.id.main_image);
-            Log.e("###0", arrayList.get(0).getImageUrl1().toString());
-            Log.e("###1", arrayList.get(1).toString());
-            Log.e("###2", arrayList.get(2).toString());
-            Log.e("###3", arrayList.get(3).toString());
-            Log.e("###4", arrayList.get(4).toString());
-            viewPageAdapter = new ViewPageAdapter(context);
-            viewPager.setAdapter(viewPageAdapter);
         }
     }
 }
