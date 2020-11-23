@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import com.example.petdiary.adapter.ViewPageAdapter;
 import com.google.android.material.tabs.TabLayout;
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
+import com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator;
+import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
 
@@ -121,13 +124,13 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         viewPager.setAdapter(viewPageAdapter);
         holder.content.setText(arrayList.get(position).getContent());
 
-        TabLayout tabLayout = (TabLayout) holder.itemView.findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager, true);
+        wormDotsIndicator  = (WormDotsIndicator) holder.itemView.findViewById(R.id.worm_dots_indicator);
+        wormDotsIndicator .setViewPager(viewPager);
     }
 
     ViewPageAdapter viewPageAdapter;
     ViewPager viewPager;
-
+    WormDotsIndicator wormDotsIndicator;
     @Override
     public int getItemCount() {
         // 삼항 연산자
