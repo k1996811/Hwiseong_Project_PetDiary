@@ -12,6 +12,7 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
 import com.example.petdiary.R;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
@@ -60,6 +61,7 @@ public class ViewPageAdapter extends PagerAdapter {
                 (Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.slider, container, false);
         ImageView imageView = (ImageView)v.findViewById(R.id.imageView);
+
         //imageView.setImageResource(images[position]);
         Glide.with(context).load(imagess.get(position)).into(imageView);
         container.addView(v);

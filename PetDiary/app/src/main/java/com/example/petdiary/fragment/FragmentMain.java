@@ -2,6 +2,7 @@ package com.example.petdiary.fragment;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.petdiary.CustomAdapter;
-import com.example.petdiary.CustomAdapter2;
 import com.example.petdiary.Data;
 import com.example.petdiary.R;
 import com.google.firebase.database.DataSnapshot;
@@ -35,7 +36,7 @@ public class FragmentMain extends Fragment {
     private DatabaseReference databaseReference;
     private View view;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-
+    ViewPager viewPager;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,6 +49,8 @@ public class FragmentMain extends Fragment {
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>(); // User 객체를 담을 어레이 리스트 (어댑터쪽으로)
+
+
 
         database = FirebaseDatabase.getInstance(); // 파이어베이스 데이터베이스 연동
         databaseReference = database.getReference("images"); // DB 테이블 연결
@@ -86,6 +89,7 @@ public class FragmentMain extends Fragment {
                         arrayList.clear(); // 기존 배열리스트가 존재하지않게 초기화
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) { // 반복문으로 데이터 List를 추출해냄
                             Data Datalist = snapshot.getValue(Data.class); // 만들어뒀던 User 객체에 데이터를 담는다.
+                            Log.e("###요기요기", Datalist.toString());
                             arrayList.add(0,Datalist); // 담은 데이터들을 배열리스트에 넣고 리사이클러뷰로 보낼 준비
                         }
                         adapter.notifyDataSetChanged(); // 리스트 저장 및 새로고침해야 반영이 됨

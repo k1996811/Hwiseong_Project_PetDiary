@@ -7,14 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
+import androidx.viewpager.widget.ViewPager;
+import com.example.petdiary.adapter.ViewPageAdapter;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
@@ -22,6 +21,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
     private ArrayList<Data> arrayList;
     private Context context;
+
+
     //어댑터에서 액티비티 액션을 가져올 때 context가 필요한데 어댑터에는 context가 없다.
     //선택한 액티비티에 대한 context를 가져올 때 필요하다.
 
@@ -36,6 +37,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
         CustomViewHolder holder = new CustomViewHolder(view);
+
 
         view.findViewById(R.id.Comment_btn).setOnClickListener(new View.OnClickListener(){
             @Override
@@ -110,12 +112,21 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
-        Glide.with(holder.itemView)
-                .load(arrayList.get(position).getImageUrl1())
-                .into(holder.imageUrl1);
+//        Glide.with(holder.itemView)
+//                .load(arrayList.get(position).getImageUrl1())
+//                .into(holder.imageUrl1);
+        viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
+        viewPageAdapter = new ViewPageAdapter(arrayList.get(position).getImageUrl1(), arrayList.get(position).getImageUrl2(),
+                arrayList.get(position).getImageUrl3(), arrayList.get(position).getImageUrl4(), arrayList.get(position).getImageUrl5(), context);
+        viewPager.setAdapter(viewPageAdapter);
         holder.content.setText(arrayList.get(position).getContent());
 
+        TabLayout tabLayout = (TabLayout) holder.itemView.findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager, true);
     }
+
+    ViewPageAdapter viewPageAdapter;
+    ViewPager viewPager;
 
     @Override
     public int getItemCount() {
@@ -124,13 +135,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     }
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageUrl1;
         TextView content;
-
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.imageUrl1 = itemView.findViewById(R.id.main_image);
             this.content = itemView.findViewById(R.id.main_textView);
 
         }

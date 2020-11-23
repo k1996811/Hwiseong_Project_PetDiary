@@ -1,12 +1,9 @@
 package com.example.petdiary.activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -14,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
@@ -36,12 +32,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.kakao.auth.Session;
 
 import java.security.MessageDigest;
 import java.util.regex.Matcher;
@@ -58,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     TextView toolbarNickName;
     ImageView genter_icon;
     BottomNavigationView bottomNavigationView;
-    FragmentMain2 fragmentMain;
+    FragmentMain fragmentMain;
     FragmentSub fragmentSub;
     FragmentNewPost fragmentNewPost;
     FragmentMy fragmentMy;
@@ -225,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
     public void setFirst() {
         fragmentManager = getSupportFragmentManager();
 
-        fragmentMain = new FragmentMain2();
+        fragmentMain = new FragmentMain();
 
         fragmentManager.beginTransaction().replace(R.id.main_layout, fragmentMain).commit();
 
@@ -237,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.tab1:
                         if(fragmentMain == null){
-                            fragmentMain = new FragmentMain2();
+                            fragmentMain = new FragmentMain();
                             fragmentManager.beginTransaction().add(R.id.main_layout, fragmentMain).commit();
                         }
                         if(fragmentMain != null){
