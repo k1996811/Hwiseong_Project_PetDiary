@@ -22,12 +22,12 @@ import java.util.ArrayList;
 
 public class CustomAdapter2 extends RecyclerView.Adapter<CustomAdapter2.CustomViewHolder> {
 
-    private ArrayList<Data> arrayList;
+    private ArrayList<Data2> arrayList;
     private Context context;
     //어댑터에서 액티비티 액션을 가져올 때 context가 필요한데 어댑터에는 context가 없다.
     //선택한 액티비티에 대한 context를 가져올 때 필요하다.
 
-    public CustomAdapter2(ArrayList<Data> arrayList, Context context) {
+    public CustomAdapter2(ArrayList<Data2> arrayList, Context context) {
         this.arrayList = arrayList;
         this.context = context;
     }
@@ -129,19 +129,21 @@ public class CustomAdapter2 extends RecyclerView.Adapter<CustomAdapter2.CustomVi
     }
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
-        ViewPager imageUrl1;
         TextView content;
 
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.imageUrl1 = itemView.findViewById(R.id.main_image);
             this.content = itemView.findViewById(R.id.main_textView);
 
             viewPager = (ViewPager) itemView.findViewById(R.id.main_image);
+            Log.e("###0", arrayList.get(0).getImageUrl1().toString());
+            Log.e("###1", arrayList.get(1).toString());
+            Log.e("###2", arrayList.get(2).toString());
+            Log.e("###3", arrayList.get(3).toString());
+            Log.e("###4", arrayList.get(4).toString());
             viewPageAdapter = new ViewPageAdapter(context);
             viewPager.setAdapter(viewPageAdapter);
-
         }
     }
 }

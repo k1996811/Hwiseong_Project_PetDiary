@@ -69,8 +69,7 @@ public class FragmentMain extends Fragment {
                 Log.e("FragmentMain", String.valueOf(databaseError.toException())); // 에러문 출력
             }
         });
-        //adapter = new CustomAdapter(arrayList, getContext());
-        adapter = new CustomAdapter2(arrayList, getContext());
+        adapter = new CustomAdapter(arrayList, getContext());
         recyclerView.setAdapter(adapter); // 리사이클러뷰에 어댑터 연결
 
         //새로고침
