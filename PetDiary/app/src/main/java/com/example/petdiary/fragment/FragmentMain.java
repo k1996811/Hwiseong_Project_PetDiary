@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.petdiary.CustomAdapter;
+import com.example.petdiary.CustomAdapter2;
 import com.example.petdiary.Data;
 import com.example.petdiary.R;
 import com.google.firebase.database.DataSnapshot;
@@ -68,7 +69,8 @@ public class FragmentMain extends Fragment {
                 Log.e("FragmentMain", String.valueOf(databaseError.toException())); // 에러문 출력
             }
         });
-        adapter = new CustomAdapter(arrayList, getContext());
+        //adapter = new CustomAdapter(arrayList, getContext());
+        adapter = new CustomAdapter2(arrayList, getContext());
         recyclerView.setAdapter(adapter); // 리사이클러뷰에 어댑터 연결
 
         //새로고침
