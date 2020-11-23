@@ -72,6 +72,8 @@ public class FragmentNewPost extends Fragment {
 
     ViewGroup viewGroup;
 
+    boolean check;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -103,7 +105,20 @@ public class FragmentNewPost extends Fragment {
             }
         });
 
-        setEmail();
+        Bundle bundle = getArguments();
+
+        //Log.e("###" , FirebaseAuth.getInstance().getCurrentUser().getUid().toString());
+
+        if(bundle != null){
+            check = true;
+            //profileName.setText(bundle.getString("nickName"));
+            //setProfileImg(bundle.getString("profile"));
+            email = bundle.getString("email");
+        } else {
+            check = false;
+            setEmail();
+        }
+
 
         contentsLengthTextView = (TextView) viewGroup.findViewById(R.id.contentsLengthTextView);
         contents = (EditText) viewGroup.findViewById(R.id.contents);
@@ -423,8 +438,7 @@ public class FragmentNewPost extends Fragment {
                     uploadTask[0].addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
-                            Log.e("###1", finalI + "에서 에러@@@@");
-                            Log.e("###11", exception.toString());
+
                         }
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -437,7 +451,6 @@ public class FragmentNewPost extends Fragment {
                                 @Override
                                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                                     if (!task.isSuccessful()) {
-                                        Log.e("###2", finalI + "에서 통과");
                                         throw task.getException();
                                     }
                                     return ref.getDownloadUrl();
@@ -453,7 +466,6 @@ public class FragmentNewPost extends Fragment {
                                             postData();
                                         }
                                     } else {
-                                        Log.e("###3", finalI + "에서 에러@@@@");
                                     }
                                 }
                             });
@@ -471,7 +483,6 @@ public class FragmentNewPost extends Fragment {
     Menu menu;
 
     private void postData(){
-        //Log.e("@@@!!", imgUri[0] + " / " + imgUri[1]);
         firebaseDatabase = FirebaseDatabase.getInstance();
 
         DatabaseReference images = firebaseDatabase.getReference().child("images").push();

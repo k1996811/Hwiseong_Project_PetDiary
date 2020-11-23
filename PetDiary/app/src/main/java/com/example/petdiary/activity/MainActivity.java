@@ -1,6 +1,7 @@
 package com.example.petdiary.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -8,9 +9,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +41,9 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kakao.auth.Session;
 
+import java.security.MessageDigest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private String password = "";
+
+    private FirebaseAuth mAuth;
 
     TextView toolbarNickName;
     ImageView genter_icon;
@@ -57,38 +66,49 @@ public class MainActivity extends AppCompatActivity {
 
     private FragmentManager fragmentManager;
 
-//    private void getAppKeyHash() {
-//        try {
-//            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
-//            for (Signature signature : info.signatures) {
-//                MessageDigest md;
-//                md = MessageDigest.getInstance("SHA");
-//                md.update(signature.toByteArray());
-//                String something = new String(Base64.encode(md.digest(), 0));
-//                Log.e("Hash key", something);
-//            }
-//        } catch (Exception e) {
-//            // TODO Auto-generated catch block
-//            Log.e("name not found", e.toString());
-//        }
-//    }
+    private void getAppKeyHash() {
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md;
+                md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                String something = new String(Base64.encode(md.digest(), 0));
+                Log.e("Hash key", something);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            Log.e("name not found", e.toString());
+        }
+    }
 
     private DrawerLayout drawerLayout;
     private View drawerView;
+
+    private String kakaoNickName;
+    private String kakaoProfile;
+    private String kakaoEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //getAppKeyHash();
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         Intent intent = getIntent();
-        if(intent != null) {//푸시알림을 선택해서 실행한것이 아닌경우 예외처리
-            String notificationData = intent.getStringExtra("FCM_PetDiary");
-            if(notificationData != null)
-                Log.d("FCM_PetDiary", notificationData);
+        if(intent != null) {
+            if(intent.getStringExtra("nickName") != null){ // 카카오톡 로그인 시 정보 받아오기
+                kakaoNickName = intent.getStringExtra("nickName");
+                kakaoProfile = intent.getStringExtra("profile");
+                kakaoEmail = intent.getStringExtra("email");
+            } else { //푸시알림을 선택해서 실행한것이 아닌경우 예외처리
+                String notificationData = intent.getStringExtra("FCM_PetDiary");
+                if(notificationData != null)
+                    Log.d("FCM_PetDiary", notificationData);
                 Log.d("FCM_PetDiary", FirebaseMessaging.getInstance().toString());
+            }
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -100,11 +120,17 @@ public class MainActivity extends AppCompatActivity {
         toolbarNickName = findViewById(R.id.toolbar_nickName);
         genter_icon = findViewById(R.id.genter_icon);
 
-        if (user == null) {
-            myStartActivity(LoginActivity.class);
-            finish();
+        if(intent.getStringExtra("nickName") != null){
+            setFirst();
+            setProfileImg(kakaoProfile);
+            toolbarNickName.setText(kakaoNickName + " 님");
         } else {
-            checkPassword();
+            if (user == null) {
+                myStartActivity(LoginActivity.class);
+                finish();
+            } else {
+                checkPassword();
+            }
         }
     }
 
@@ -152,6 +178,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void startPopupActivity(){
         Intent intent = new Intent(getApplicationContext(), LogoutPopupActivity.class);
+        if(kakaoNickName != null){
+            intent.putExtra("kakao", "yes");
+        } else {
+            intent.putExtra("kakao", "no");
+        }
         startActivityForResult(intent, 0);
     }
 
@@ -249,6 +280,13 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.tab3:
                         if(fragmentNewPost == null){
                             fragmentNewPost = new FragmentNewPost();
+                            if(kakaoNickName != null){
+                                Bundle bundle = new Bundle();
+                                bundle.putString("nickName",kakaoNickName);
+                                bundle.putString("profile",kakaoProfile);
+                                bundle.putString("email",kakaoEmail);
+                                fragmentNewPost.setArguments(bundle);
+                            }
                             fragmentManager.beginTransaction().add(R.id.main_layout, fragmentNewPost).commit();
                         }
                         if(fragmentNewPost != null){
@@ -270,6 +308,13 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.tab4:
                         if(fragmentMy == null){
                             fragmentMy = new FragmentMy();
+                            if(kakaoNickName != null){
+                                Bundle bundle = new Bundle();
+                                bundle.putString("nickName",kakaoNickName);
+                                bundle.putString("profile",kakaoProfile);
+                                bundle.putString("email",kakaoEmail);
+                                fragmentMy.setArguments(bundle);
+                            }
                             fragmentManager.beginTransaction().add(R.id.main_layout, fragmentMy).commit();
                         }
                         if(fragmentMy != null){
@@ -449,4 +494,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 }
