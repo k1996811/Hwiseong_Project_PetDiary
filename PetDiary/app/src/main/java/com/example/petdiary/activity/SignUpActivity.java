@@ -66,7 +66,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         findViewById(R.id.loginButton).setOnClickListener(onClickListener);
         findViewById(R.id.signUpButton).setOnClickListener(onClickListener);
-        findViewById(R.id.kakaoSignUpButton).setOnClickListener(onClickListener);
 
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
@@ -143,9 +142,6 @@ public class SignUpActivity extends AppCompatActivity {
                     } else {
                         startToast("이메일 주소를 확인해 주세요.");
                     }
-                    break;
-                case R.id.kakaoSignUpButton:
-                    startToast("카카오톡 회원가입");
                     break;
             }
         }
@@ -246,7 +242,7 @@ public class SignUpActivity extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    private final TextWatcher textWatcherEmail = new TextWatcher() {
+    public final TextWatcher textWatcherEmail = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
@@ -289,7 +285,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     };
 
-    private final TextWatcher textWatcherPassword = new TextWatcher() {
+    public final TextWatcher textWatcherPassword = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
@@ -315,7 +311,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     };
 
-    private final TextWatcher textWatcherPasswordCheck = new TextWatcher() {
+    public final TextWatcher textWatcherPasswordCheck = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
@@ -334,7 +330,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     };
 
-    private final TextWatcher textWatcherNickName = new TextWatcher() {
+    public final TextWatcher textWatcherNickName = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }

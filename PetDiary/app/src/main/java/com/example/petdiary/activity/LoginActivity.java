@@ -23,8 +23,10 @@ import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
+import com.kakao.util.OptionalBoolean;
 import com.kakao.util.exception.KakaoException;
 
 import java.util.regex.Matcher;
@@ -217,13 +219,25 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onSuccess(MeV2Response result) {
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    //Intent intent = new Intent(getApplicationContext(), KakaoMyPageActivity.class);
+                    String needsScopeAutority = ""; // 정보 제공이 허용되지 않은 항목의 이름을 저장하는 변수
+                    if(result.getKakaoAccount().needsScopeAccountEmail()) {
+                        needsScopeAutority = needsScopeAutority + "이메일";
+                    }
+
+
+                    Intent intent = new Intent(getApplicationContext(), KakaoSignUpActivity.class);
                     intent.putExtra("nickName", result.getNickname());
                     intent.putExtra("profile", result.getProfileImagePath());
-                    intent.putExtra("email", result.getId());
+                    //intent.putExtra("email", result.getKakaoAccount().getEmail());
+
+                    if (result.getKakaoAccount().hasEmail() == OptionalBoolean.TRUE){
+                        intent.putExtra("email", result.getKakaoAccount().getEmail());
+                        Log.e("###", result.getKakaoAccount().getEmail());
+                    }
+
+
                     startActivity(intent);
-                    finish();
+                    //finish();
                 }
             });
         }
@@ -233,5 +247,4 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "로그인 도중 오류가 발생했습니다. 인터넷 연결을 확인해주세요: "+e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
-
 }

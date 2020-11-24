@@ -27,6 +27,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -52,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView genter_icon;
     BottomNavigationView bottomNavigationView;
     FragmentMain fragmentMain;
-    FragmentSub fragmentSub;
+    FragmentSub2 fragmentSub;
     FragmentNewPost fragmentNewPost;
     FragmentMy fragmentMy;
     FragmentContentMain fragmentContentMain;
@@ -78,10 +81,6 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private View drawerView;
 
-    private String kakaoNickName;
-    private String kakaoProfile;
-    private String kakaoEmail;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,19 +88,14 @@ public class MainActivity extends AppCompatActivity {
         //getAppKeyHash();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        //mAuth = FirebaseAuth.getInstance();
 
         Intent intent = getIntent();
         if(intent != null) {
-            if(intent.getStringExtra("nickName") != null){ // 카카오톡 로그인 시 정보 받아오기
-                kakaoNickName = intent.getStringExtra("nickName");
-                kakaoProfile = intent.getStringExtra("profile");
-                kakaoEmail = intent.getStringExtra("email");
-            } else { //푸시알림을 선택해서 실행한것이 아닌경우 예외처리
-                String notificationData = intent.getStringExtra("FCM_PetDiary");
-                if(notificationData != null)
-                    Log.d("FCM_PetDiary", notificationData);
-                Log.d("FCM_PetDiary", FirebaseMessaging.getInstance().toString());
-            }
+            String notificationData = intent.getStringExtra("FCM_PetDiary");
+            if(notificationData != null)
+                Log.d("FCM_PetDiary", notificationData);
+            Log.d("FCM_PetDiary", FirebaseMessaging.getInstance().toString());
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -113,22 +107,12 @@ public class MainActivity extends AppCompatActivity {
         toolbarNickName = findViewById(R.id.toolbar_nickName);
         genter_icon = findViewById(R.id.genter_icon);
 
-        if(intent.getStringExtra("nickName") != null){
-            setFirst();
-            setProfileImg(kakaoProfile);
-            toolbarNickName.setText(kakaoNickName + " 님");
+        if (user == null) {
+            myStartActivity(LoginActivity.class);
+            finish();
         } else {
-            if (user == null) {
-                myStartActivity(LoginActivity.class);
-                finish();
-            } else {
-                checkPassword();
-            }
+            checkPassword();
         }
-    }
-
-    private void startToast(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,27 +120,22 @@ public class MainActivity extends AppCompatActivity {
 
     public void blockFriendOnClick(View view) {
         myStartActivity2(SettingBlockFriendsActivity.class);
-        //startToast("차단친구");
     }
 
     public void noticeOnClick(View view){
         myStartActivity2(SettingNotificationActivity.class);
-        //startToast("알림 설정");
     }
 
     public void passwordSetOnClick(View view){
         myStartActivity2(LoginConfirmActivity.class);
-        //startToast("비밀번호 변경");
     }
 
     public void customerCenterOnClick(View view){
         myStartActivity2(SettingCustomerActivity.class);
-        //startToast("고객센터");
     }
 
     public void logOutOnClick(View view){
         startPopupActivity();
-        //startToast("로그아웃");
     }
 
     public void unRegisterOnClick(View view){
@@ -171,11 +150,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void startPopupActivity(){
         Intent intent = new Intent(getApplicationContext(), LogoutPopupActivity.class);
-        if(kakaoNickName != null){
-            intent.putExtra("kakao", "yes");
-        } else {
-            intent.putExtra("kakao", "no");
-        }
         startActivityForResult(intent, 0);
     }
 
@@ -251,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     case R.id.tab2:
                         if(fragmentSub == null){
-                            fragmentSub = new FragmentSub();
+                            fragmentSub = new FragmentSub2();
                             fragmentManager.beginTransaction().add(R.id.main_layout, fragmentSub).commit();
                         }
                         if(fragmentSub != null){
@@ -273,13 +247,6 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.tab3:
                         if(fragmentNewPost == null){
                             fragmentNewPost = new FragmentNewPost();
-                            if(kakaoNickName != null){
-                                Bundle bundle = new Bundle();
-                                bundle.putString("nickName",kakaoNickName);
-                                bundle.putString("profile",kakaoProfile);
-                                bundle.putString("email",kakaoEmail);
-                                fragmentNewPost.setArguments(bundle);
-                            }
                             fragmentManager.beginTransaction().add(R.id.main_layout, fragmentNewPost).commit();
                         }
                         if(fragmentNewPost != null){
@@ -301,13 +268,6 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.tab4:
                         if(fragmentMy == null){
                             fragmentMy = new FragmentMy();
-                            if(kakaoNickName != null){
-                                Bundle bundle = new Bundle();
-                                bundle.putString("nickName",kakaoNickName);
-                                bundle.putString("profile",kakaoProfile);
-                                bundle.putString("email",kakaoEmail);
-                                fragmentMy.setArguments(bundle);
-                            }
                             fragmentManager.beginTransaction().add(R.id.main_layout, fragmentMy).commit();
                         }
                         if(fragmentMy != null){
@@ -411,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
                             password = document.getData().get("password").toString();
                             toolbarNickName.setText(document.getData().get("nickName").toString() + " 님");
                             if(document.getData().get("profileImg").toString().length() > 0 ){
-                                setImg();
+                                setProfileImg(document.getData().get("profileImg").toString());
                             }
                             if (isValidPassword(password)) {
                                 setFirst();
@@ -430,30 +390,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setImg() {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-
-        StorageReference storageRef = storage.getReference();
-
-        storageRef.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-
-                String profileImg = uri.toString();
-//                while(profileImg.length() == 0){
-//                    continue;
-//                }
-                //Log.e("@@@!", profileImg);
-                setProfileImg(profileImg);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-            }
-        });
-    }
-
     private void setProfileImg(String profileImg) {
         Glide.with(this).load(profileImg).centerCrop().override(500).into(genter_icon);
     }
@@ -463,7 +399,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onBackPressed(){
         //super.onBackPressed();
-
         if(drawerLayout.isDrawerOpen(drawerView)){
             drawerLayout.closeDrawer(drawerView);
         } else {
@@ -487,5 +422,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 }

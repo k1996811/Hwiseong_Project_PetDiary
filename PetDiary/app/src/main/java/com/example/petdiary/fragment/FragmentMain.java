@@ -89,7 +89,7 @@ public class FragmentMain extends Fragment {
                         arrayList.clear(); // 기존 배열리스트가 존재하지않게 초기화
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) { // 반복문으로 데이터 List를 추출해냄
                             Data Datalist = snapshot.getValue(Data.class); // 만들어뒀던 User 객체에 데이터를 담는다.
-                            Log.e("###요기요기", Datalist.toString());
+                            //Log.e("###요기요기", Datalist.toString());
                             arrayList.add(0,Datalist); // 담은 데이터들을 배열리스트에 넣고 리사이클러뷰로 보낼 준비
                         }
                         adapter.notifyDataSetChanged(); // 리스트 저장 및 새로고침해야 반영이 됨

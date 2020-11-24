@@ -28,8 +28,6 @@ import java.io.IOException;
 
 public class LogoutPopupActivity extends Activity {
 
-    private boolean check = true;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,32 +35,10 @@ public class LogoutPopupActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_logout_popup);
 
-        Intent intent = getIntent();
-        if(intent != null) {
-            if(intent.getStringExtra("kakao").equals("yes")){
-                check = true;
-            } else {
-                check = false;
-            }
-        }
     }
 
-
     public void okLogout(View v){
-        if(check){
-            UserManagement.getInstance().requestLogout(new LogoutResponseCallback() { //로그아웃 실행
-                @Override
-                public void onCompleteLogout() {
-                    //로그아웃 성공 시 로그인 화면(LoginActivity)로 이동
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                }
-            });
-        } else {
-            FirebaseAuth.getInstance().signOut();
-        }
-
+        FirebaseAuth.getInstance().signOut();
         myStartActivity(LoginActivity.class);
         finish();
     }
@@ -76,11 +52,5 @@ public class LogoutPopupActivity extends Activity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
-
-    private void startToast(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
-
 }
 

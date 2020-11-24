@@ -1,12 +1,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#03DAC5">
 
     <ImageView
         android:scaleType="fitXY"
         android:id="@+id/imageView1"
         android:layout_width="150dp"
-        android:layout_height="100dp"
-        android:src="@drawable/abc_btn_radio_to_on_mtrl_000"/>
+        android:layout_height="150dp"/>
 </LinearLayout>

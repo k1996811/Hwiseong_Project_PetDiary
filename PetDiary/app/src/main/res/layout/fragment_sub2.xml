@@ -30,7 +30,7 @@
             android:horizontalSpacing="10dp"
             android:numColumns="3"
             android:scrollbars="vertical"
-            android:verticalSpacing="10dp">
+            android:verticalSpacing="10dp" >
         </GridView>
 
     </LinearLayout>

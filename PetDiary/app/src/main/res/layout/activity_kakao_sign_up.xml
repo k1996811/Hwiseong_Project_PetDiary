@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="회원가입"
+            android:text="카카오톡 아이디 계정 등록"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="#000000"
@@ -181,7 +181,6 @@
                     android:id="@+id/passwordCheckCheckedImg"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:layout_marginTop="5dp"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginRight="5dp"
@@ -192,7 +191,6 @@
                     android:id="@+id/passwordCheckUnCheckedImg"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:layout_marginTop="5dp"
                     android:src="@drawable/cancel"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
@@ -271,17 +269,7 @@
             android:id="@+id/signUpButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="회원가입"
-            android:padding="5dp"
-            android:background="@drawable/button2"/>
-
-        <Button
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:id="@+id/loginButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="로그인"
+            android:text="계정 등록"
             android:padding="5dp"
             android:background="@drawable/button2"/>
 
