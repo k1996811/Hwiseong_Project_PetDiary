@@ -121,10 +121,12 @@ public class FragmentMy extends Fragment {
                     userInfo.put("profileImg",document.getString("profileImg"));
                     userInfo.put("memo",document.getString("memo"));
 
-                    profileImgName = document.getString("profileImg");
+
                     profileName.setText(userInfo.get(("nickName")));
                     profileMemo.setText(userInfo.get(("memo")));
-                    setImg();
+                    profileImgName = document.getString("profileImg");
+                    setProfileImg(profileImgName);
+                    //setImg();
                 } else {
                     Log.w(TAG, "Error getting documents.", task.getException());
                 }
@@ -163,7 +165,8 @@ public class FragmentMy extends Fragment {
         profileImage.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                setImg();
+              //  setImg();
+                setProfileImg(profileImgName);
                 String userId = "IAmTarget";//"IAmUser"
                 String targetId = "IAmTarget";
                 Intent intent = new Intent(getContext(), ProfileEditActivity.class);
@@ -211,7 +214,6 @@ public class FragmentMy extends Fragment {
         switch (requestCode) {
             case 0:
                 if (resultCode == RESULT_OK) {
-                    Log.d("IR - 마이프레그먼트", "onActivity 실행되었다 : " + data.getStringExtra("nickName") +", " +  data.getStringExtra("memo"));
                    // userInfo.put("nickName", data.getStringExtra("nickName"));
                   //  userInfo.put("memo",data.getStringExtra("memo"));
                   //userInfo.put("profileImg", data.getStringExtra("profileImg"));

@@ -121,10 +121,12 @@ public class ProfileEditActivity extends AppCompatActivity {
                     Log.d("IR - 저장버튼", "onClick: 저장 버튼 선택");
                     isPressedSaveBtn = true;
                     isEditMode = false;
+
+                    setProfileImg(postImgPath);
                     saveDataToFirebase();
                     setEditIcon(true);
                     setEditMode(false);
-                    setProfileImg(postImgPath);
+
                     preName = userName.getText().toString();
                     preMemo = userMemo.getText().toString();
                     preImage = postImgPath;
@@ -210,6 +212,10 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     // 프로필 이미지 변경 함수
     private void setProfileImg(String profileImg) {
+        Activity activity = ProfileEditActivity.this;
+        if (activity.isFinishing())
+            return;
+
         Log.d("IR", "setProfileImg: " + profileImg);
         Glide.with(this).load(profileImg).centerCrop().override(500).into(userImage);
     }
