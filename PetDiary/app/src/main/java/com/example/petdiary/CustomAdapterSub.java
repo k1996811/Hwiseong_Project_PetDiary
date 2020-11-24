@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,21 +16,23 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
 import com.example.petdiary.adapter.ViewPageAdapter;
+import com.example.petdiary.adapter.ViewPageAdapterSub;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
 
 public class CustomAdapterSub extends RecyclerView.Adapter<CustomAdapterSub.CustomViewHolder> {
 
-    private ArrayList<DataSub> arrayList;
+    private ArrayList<Data> arrayList;
     private Context context;
-
+    private LayoutInflater inflater;
 
     //어댑터에서 액티비티 액션을 가져올 때 context가 필요한데 어댑터에는 context가 없다.
     //선택한 액티비티에 대한 context를 가져올 때 필요하다.
 
-    public CustomAdapterSub(ArrayList<DataSub> arrayList, Context context) {
+    public CustomAdapterSub(ArrayList<Data> arrayList, Context context) {
         this.arrayList = arrayList;
         this.context = context;
     }
@@ -41,96 +44,17 @@ public class CustomAdapterSub extends RecyclerView.Adapter<CustomAdapterSub.Cust
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sub, parent, false);
         CustomViewHolder holder = new CustomViewHolder(view);
 
-
-        view.findViewById(R.id.Comment_btn).setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Log.e("@@@re", "button2클릭");
-                Intent intent = new Intent(v.getContext(), Comment.class);
-                v.getContext().startActivity(intent);
-            }
-        });
-
-        view.findViewById(R.id.main_image).setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(v.getContext(), Expand_ImageView.class);
-                v.getContext().startActivity(intent);
-            }
-        });
-
-
-        view.findViewById(R.id.onPopupButton).setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(final View view) {
-
-                CharSequence info[] = new CharSequence[] {"Edit", "Delete","Share" };
-
-                final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-
-                builder.setTitle("");
-
-                builder.setItems(info, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch(which)
-                        {
-                            case 0:
-                                // 내정보
-                                Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
-
-                                break;
-
-                            case 1:
-                                // 로그아웃
-                                Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
-
-                                break;
-
-                            case 2:
-                                Intent msg = new Intent(Intent.ACTION_SEND);
-                                msg.addCategory(Intent.CATEGORY_DEFAULT);
-                                msg.putExtra(Intent.EXTRA_SUBJECT, "주제");
-                                msg.putExtra(Intent.EXTRA_TEXT, "내용");
-                                msg.putExtra(Intent.EXTRA_TITLE, "제목");
-                                msg.setType("text/plain");
-
-                                view.getContext().startActivity(Intent.createChooser(msg, "공유"));
-
-                                break;
-                        }
-
-                        dialog.dismiss();
-                    }
-                });
-
-                builder.show();
-
-            }
-        });
-
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
-//        Glide.with(holder.itemView)
-//                .load(arrayList.get(position).getImageUrl1())
-//                .into(holder.imageUrl1);
         viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
-        viewPageAdapter = new ViewPageAdapter(arrayList.get(position).getImageUrl1(), arrayList.get(position).getImageUrl2(),
-                arrayList.get(position).getImageUrl3(), arrayList.get(position).getImageUrl4(), arrayList.get(position).getImageUrl5(), context);
+        viewPageAdapter = new ViewPageAdapterSub(arrayList.get(position).getImageUrl1(), context);
         viewPager.setAdapter(viewPageAdapter);
-        holder.content.setText(arrayList.get(position).getContent());
-
-        wormDotsIndicator  = (WormDotsIndicator) holder.itemView.findViewById(R.id.worm_dots_indicator);
-        wormDotsIndicator .setViewPager(viewPager);
     }
-
-    ViewPageAdapter viewPageAdapter;
+    ViewPageAdapterSub viewPageAdapter;
     ViewPager viewPager;
-    WormDotsIndicator wormDotsIndicator;
     @Override
     public int getItemCount() {
         // 삼항 연산자
@@ -138,12 +62,8 @@ public class CustomAdapterSub extends RecyclerView.Adapter<CustomAdapterSub.Cust
     }
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
-        TextView content;
-
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.content = itemView.findViewById(R.id.main_textView);
-
         }
     }
 }

@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView genter_icon;
     BottomNavigationView bottomNavigationView;
     FragmentMain fragmentMain;
-    FragmentSub2 fragmentSub;
+    FragmentSub3 fragmentSub;
     FragmentNewPost fragmentNewPost;
     FragmentMy fragmentMy;
     FragmentContentMain fragmentContentMain;
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     case R.id.tab2:
                         if(fragmentSub == null){
-                            fragmentSub = new FragmentSub2();
+                            fragmentSub = new FragmentSub3();
                             fragmentManager.beginTransaction().add(R.id.main_layout, fragmentSub).commit();
                         }
                         if(fragmentSub != null){
