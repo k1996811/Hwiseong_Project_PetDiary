@@ -70,6 +70,7 @@
         android:src="#03DAC5"/>
 
     <androidx.viewpager.widget.ViewPager
+        android:onClick="onClick"
         android:layout_marginTop="20dp"
         android:scaleType="centerInside"
         android:id="@+id/main_image"
@@ -99,7 +100,7 @@
         app:dotsStrokeWidth="2dp"
         app:stiffness="300" />
 
-    <kr.co.prnd.readmore.ReadMoreTextView
+    <TextView
         android:id="@+id/main_textView"
         android:layout_marginBottom="10dp"
         android:layout_marginRight="10dp"
@@ -110,10 +111,7 @@
         android:text="강아지와 산책을 했습니다 너무너무 즐거운 산책 내일또 하고시어용 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다#강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다"
         android:layout_below="@id/worm_dots_indicator"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:readMoreColor="@android:color/darker_gray"
-        app:readMoreMaxLine="2"
-        app:readMoreText="...더보기" />
+        android:layout_height="wrap_content" />
 
     <CheckBox
         android:button="@android:color/transparent"

@@ -6,6 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Comment">
+
+    <View
+        android:id="@+id/first_Square"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:background="@drawable/button"/>
+
+
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/Profile_image"
         android:layout_width="50dp"
@@ -28,6 +39,9 @@
         android:text="강아지와 산책을 했습니다 너무나 즐거운 하루 또 놀고싶어요 헤헤헤헤헤헤헤헤헤헤헤헤헤헤헤 #즐거워잉"
         android:textColor="#000000"/>
 
+
+
+
     <TextView
         android:id="@+id/Profile_Name"
         android:layout_width="wrap_content"
@@ -40,7 +54,7 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/CO_Profile_image"
-        android:layout_below="@+id/PostText_view"
+        android:layout_below="@+id/first_Square"
         android:layout_marginLeft="7dp"
         android:layout_marginTop="15dp"
         android:layout_width="50dp"
@@ -51,7 +65,7 @@
         android:src="@drawable/dog"/>
 
     <TextView
-        android:layout_below="@+id/PostText_view"
+        android:layout_below="@+id/first_Square"
         android:layout_marginTop="30dp"
         android:id="@+id/CO_Profile_Name"
         android:layout_alignBaseline="@id/CO_Profile_image"
@@ -64,7 +78,7 @@
 
     <TextView
         android:id="@+id/CO_comment_view"
-        android:layout_below="@+id/PostText_view"
+        android:layout_below="@+id/first_Square"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="30dp"
