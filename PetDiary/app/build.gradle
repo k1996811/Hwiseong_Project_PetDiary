@@ -62,5 +62,8 @@ dependencies {
     //noinspection GradleCompatible
     implementation 'com.android.support:recyclerview-v7:27.1.1'
 
+    implementation 'com.borjabravo:readmoretextview:2.1.0'
+    implementation 'kr.co.prnd:readmore-textview:1.0.0'
+
     implementation group: project.KAKAO_SDK_GROUP, name: 'usermgmt', version: project.KAKAO_SDK_VERSION
 }
