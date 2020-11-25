@@ -1,6 +1,7 @@
 package com.example.petdiary.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
+import com.example.petdiary.Expand_ImageView;
 import com.example.petdiary.R;
 import com.google.android.material.tabs.TabLayout;
 
@@ -61,6 +63,13 @@ public class ViewPageAdapter extends PagerAdapter {
                 (Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.slider, container, false);
         ImageView imageView = (ImageView)v.findViewById(R.id.imageView);
+
+        v.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent intent = new Intent(v.getContext(), Expand_ImageView.class);
+                v.getContext().startActivity(intent);
+            }
+        });
 
         //imageView.setImageResource(images[position]);
         Glide.with(context).load(imagess.get(position)).into(imageView);
