@@ -67,7 +67,7 @@
         app:civ_border_width="0dp"
         app:civ_border_color="#FF000000"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/dog"/>
+        android:src="#03DAC5"/>
 
     <androidx.viewpager.widget.ViewPager
         android:layout_marginTop="20dp"
@@ -77,7 +77,8 @@
         android:layout_marginLeft="7dp"
         android:layout_below="@+id/Profile_image"
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_height="300dp"
+        android:background="@drawable/ic_launcher_foreground">
 
 
     </androidx.viewpager.widget.ViewPager>

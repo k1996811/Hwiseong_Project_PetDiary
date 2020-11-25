@@ -208,7 +208,7 @@ public class SignUpActivity extends AppCompatActivity {
                             //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                            MemberInfo memberInfo = new MemberInfo(email, password, nickName, "");
+                            MemberInfo memberInfo = new MemberInfo(email, password, nickName, "", "");
                             db.collection("users").document(user.getUid()).set(memberInfo)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override

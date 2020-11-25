@@ -1,34 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-
-    <View
-        android:id="@+id/second_Square"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_below="@+id/first_Square"
-        android:layout_above="@+id/third_Square"
-        android:layout_marginTop="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/button"/>
-
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center">
 
     <androidx.viewpager.widget.ViewPager
-        android:layout_marginTop="20dp"
-        android:scaleType="centerInside"
+        android:scaleType="fitXY"
         android:id="@+id/main_image"
-        android:layout_marginRight="7dp"
-        android:layout_marginLeft="7dp"
-        android:layout_below="@+id/Profile_image"
-        android:layout_width="match_parent"
-        android:layout_height="300dp">
-
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@drawable/ic_launcher_foreground">
 
     </androidx.viewpager.widget.ViewPager>
 
-
-</RelativeLayout>
+</LinearLayout>

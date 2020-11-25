@@ -7,13 +7,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+
+import com.bumptech.glide.Glide;
+import com.example.petdiary.activity.SetPasswordActivity;
 import com.example.petdiary.adapter.ViewPageAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 import com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
@@ -34,13 +44,16 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         this.context = context;
     }
 
+    public void clear(){
+        arrayList.clear();
+    }
+
     @NonNull
     @Override
     //실제 리스트뷰가 어댑터에 연결된 다음에 뷰 홀더를 최초로 만들어낸다.
     public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
         CustomViewHolder holder = new CustomViewHolder(view);
-
 
         view.findViewById(R.id.Comment_btn).setOnClickListener(new View.OnClickListener(){
             @Override
@@ -100,29 +113,54 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
                                 break;
                         }
-
                         dialog.dismiss();
                     }
                 });
-
                 builder.show();
-
             }
         });
-
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
-//        Glide.with(holder.itemView)
-//                .load(arrayList.get(position).getImageUrl1())
-//                .into(holder.imageUrl1);
+    public void onBindViewHolder(@NonNull final CustomViewHolder holder, final int position) {
+        if(arrayList.get(position).getImageUrl1() == null){
+            ImageView imageView = holder.itemView.findViewById(R.id.main_image);
+            Glide.with(context).load(R.drawable.ic_launcher_foreground).centerCrop().override(1000).into(imageView);
+        }
+
         viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
         viewPageAdapter = new ViewPageAdapter(arrayList.get(position).getImageUrl1(), arrayList.get(position).getImageUrl2(),
                 arrayList.get(position).getImageUrl3(), arrayList.get(position).getImageUrl4(), arrayList.get(position).getImageUrl5(), context);
         viewPager.setAdapter(viewPageAdapter);
         holder.content.setText(arrayList.get(position).getContent());
+        holder.nickName.setText(arrayList.get(position).getNickName());
+
+
+        final String[] profileImg = new String[1];
+        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(arrayList.get(position).getUid());
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        if (document.exists()) {
+                            profileImg[0] = document.getData().get("profileImg").toString();
+                            if(profileImg[0].length() > 0){
+                                ImageView profileImage = (ImageView) holder.itemView.findViewById(R.id.Profile_image);
+                                Glide.with(context).load(profileImg[0]).centerCrop().override(500).into(profileImage);
+                            }
+                        } else {
+                            //Log.d("###", "No such document");
+                        }
+                    }
+                } else {
+                    //Log.d("###", "get failed with ", task.getException());
+                }
+            }
+        });
+
 
         wormDotsIndicator  = (WormDotsIndicator) holder.itemView.findViewById(R.id.worm_dots_indicator);
         wormDotsIndicator .setViewPager(viewPager);
@@ -139,11 +177,14 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         TextView content;
+        TextView nickName;
+        ImageView profileImage;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.content = itemView.findViewById(R.id.main_textView);
-
+            this.nickName = itemView.findViewById(R.id.Profile_Name);
+            this.profileImage = itemView.findViewById(R.id.Profile_image);
         }
     }
 }

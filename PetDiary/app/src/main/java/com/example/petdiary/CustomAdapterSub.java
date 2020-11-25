@@ -27,7 +27,8 @@ public class CustomAdapterSub extends RecyclerView.Adapter<CustomAdapterSub.Cust
 
     private ArrayList<Data> arrayList;
     private Context context;
-    private LayoutInflater inflater;
+    private LayoutInflater inf;
+    private int layout;
 
     //어댑터에서 액티비티 액션을 가져올 때 context가 필요한데 어댑터에는 context가 없다.
     //선택한 액티비티에 대한 context를 가져올 때 필요하다.
@@ -50,7 +51,7 @@ public class CustomAdapterSub extends RecyclerView.Adapter<CustomAdapterSub.Cust
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
         viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
-        viewPageAdapter = new ViewPageAdapterSub(arrayList.get(position).getImageUrl1(), context);
+        viewPageAdapter = new ViewPageAdapterSub(arrayList.get(position), arrayList.get(position).getImageUrl1(), context);
         viewPager.setAdapter(viewPageAdapter);
     }
     ViewPageAdapterSub viewPageAdapter;

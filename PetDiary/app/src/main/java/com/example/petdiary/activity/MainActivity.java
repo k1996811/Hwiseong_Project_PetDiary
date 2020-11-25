@@ -54,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
     TextView toolbarNickName;
     ImageView genter_icon;
     BottomNavigationView bottomNavigationView;
-    FragmentMain fragmentMain;
+    FragmentMain2 fragmentMain;
     FragmentSub3 fragmentSub;
-    FragmentNewPost fragmentNewPost;
+    FragmentNewPost2 fragmentNewPost;
     FragmentMy fragmentMy;
     FragmentContentMain fragmentContentMain;
 
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
     public void setFirst() {
         fragmentManager = getSupportFragmentManager();
 
-        fragmentMain = new FragmentMain();
+        fragmentMain = new FragmentMain2();
 
         fragmentManager.beginTransaction().replace(R.id.main_layout, fragmentMain).commit();
 
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.tab1:
                         if(fragmentMain == null){
-                            fragmentMain = new FragmentMain();
+                            fragmentMain = new FragmentMain2();
                             fragmentManager.beginTransaction().add(R.id.main_layout, fragmentMain).commit();
                         }
                         if(fragmentMain != null){
@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     case R.id.tab3:
                         if(fragmentNewPost == null){
-                            fragmentNewPost = new FragmentNewPost();
+                            fragmentNewPost = new FragmentNewPost2();
                             fragmentManager.beginTransaction().add(R.id.main_layout, fragmentNewPost).commit();
                         }
                         if(fragmentNewPost != null){

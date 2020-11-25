@@ -1,5 +1,7 @@
 package com.example.petdiary;
 
+import java.util.ArrayList;
+
 public class Data {
     private String imageUrl1;
     private String imageUrl2;
@@ -7,6 +9,14 @@ public class Data {
     private String imageUrl4;
     private String imageUrl5;
     private String content;
+    private String nickName;
+    private String uid;
+    private String category;
+    private String date;
+    private String email;
+    private ArrayList<String> hashTag = new ArrayList<String>();
+    private int favoriteCount;
+
 
     public Data() { }
 
@@ -55,4 +65,56 @@ public class Data {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public ArrayList<String> getHashTag() {
+        return hashTag;
+    }
+
+    public void setHashTag(ArrayList<String> hashTag) {
+        this.hashTag = hashTag;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public int getFavoriteCount() { return favoriteCount; }
+
+    public void setFavoriteCount(int favoriteCount) { this.favoriteCount = favoriteCount; }
 }

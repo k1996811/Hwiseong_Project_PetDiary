@@ -6,7 +6,6 @@ import java.util.Map;
 
 public class PostInfo {
 
-    private int num;
     private String uid;
     private String email;
     private String category;
@@ -18,19 +17,13 @@ public class PostInfo {
     private String content;
     private ArrayList<String> hashTag = new ArrayList<String>();
     private String date;
+    private String nickName;
     private int favoriteCount = 0;
     private Map<String, Boolean> favorites = new HashMap<>();
     private Map<String, Comment> comments;
 
     public static class Comment {
 
-    }
-
-    public int getNum(){
-        return num;
-    }
-    public void setNum(int num){
-        this.num = num;
     }
 
     public String getUid() {
@@ -120,6 +113,19 @@ public class PostInfo {
     public void setDate(String date) {
         this.date = date;
     }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public int getFavoriteCount() { return favoriteCount; }
+
+    public void setFavoriteCount(int favoriteCount) { this.favoriteCount = favoriteCount; }
+
 
     @Override
     public String toString() {

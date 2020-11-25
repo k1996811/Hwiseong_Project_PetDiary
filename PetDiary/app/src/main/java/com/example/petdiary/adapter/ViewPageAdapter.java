@@ -1,6 +1,8 @@
 package com.example.petdiary.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,36 +20,34 @@ import java.util.ArrayList;
 
 public class ViewPageAdapter extends PagerAdapter {
 
-    private int[] images = {R.drawable.cat1,
-            R.drawable.cat2,
-            R.drawable.dog};
-    private ArrayList<String> imagess = new ArrayList<String>();
+    private ArrayList<String> images = new ArrayList<String>();
     private LayoutInflater inflater;
     private Context context;
 
-    public ViewPageAdapter(String uri1, String uri2, String uri3, String uri4, String uri5, Context context){
-        if(uri1.length() > 0 ){
-            imagess.add(uri1);
+    public ViewPageAdapter(String url1, String url2, String url3, String url4, String url5, Context context){
+        if(url1.length() > 0 ){
+            images.add(url1);
         }
-        if(uri2.length() > 0 ){
-            imagess.add(uri2);
+        if(url2.length() > 0 ){
+            images.add(url2);
         }
-        if(uri3.length() > 0 ){
-            imagess.add(uri3);
+        if(url3.length() > 0 ){
+            images.add(url3);
         }
-        if(uri4.length() > 0 ){
-            imagess.add(uri4);
+        if(url4.length() > 0 ){
+            images.add(url4);
         }
-        if(uri5.length() > 0 ){
-            imagess.add(uri5);
+        if(url5.length() > 0 ){
+            images.add(url5);
         }
+
         this.context = context;
     }
 
     @Override
     public int getCount() {
         //return images.length;
-        return imagess.size();
+        return images.size();
     }
 
     @Override
@@ -61,9 +61,7 @@ public class ViewPageAdapter extends PagerAdapter {
                 (Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.slider, container, false);
         ImageView imageView = (ImageView)v.findViewById(R.id.imageView);
-
-        //imageView.setImageResource(images[position]);
-        Glide.with(context).load(imagess.get(position)).into(imageView);
+        Glide.with(context).load(images.get(position)).centerCrop().override(1000).into(imageView);
         container.addView(v);
         return v;
     }

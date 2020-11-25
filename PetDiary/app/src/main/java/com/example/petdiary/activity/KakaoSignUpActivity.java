@@ -215,7 +215,7 @@ public class KakaoSignUpActivity extends AppCompatActivity {
 
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                            MemberInfo memberInfo = new MemberInfo(email, password, nickName, kakaoProfile);
+                            MemberInfo memberInfo = new MemberInfo(email, password, nickName, kakaoProfile, "");
                             db.collection("users").document(user.getUid()).set(memberInfo)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override

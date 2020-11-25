@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#27878787">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button"
+        android:layout_marginRight="7dp"
+        android:layout_marginLeft="7dp">
+
+        <TextView
+            android:id="@+id/Profile_Name"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/Profile_image"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:text="닉네임"/>
+
+        <Button
+            android:id="@+id/onPopupButton"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/more"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/Profile_image"
+            android:layout_marginLeft="7dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:civ_border_width="0dp"
+            app:civ_border_color="#FF000000"
+            android:layout_gravity="center_vertical"
+            android:src="#03DAC5"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button"
+        android:layout_marginRight="7dp"
+        android:layout_marginLeft="7dp">
+
+        <androidx.viewpager.widget.ViewPager
+            android:layout_marginTop="20dp"
+            android:scaleType="centerInside"
+            android:id="@+id/main_image"
+            android:layout_marginRight="7dp"
+            android:layout_marginLeft="7dp"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@drawable/ic_launcher_foreground">
+
+        </androidx.viewpager.widget.ViewPager>
+
+        <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+            android:layout_marginTop="10dp"
+            android:layout_centerInParent="true"
+            android:layout_below="@+id/main_image"
+            android:id="@+id/worm_dots_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:dampingRatio="0.5"
+            app:dotsColor="@color/colorPrimaryDark"
+            app:dotsStrokeColor="@color/colorAccent"
+            app:dotsCornerRadius="4dp"
+            app:dotsSize="8dp"
+            app:dotsSpacing="2dp"
+            app:dotsStrokeWidth="2dp"
+            app:stiffness="300" />
+
+        <kr.co.prnd.readmore.ReadMoreTextView
+            android:id="@+id/main_textView"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="10dp"
+            android:autoSizeTextType="uniform"
+            android:textColor="#000000"
+            android:text="강아지와 산책을 했습니다 너무너무 즐거운 산책 내일또 하고시어용 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다#강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다"
+            android:layout_below="@id/worm_dots_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:readMoreColor="@android:color/darker_gray"
+            app:readMoreMaxLine="2"
+            app:readMoreText="...더보기"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="7dp"
+        android:layout_marginLeft="7dp"
+        android:background="@drawable/button">
+
+        <CheckBox
+            android:button="@android:color/transparent"
+            android:id="@+id/Like_button"
+            android:layout_marginLeft="10dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/heart_check"/>
+
+        <Button
+            android:id="@+id/Comment_btn"
+            android:layout_alignBaseline="@+id/Like_button"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/Like_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/commnet"/>
+
+        <CheckBox
+            android:layout_marginRight="0dp"
+            android:button="@android:color/transparent"
+            android:id="@+id/bookmark_button"
+            android:layout_alignParentRight="true"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bookmark_check"/>
+
+    </RelativeLayout>
+
+</LinearLayout>
