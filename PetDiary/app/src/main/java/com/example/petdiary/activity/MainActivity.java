@@ -49,14 +49,12 @@ public class MainActivity extends AppCompatActivity {
 
     private String password = "";
 
-    private FirebaseAuth mAuth;
-
     TextView toolbarNickName;
     ImageView genter_icon;
     BottomNavigationView bottomNavigationView;
-    FragmentMain2 fragmentMain;
-    FragmentSub3 fragmentSub;
-    FragmentNewPost2 fragmentNewPost;
+    FragmentMain fragmentMain;
+    FragmentSub fragmentSub;
+    FragmentNewPost fragmentNewPost;
     FragmentMy fragmentMy;
     FragmentContentMain fragmentContentMain;
 
@@ -192,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
     public void setFirst() {
         fragmentManager = getSupportFragmentManager();
 
-        fragmentMain = new FragmentMain2();
+        fragmentMain = new FragmentMain();
 
         fragmentManager.beginTransaction().replace(R.id.main_layout, fragmentMain).commit();
 
@@ -204,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.tab1:
                         if(fragmentMain == null){
-                            fragmentMain = new FragmentMain2();
+                            fragmentMain = new FragmentMain();
                             fragmentManager.beginTransaction().add(R.id.main_layout, fragmentMain).commit();
                         }
                         if(fragmentMain != null){
@@ -225,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     case R.id.tab2:
                         if(fragmentSub == null){
-                            fragmentSub = new FragmentSub3();
+                            fragmentSub = new FragmentSub();
                             fragmentManager.beginTransaction().add(R.id.main_layout, fragmentSub).commit();
                         }
                         if(fragmentSub != null){
@@ -246,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     case R.id.tab3:
                         if(fragmentNewPost == null){
-                            fragmentNewPost = new FragmentNewPost2();
+                            fragmentNewPost = new FragmentNewPost();
                             fragmentManager.beginTransaction().add(R.id.main_layout, fragmentNewPost).commit();
                         }
                         if(fragmentNewPost != null){

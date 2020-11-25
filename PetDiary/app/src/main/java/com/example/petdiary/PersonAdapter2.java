@@ -25,7 +25,6 @@ public class PersonAdapter2 extends RecyclerView.Adapter<PersonAdapter2.ViewHold
         this.mContext = mContext;
     }
 
-
     public void setOnitemClickListener(OnItemClickListener listener){
         this.mListener = listener;
     }

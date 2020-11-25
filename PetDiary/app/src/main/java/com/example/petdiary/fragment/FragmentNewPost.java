@@ -36,6 +36,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -66,13 +67,11 @@ public class FragmentNewPost extends Fragment {
     int choiceNum;
     RelativeLayout loaderLayout;
     Spinner spinner;
-    DatabaseReference images;
     TextView contentsLengthTextView;
     EditText contents;
 
     ViewGroup viewGroup;
 
-    boolean check;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,19 +104,7 @@ public class FragmentNewPost extends Fragment {
             }
         });
 
-        Bundle bundle = getArguments();
-
-        //Log.e("###" , FirebaseAuth.getInstance().getCurrentUser().getUid().toString());
-
-        if(bundle != null){
-            check = true;
-            //profileName.setText(bundle.getString("nickName"));
-            //setProfileImg(bundle.getString("profile"));
-            email = bundle.getString("email");
-        } else {
-            check = false;
-            setEmail();
-        }
+        setEmail();
 
 
         contentsLengthTextView = (TextView) viewGroup.findViewById(R.id.contentsLengthTextView);
@@ -137,21 +124,6 @@ public class FragmentNewPost extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        images = FirebaseDatabase.getInstance().getReference().child("images");
-        images.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    maxid = (snapshot.getChildrenCount());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
@@ -258,6 +230,7 @@ public class FragmentNewPost extends Fragment {
             postImgCheck[0] = 0;
             postImg[0].setImageResource(R.drawable.ic_baseline_add_24);
             deletePostImg[0].setVisibility(View.INVISIBLE);
+            img[0] = null;
         } else {
             for(int i=a; i<count; i++){
                 img[i-1] = img[i];
@@ -282,8 +255,6 @@ public class FragmentNewPost extends Fragment {
                 }
         }
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -338,7 +309,6 @@ public class FragmentNewPost extends Fragment {
 
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home ){
@@ -353,10 +323,12 @@ public class FragmentNewPost extends Fragment {
     private String category;
     private String[] img = new String[5];
     private String[] imgUri = new String[5];
-    private String content;
+    private String content = "";
     private String tag;
     private String date;
     private String date2;
+    private String nickName;
+    private int favoriteCount = 0;
 
     private ArrayList<String> hashTag;
 
@@ -382,13 +354,12 @@ public class FragmentNewPost extends Fragment {
                 }
             }
         }
-
-        saveImage();
-//        if(content.length() > 0 || img[0].length() > 0){
-//            saveImage();
-//        } else {
-//            startToast("내용을 입력해주세요.");
-//        }
+        if(content.length() > 0 || img[0] != null){
+            saveImage();
+        } else {
+            loaderLayout.setVisibility(View.INVISIBLE);
+            startToast("사진과 내용 중 하나는 입력해주세요.");
+        }
 
     }
 
@@ -403,6 +374,7 @@ public class FragmentNewPost extends Fragment {
                         if (document.exists()) {
                             Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                             email = document.getData().get("email").toString();
+                            nickName = document.getData().get("nickName").toString();
                         } else {
                             Log.d(TAG, "No such document");
                         }
@@ -416,8 +388,14 @@ public class FragmentNewPost extends Fragment {
 
     int postNum = 0;
     int postNumCheck = 0;
+    boolean imgCheck = true;
 
     private void saveImage(){
+        if(img[0] == null){
+            imgCheck = false;
+            postImgCheck[0] = 1;
+            postNumCheck = 1;
+        }
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         final StorageReference storageRef = storage.getReference();
@@ -428,7 +406,12 @@ public class FragmentNewPost extends Fragment {
         } else {
             for(int i=0; i<5; i++){
                 if(postImgCheck[i] == 1){
-                    final Uri file = Uri.fromFile(new File(img[i]));
+                    final Uri file;
+                    if(imgCheck){
+                        file = Uri.fromFile(new File(img[i]));
+                    } else {
+                        file = Uri.parse("android.resource://com.example.petdiary/" + R.drawable.ic_launcher_foreground);
+                    }
 
                     StorageReference riversRef = storageRef.child("images/"+date2+"_postImg_"+i);
                     uploadTask[0] = riversRef.putFile(file);
@@ -438,7 +421,6 @@ public class FragmentNewPost extends Fragment {
                     uploadTask[0].addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
-
                         }
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -476,16 +458,10 @@ public class FragmentNewPost extends Fragment {
         }
     }
 
-
-    long maxid = 0;
-    private FirebaseDatabase firebaseDatabase;
     BottomNavigationView bottomNavigationView;
     Menu menu;
 
     private void postData(){
-        firebaseDatabase = FirebaseDatabase.getInstance();
-
-        DatabaseReference images = firebaseDatabase.getReference().child("images").push();
 
         PostInfo postInfo = new PostInfo();
 
@@ -499,25 +475,41 @@ public class FragmentNewPost extends Fragment {
         postInfo.setEmail(email);
         postInfo.setCategory(category);
         postInfo.setDate(date);
+        postInfo.setNickName(nickName);
         postInfo.setHashTag(hashTag);
+        postInfo.setFavoriteCount(favoriteCount);
 
-        //게시물을 데이터를 생성 및 엑티비티 종료
-        images.setValue(postInfo);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        getActivity().setResult(RESULT_OK);
-        startToast("게시글을 등록하였습니다.");
-        loaderLayout.setVisibility(View.INVISIBLE);
+        String doucmentPath = date2 + "_" + user.getUid();
 
-        bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
-        menu = bottomNavigationView.getMenu();
-        menu.findItem(R.id.tab3).setChecked(false);
-        menu.findItem(R.id.tab1).setChecked(true);
+        db.collection("post").document(doucmentPath).set(postInfo)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        startToast("게시글을 등록하였습니다.");
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                        getActivity().setResult(RESULT_OK);
+                        loaderLayout.setVisibility(View.INVISIBLE);
 
-        /////메인 타임라인으로 프래그먼트 이동
+                        bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
+                        menu = bottomNavigationView.getMenu();
+                        menu.findItem(R.id.tab3).setChecked(false);
+                        menu.findItem(R.id.tab1).setChecked(true);
 
-        setDirEmpty();
+                        setDirEmpty();
 
-        ((MainActivity)getActivity()).replaceFragment();
+                        ((MainActivity)getActivity()).replaceFragment();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        startToast("입력 정보를 확인해주세요.");
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
     }
 
     public void setDirEmpty(){
@@ -539,7 +531,7 @@ public class FragmentNewPost extends Fragment {
     }
 
     private void startToast(String msg){
-        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity().getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
 }

@@ -3,8 +3,6 @@ package com.example.petdiary;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
-import com.example.petdiary.adapter.ViewPageAdapter;
 import com.example.petdiary.adapter.ViewPageAdapterDetail;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -52,7 +49,7 @@ public class Expand_ImageView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_expand__image_view2);
+        setContentView(R.layout.activity_expand__image_view);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
