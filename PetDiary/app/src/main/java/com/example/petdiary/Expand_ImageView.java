@@ -18,6 +18,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.example.petdiary.adapter.ViewPageAdapter;
+import com.example.petdiary.adapter.ViewPageAdapterDetail;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -41,7 +42,7 @@ public class Expand_ImageView extends AppCompatActivity {
     private String nickName;
     private int favoriteCount;
 
-    ViewPageAdapter viewPageAdapter;
+    ViewPageAdapterDetail viewPageAdapter;
     ViewPager viewPager;
     WormDotsIndicator wormDotsIndicator;
 
@@ -92,7 +93,7 @@ public class Expand_ImageView extends AppCompatActivity {
         });
 
         viewPager = (ViewPager) findViewById(R.id.main_image);
-        viewPageAdapter = new ViewPageAdapter(imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5, getApplicationContext());
+        viewPageAdapter = new ViewPageAdapterDetail(imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5, getApplicationContext());
         viewPager.setAdapter(viewPageAdapter);
 
         wormDotsIndicator  = (WormDotsIndicator) findViewById(R.id.worm_dots_indicator);

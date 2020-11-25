@@ -51,7 +51,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     @NonNull
     @Override
     //실제 리스트뷰가 어댑터에 연결된 다음에 뷰 홀더를 최초로 만들어낸다.
-    public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, final int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
         CustomViewHolder holder = new CustomViewHolder(view);
 
@@ -64,14 +64,28 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             }
         });
 
-        view.findViewById(R.id.main_image).setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(v.getContext(), Expand_ImageView.class);
-                v.getContext().startActivity(intent);
-            }
-        });
+//        view.findViewById(R.id.main_image).setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v) {
+//
+//                Intent intent = new Intent(v.getContext(), Expand_ImageView.class);
+//
+//                Log.e("###", arrayList.get(viewType).getNickName());
+//
+//                intent.putExtra("nickName", arrayList.get(viewType).getNickName());
+//                intent.putExtra("uid", arrayList.get(viewType).getUid());
+//                intent.putExtra("imageUrl1", arrayList.get(viewType).getImageUrl1());
+//                intent.putExtra("imageUrl2", arrayList.get(viewType).getImageUrl2());
+//                intent.putExtra("imageUrl3", arrayList.get(viewType).getImageUrl3());
+//                intent.putExtra("imageUrl4", arrayList.get(viewType).getImageUrl4());
+//                intent.putExtra("imageUrl5", arrayList.get(viewType).getImageUrl5());
+//                intent.putExtra("favoriteCount", arrayList.get(viewType).getFavoriteCount());
+//                intent.putExtra("date", arrayList.get(viewType).getDate());
+//                intent.putExtra("content", arrayList.get(viewType).getContent());
+//
+//                v.getContext().startActivity(intent);
+//            }
+//        });
 
 
         view.findViewById(R.id.onPopupButton).setOnClickListener(new View.OnClickListener(){
@@ -130,7 +144,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         }
 
         viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
-        viewPageAdapter = new ViewPageAdapter(arrayList.get(position).getImageUrl1(), arrayList.get(position).getImageUrl2(),
+        viewPageAdapter = new ViewPageAdapter(arrayList.get(position), arrayList.get(position).getImageUrl1(), arrayList.get(position).getImageUrl2(),
                 arrayList.get(position).getImageUrl3(), arrayList.get(position).getImageUrl4(), arrayList.get(position).getImageUrl5(), context);
         viewPager.setAdapter(viewPageAdapter);
         holder.content.setText(arrayList.get(position).getContent());
