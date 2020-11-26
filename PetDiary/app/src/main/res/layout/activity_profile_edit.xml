@@ -38,7 +38,7 @@
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/cat2"
+            android:src="@drawable/icon_person"
 
             />
     </androidx.cardview.widget.CardView>

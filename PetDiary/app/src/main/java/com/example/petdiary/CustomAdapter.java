@@ -8,6 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +26,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,7 +36,11 @@ import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 import com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
+import static android.app.Activity.RESULT_OK;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomViewHolder> {
 
@@ -37,11 +48,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     private Context context;
     private Button Comment_btn;
     private Button onPopupButton;
+    private CheckBox bookmark_button;
 
+    private FirebaseDatabase firebaseDatabase;
 
     //어댑터에서 액티비티 액션을 가져올 때 context가 필요한데 어댑터에는 context가 없다.
     //선택한 액티비티에 대한 context를 가져올 때 필요하다.
-
     public CustomAdapter(ArrayList<Data> arrayList, Context context) {
         this.arrayList = arrayList;
         this.context = context;
@@ -75,6 +87,27 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         holder.content.setText(arrayList.get(position).getContent());
         holder.nickName.setText(arrayList.get(position).getNickName());
 
+        bookmark_button = (CheckBox) holder.itemView.findViewById(R.id.bookmark_button);
+        bookmark_button.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                firebaseDatabase = FirebaseDatabase.getInstance();
+                DatabaseReference bookmark = firebaseDatabase.getReference("bookmark").child(FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+arrayList.get(position).getPostID());
+                if(b){
+                    BookmarkInfo bookmarkInfo = new BookmarkInfo();
+                    bookmarkInfo.setPostID(arrayList.get(position).getPostID());
+                    //게시물을 데이터를 생성 및 엑티비티 종료
+                    bookmark.setValue(bookmarkInfo);
+                    Toast.makeText(context, "북마크에 등록하였습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    BookmarkInfo bookmarkInfo = new BookmarkInfo();
+                    //게시물을 데이터를 생성 및 엑티비티 종료
+                    bookmark.setValue(bookmarkInfo);
+                    Toast.makeText(context, "북마크에 등록하였습니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         Comment_btn  = (Button) holder.itemView.findViewById(R.id.Comment_btn);
         Comment_btn.findViewById(R.id.Comment_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +123,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         });
 
         onPopupButton = (Button) holder.itemView.findViewById(R.id.onPopupButton);
-        onPopupButton.findViewById(R.id.onPopupButton).setOnClickListener(new View.OnClickListener(){
+        onPopupButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(final View view) {
                 CharSequence info[] = new CharSequence[] {"Edit", "Delete","Share" };

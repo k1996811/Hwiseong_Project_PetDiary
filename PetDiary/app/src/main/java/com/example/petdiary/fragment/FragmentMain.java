@@ -106,7 +106,7 @@ public class FragmentMain extends Fragment {
                             int i = 0;
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Data dataList = new Data();
-                                //Log.e("###2", document.getId().toString());
+                                Log.e("###2", document.getId().toString());
                                 dataList.setPostID(document.getId());
                                 dataList.setUid(document.getData().get("uid").toString());
                                 dataList.setContent(document.getData().get("content").toString());

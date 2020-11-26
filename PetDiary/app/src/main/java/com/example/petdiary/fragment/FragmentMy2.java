@@ -50,23 +50,11 @@ public class FragmentMy2 extends Fragment {
     ImageView profileEditImg;
     int[] imgs = {
             R.drawable.cat1,
-            R.drawable.cat2,
-            R.drawable.dog,
             R.drawable.cat1,
-            R.drawable.cat2,
-            R.drawable.dog,
             R.drawable.cat1,
-            R.drawable.cat2,
-            R.drawable.dog,
             R.drawable.cat1,
-            R.drawable.cat2,
-            R.drawable.dog,
             R.drawable.cat1,
-            R.drawable.cat2,
-            R.drawable.dog,
             R.drawable.cat1,
-            R.drawable.cat2,
-            R.drawable.dog,
     };
 
 

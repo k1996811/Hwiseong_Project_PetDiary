@@ -340,7 +340,7 @@ public class FragmentNewPost extends Fragment {
         long now = System.currentTimeMillis();
         Date nowdate = new Date(now);
         SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd kk:mm:ss");
-        SimpleDateFormat sdfNow2 = new SimpleDateFormat("yyyy.MM.dd_kk.mm.ss");
+        SimpleDateFormat sdfNow2 = new SimpleDateFormat("yyyy-MM-dd_kk:mm:ss");
         date = sdfNow.format(nowdate);
         date2 = sdfNow2.format(nowdate);
 
