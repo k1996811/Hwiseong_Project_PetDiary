@@ -230,20 +230,6 @@ public class FragmentMy2 extends Fragment {
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
-    View.OnClickListener onClickListener = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.memberInfoInitButton:
-                    //myStartActivity(MemberInfoEditActivity.class);
-                    startToast("회원정보수정");
-                    break;
-
-            }
-        }
-    };
-
     private void myStartActivity(Class c) {
         Intent intent = new Intent(getContext(), c);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
