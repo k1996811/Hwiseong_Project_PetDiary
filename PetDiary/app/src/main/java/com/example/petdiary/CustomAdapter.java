@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
     private ArrayList<Data> arrayList;
     private Context context;
+    private Button Comment_btn;
 
 
     //어댑터에서 액티비티 액션을 가져올 때 context가 필요한데 어댑터에는 context가 없다.
@@ -148,7 +150,25 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         viewPager.setAdapter(viewPageAdapter);
         holder.content.setText(arrayList.get(position).getContent());
         holder.nickName.setText(arrayList.get(position).getNickName());
+        Comment_btn  = (Button) holder.itemView.findViewById(R.id.Comment_btn);
 
+<<<<<<< HEAD
+=======
+        Comment_btn.findViewById(R.id.Comment_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                Intent intent = new Intent(context, Comment.class);
+
+                intent.putExtra("nickName", arrayList.get(position).getNickName());
+                intent.putExtra("uid", arrayList.get(position).getUid());
+                intent.putExtra("content", arrayList.get(position).getContent());
+
+                context.startActivity(intent);
+            }
+
+        });
+
+>>>>>>> 241fddb5d8777c74703bb5aa103e87aa9cbdbadc
         final String[] profileImg = new String[1];
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(arrayList.get(position).getUid());
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
