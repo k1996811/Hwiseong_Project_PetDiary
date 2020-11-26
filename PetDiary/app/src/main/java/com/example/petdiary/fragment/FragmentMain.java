@@ -22,6 +22,8 @@ import com.example.petdiary.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -95,9 +97,11 @@ public class FragmentMain extends Fragment {
     }
 
     private void setInfo(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         //db.collection("post").whereEqualTo("uid", "Wvc9odc25MYAkejxIgUPTAr4e322")
-        db.collection("post")
+        db.collection("post")//.whereEqualTo("uid",uid)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

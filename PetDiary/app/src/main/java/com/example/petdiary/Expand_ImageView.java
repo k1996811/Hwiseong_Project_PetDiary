@@ -19,8 +19,13 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.example.petdiary.adapter.ViewPageAdapterDetail;
+import com.example.petdiary.fragment.FragmentSub;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -31,7 +36,7 @@ import java.util.ArrayList;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class Expand_ImageView extends AppCompatActivity {
-
+    private String postID;
     private String uid;
     private String imageUrl1;
     private String imageUrl2;
@@ -51,7 +56,9 @@ public class Expand_ImageView extends AppCompatActivity {
     TextView post_nickName;
     TextView post_content;
     private Button Comment_btn;
-
+    //내 uid 가져오기
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String uids = user.getUid();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +67,7 @@ public class Expand_ImageView extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
+        postID = intent.getStringExtra("postID");
         uid = intent.getStringExtra("uid");
         nickName = intent.getStringExtra("nickName");
         date = intent.getStringExtra("date");
@@ -129,56 +137,114 @@ public class Expand_ImageView extends AppCompatActivity {
             post_content.setVisibility(View.INVISIBLE);
         }
 
+
+
         findViewById(R.id.onPopupButton).setOnClickListener(new View.OnClickListener(){
+
+            String uidss = uids;
+            //내 uid
+            String uids2 =uid;
             @Override
+
             public void onClick(final View view) {
+                if (uidss.equals(uids2)) {
+                    CharSequence info[] = new CharSequence[]{"Edit", "Delete", "Share"};
 
-                CharSequence info[] = new CharSequence[] {"Edit", "Delete","Share" };
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
-                final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                    builder.setTitle("");
 
-                builder.setTitle("");
+                    builder.setItems(info, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    // 내정보
+                                    Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 1:
+                                    // 로그아웃
+                                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                    db.collection("post").document(postID)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
 
-                builder.setItems(info, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch(which)
-                        {
-                            case 0:
-                                // 내정보
-                                Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("@@@", "DocumentSnapshot successfully deleted!");
 
-                                break;
+//                                                arrayList.remove(position);
+//                                                notifyItemRemoved(position);
+//                                                //this line below gives you the animation and also updates the
+//                                                //list items after the deleted item
+//                                                notifyItemRangeChanged(position, getItemCount());
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("@@@", "Error deleting document", e);
+                                                }
+                                            });
+//                                    Intent intent = new Intent(getApplicationContext(), FragmentSub.class);
+//
+//                                    getApplicationContext().startActivity(intent);
+                                    Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 2:
+                                    Intent msg = new Intent(Intent.ACTION_SEND);
+                                    msg.addCategory(Intent.CATEGORY_DEFAULT);
+                                    msg.putExtra(Intent.EXTRA_SUBJECT, "주제");
+                                    msg.putExtra(Intent.EXTRA_TEXT, "내용");
+                                    msg.putExtra(Intent.EXTRA_TITLE, "제목");
+                                    msg.setType("text/plain");
+                                    view.getContext().startActivity(Intent.createChooser(msg, "공유"));
 
-                            case 1:
-                                // 로그아웃
-                                Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
-
-                                break;
-
-                            case 2:
-                                Intent msg = new Intent(Intent.ACTION_SEND);
-                                msg.addCategory(Intent.CATEGORY_DEFAULT);
-                                msg.putExtra(Intent.EXTRA_SUBJECT, "주제");
-                                msg.putExtra(Intent.EXTRA_TEXT, "내용");
-                                msg.putExtra(Intent.EXTRA_TITLE, "제목");
-                                msg.setType("text/plain");
-
-                                view.getContext().startActivity(Intent.createChooser(msg, "공유"));
-
-                                break;
+                                    break;
+                            }
+                            dialog.dismiss();
                         }
+                    });
 
-                        dialog.dismiss();
-                    }
-                });
+                    builder.show();
 
-                builder.show();
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
+                    CharSequence info[] = new CharSequence[]{"신고하기", "사용자 차단", "게시물 숨기기"};
+                    builder.setTitle("");
+                    builder.setItems(info, new DialogInterface.OnClickListener() {
+                        @Override
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    // 내정보
+                                    Toast.makeText(view.getContext(), "신고하기", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 1:
+                                    // 로그아웃
+
+                                    Toast.makeText(view.getContext(), "사용자 차단", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 2:
+
+                                    Toast.makeText(view.getContext(), "게시물 숨기기", Toast.LENGTH_SHORT).show();
+
+                                    break;
+                            }
+                            dialog.dismiss();
+                        }
+                    });
+
+                    builder.show();
+
+                }
 
             }
-        });
+    });
 
-    }
+        }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
