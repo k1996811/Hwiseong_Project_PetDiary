@@ -36,6 +36,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     private ArrayList<Data> arrayList;
     private Context context;
     private Button Comment_btn;
+    private Button onPopupButton;
 
 
     //어댑터에서 액티비티 액션을 가져올 때 context가 필요한데 어댑터에는 context가 없다.
@@ -57,83 +58,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
         CustomViewHolder holder = new CustomViewHolder(view);
 
-        view.findViewById(R.id.Comment_btn).setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Log.e("@@@re", "button2클릭");
-                Intent intent = new Intent(v.getContext(), Comment.class);
-                v.getContext().startActivity(intent);
-            }
-        });
-
-//        view.findViewById(R.id.main_image).setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v) {
-//
-//                Intent intent = new Intent(v.getContext(), Expand_ImageView.class);
-//
-//                Log.e("###", arrayList.get(viewType).getNickName());
-//
-//                intent.putExtra("nickName", arrayList.get(viewType).getNickName());
-//                intent.putExtra("uid", arrayList.get(viewType).getUid());
-//                intent.putExtra("imageUrl1", arrayList.get(viewType).getImageUrl1());
-//                intent.putExtra("imageUrl2", arrayList.get(viewType).getImageUrl2());
-//                intent.putExtra("imageUrl3", arrayList.get(viewType).getImageUrl3());
-//                intent.putExtra("imageUrl4", arrayList.get(viewType).getImageUrl4());
-//                intent.putExtra("imageUrl5", arrayList.get(viewType).getImageUrl5());
-//                intent.putExtra("favoriteCount", arrayList.get(viewType).getFavoriteCount());
-//                intent.putExtra("date", arrayList.get(viewType).getDate());
-//                intent.putExtra("content", arrayList.get(viewType).getContent());
-//
-//                v.getContext().startActivity(intent);
-//            }
-//        });
-
-        view.findViewById(R.id.onPopupButton).setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(final View view) {
-
-                CharSequence info[] = new CharSequence[] {"Edit", "Delete","Share" };
-
-                final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-
-                builder.setTitle("");
-
-                builder.setItems(info, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch(which)
-                        {
-                            case 0:
-                                // 내정보
-                                Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
-
-                                break;
-
-                            case 1:
-                                // 로그아웃
-                                Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
-
-                                break;
-
-                            case 2:
-                                Intent msg = new Intent(Intent.ACTION_SEND);
-                                msg.addCategory(Intent.CATEGORY_DEFAULT);
-                                msg.putExtra(Intent.EXTRA_SUBJECT, "주제");
-                                msg.putExtra(Intent.EXTRA_TEXT, "내용");
-                                msg.putExtra(Intent.EXTRA_TITLE, "제목");
-                                msg.setType("text/plain");
-
-                                view.getContext().startActivity(Intent.createChooser(msg, "공유"));
-
-                                break;
-                        }
-                        dialog.dismiss();
-                    }
-                });
-                builder.show();
-            }
-        });
         return holder;
     }
 
@@ -150,10 +74,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         viewPager.setAdapter(viewPageAdapter);
         holder.content.setText(arrayList.get(position).getContent());
         holder.nickName.setText(arrayList.get(position).getNickName());
-        Comment_btn  = (Button) holder.itemView.findViewById(R.id.Comment_btn);
 
-<<<<<<< HEAD
-=======
+        Comment_btn  = (Button) holder.itemView.findViewById(R.id.Comment_btn);
         Comment_btn.findViewById(R.id.Comment_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -165,10 +87,46 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
                 context.startActivity(intent);
             }
-
         });
 
->>>>>>> 241fddb5d8777c74703bb5aa103e87aa9cbdbadc
+        onPopupButton = (Button) holder.itemView.findViewById(R.id.onPopupButton);
+        onPopupButton.findViewById(R.id.onPopupButton).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(final View view) {
+                CharSequence info[] = new CharSequence[] {"Edit", "Delete","Share" };
+                final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setTitle("");
+                builder.setItems(info, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch(which)
+                        {
+                            case 0:
+                                // 내정보
+                                Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
+                                break;
+                            case 1:
+                                // 로그아웃
+                                Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
+                                break;
+                            case 2:
+                                Intent msg = new Intent(Intent.ACTION_SEND);
+                                msg.addCategory(Intent.CATEGORY_DEFAULT);
+                                msg.putExtra(Intent.EXTRA_SUBJECT, "주제");
+                                msg.putExtra(Intent.EXTRA_TEXT, "내용");
+                                msg.putExtra(Intent.EXTRA_TITLE, "제목");
+                                msg.setType("text/plain");
+                                view.getContext().startActivity(Intent.createChooser(msg, "공유"));
+
+                                break;
+                        }
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
+
         final String[] profileImg = new String[1];
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(arrayList.get(position).getUid());
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
