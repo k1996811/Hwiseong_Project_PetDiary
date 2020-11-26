@@ -46,14 +46,18 @@ public class CustomAdapterSub extends RecyclerView.Adapter<CustomAdapterSub.Cust
         CustomViewHolder holder = new CustomViewHolder(view);
 
         return holder;
-    }
 
+    }
+ //arrayList.get(position).getPostID()
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
         viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
-        viewPageAdapter = new ViewPageAdapterSub(arrayList.get(position), arrayList.get(position).getImageUrl1(), context);
+        viewPageAdapter = new ViewPageAdapterSub(arrayList.get(position),arrayList.get(position).getImageUrl1(), context);
         viewPager.setAdapter(viewPageAdapter);
+
+
     }
+
     ViewPageAdapterSub viewPageAdapter;
     ViewPager viewPager;
     @Override

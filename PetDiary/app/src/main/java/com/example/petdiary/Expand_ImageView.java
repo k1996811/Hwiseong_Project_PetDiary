@@ -19,6 +19,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.example.petdiary.adapter.ViewPageAdapterDetail;
+import com.example.petdiary.adapter.ViewPageAdapterSub;
 import com.example.petdiary.fragment.FragmentSub;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -56,9 +57,10 @@ public class Expand_ImageView extends AppCompatActivity {
     TextView post_nickName;
     TextView post_content;
     private Button Comment_btn;
-    //내 uid 가져오기
+    //파이어베이스에서 내 uid 가져오기
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    String uids = user.getUid();
+    String myuid_server = user.getUid();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,13 +143,16 @@ public class Expand_ImageView extends AppCompatActivity {
 
         findViewById(R.id.onPopupButton).setOnClickListener(new View.OnClickListener(){
 
-            String uidss = uids;
             //내 uid
-            String uids2 =uid;
+            String myuid = myuid_server;
+            //게시글 uid
+            String content_uid = uid;
             @Override
 
             public void onClick(final View view) {
-                if (uidss.equals(uids2)) {
+                Log.d("@@@@", "onClick: 포스트아이디가 뭐야?"+postID);
+
+                if (myuid.equals(content_uid)) {
                     CharSequence info[] = new CharSequence[]{"Edit", "Delete", "Share"};
 
                     final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
@@ -171,14 +176,22 @@ public class Expand_ImageView extends AppCompatActivity {
 
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    Log.d("@@@", "DocumentSnapshot successfully deleted!");
+
+                                                    onBackPressed();
+                                                    Log.d("@@@", "오류가나는이유가뭐야?!");
+
+                                                }
+//                                                    finish();
+//                                                    overridePendingTransition(0, 0);
+//                                                    startActivity(getIntent());
+//                                                    overridePendingTransition(0, 0);
 
 //                                                arrayList.remove(position);
 //                                                notifyItemRemoved(position);
 //                                                //this line below gives you the animation and also updates the
 //                                                //list items after the deleted item
 //                                                notifyItemRangeChanged(position, getItemCount());
-                                                }
+                                               // }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
@@ -186,9 +199,7 @@ public class Expand_ImageView extends AppCompatActivity {
                                                     Log.w("@@@", "Error deleting document", e);
                                                 }
                                             });
-//                                    Intent intent = new Intent(getApplicationContext(), FragmentSub.class);
-//
-//                                    getApplicationContext().startActivity(intent);
+
                                     Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 2:

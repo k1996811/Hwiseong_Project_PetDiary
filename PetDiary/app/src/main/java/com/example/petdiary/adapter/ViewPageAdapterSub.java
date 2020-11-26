@@ -66,7 +66,7 @@ public class ViewPageAdapterSub extends PagerAdapter {
 
     private void goPost(Data arrayList){
         Intent intent = new Intent(context, Expand_ImageView.class);
-
+        intent.putExtra("postID", arrayList.getPostID());
         intent.putExtra("nickName", arrayList.getNickName());
         intent.putExtra("uid", arrayList.getUid());
         intent.putExtra("imageUrl1", arrayList.getImageUrl1());

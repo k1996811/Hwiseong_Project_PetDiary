@@ -101,7 +101,7 @@ public class FragmentMain extends Fragment {
         String uid = user.getUid();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         //db.collection("post").whereEqualTo("uid", "Wvc9odc25MYAkejxIgUPTAr4e322")
-        db.collection("post")//.whereEqualTo("uid",uid)
+        db.collection("post").whereEqualTo("uid",uid)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
