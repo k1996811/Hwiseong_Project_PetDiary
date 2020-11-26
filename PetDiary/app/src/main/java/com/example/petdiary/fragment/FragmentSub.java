@@ -125,6 +125,7 @@ public class FragmentSub extends Fragment {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Data dataList = new Data();
+                                dataList.setPostID(document.getId());
                                 dataList.setUid(document.getData().get("uid").toString());
                                 dataList.setContent(document.getData().get("content").toString());
                                 dataList.setImageUrl1(document.getData().get("imageUrl1").toString());

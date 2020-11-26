@@ -87,7 +87,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 //            }
 //        });
 
-
         view.findViewById(R.id.onPopupButton).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(final View view) {
@@ -149,7 +148,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         viewPager.setAdapter(viewPageAdapter);
         holder.content.setText(arrayList.get(position).getContent());
         holder.nickName.setText(arrayList.get(position).getNickName());
-
 
         final String[] profileImg = new String[1];
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(arrayList.get(position).getUid());

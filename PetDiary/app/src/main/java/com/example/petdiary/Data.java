@@ -3,6 +3,7 @@ package com.example.petdiary;
 import java.util.ArrayList;
 
 public class Data {
+    private String postID;
     private String imageUrl1;
     private String imageUrl2;
     private String imageUrl3;
@@ -19,6 +20,10 @@ public class Data {
 
 
     public Data() { }
+
+    public String getPostID() { return postID; }
+
+    public void setPostID(String postID){ this.postID = postID; }
 
     public String getImageUrl1() {
         return imageUrl1;
