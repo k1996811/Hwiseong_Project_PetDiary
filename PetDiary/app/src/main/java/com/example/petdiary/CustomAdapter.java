@@ -23,6 +23,8 @@ import com.bumptech.glide.Glide;
 import com.example.petdiary.activity.SetPasswordActivity;
 import com.example.petdiary.adapter.ViewPageAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -140,6 +142,28 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                                 break;
                             case 1:
                                 // 로그아웃
+                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                db.collection("post").document(arrayList.get(position).getPostID())
+                                        .delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d("@@@", "DocumentSnapshot successfully deleted!");
+
+                                                arrayList.remove(position);
+                                                notifyItemRemoved(position);
+                                                //this line below gives you the animation and also updates the
+                                                //list items after the deleted item
+                                                notifyItemRangeChanged(position, getItemCount());
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("@@@", "Error deleting document", e);
+                                            }
+                                        });
                                 Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
                                 break;
                             case 2:
