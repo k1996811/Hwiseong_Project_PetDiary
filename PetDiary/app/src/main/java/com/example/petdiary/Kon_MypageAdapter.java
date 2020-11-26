@@ -4,10 +4,12 @@ package com.example.petdiary;
 
 import android.content.Context;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,7 +37,6 @@ public class Kon_MypageAdapter extends RecyclerView.Adapter<Kon_MypageAdapter.My
 
     @NonNull
     @Override
-    //실제 리스트뷰가 어댑터에 연결된 다음에 뷰 홀더를 최초로 만들어낸다.
     public MypageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.kon_mypage_item, parent, false);
         MypageViewHolder holder = new MypageViewHolder(view);
@@ -70,9 +71,35 @@ public class Kon_MypageAdapter extends RecyclerView.Adapter<Kon_MypageAdapter.My
 
     public class MypageViewHolder extends RecyclerView.ViewHolder {
         ImageView postImage;
-        public MypageViewHolder(@NonNull View itemView) {
+        public MypageViewHolder(@NonNull final View itemView) {
             super(itemView);
             this.postImage = itemView.findViewById(R.id.mypage_image);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, getAdapterPosition() + ": 입니다", Toast.LENGTH_SHORT).show();
+                    goPost(arrayList.get(getAdapterPosition()));
+                }
+            });
         }
     }
+
+    private void goPost(Data arrayList){
+        Intent intent = new Intent(context, Expand_ImageView.class);
+
+        intent.putExtra("nickName", arrayList.getNickName());
+        intent.putExtra("uid", arrayList.getUid());
+        intent.putExtra("imageUrl1", arrayList.getImageUrl1());
+        intent.putExtra("imageUrl2", arrayList.getImageUrl2());
+        intent.putExtra("imageUrl3", arrayList.getImageUrl3());
+        intent.putExtra("imageUrl4", arrayList.getImageUrl4());
+        intent.putExtra("imageUrl5", arrayList.getImageUrl5());
+        intent.putExtra("favoriteCount", arrayList.getFavoriteCount());
+        intent.putExtra("date", arrayList.getDate());
+        intent.putExtra("content", arrayList.getContent());
+
+        context.startActivity(intent);
+    }
+
 }
