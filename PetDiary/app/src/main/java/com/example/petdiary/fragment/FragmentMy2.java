@@ -8,9 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -85,7 +83,7 @@ public class FragmentMy2 extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_mypage_kon, container, false);
+        viewGroup = (ViewGroup) inflater.inflate(R.layout.kon_fragment_mypage, container, false);
 
         profileEditImg = viewGroup.findViewById(R.id.profile_image);
         final TextView profileName = viewGroup.findViewById(R.id.profile_name);
@@ -173,13 +171,13 @@ public class FragmentMy2 extends Fragment {
 //
 
         ////////////// irang Start
-        GridView gridView = viewGroup.findViewById(R.id.gridView);
-        GridListAdapter adapter = new GridListAdapter();
-        gridView.setAdapter(adapter);
-
-        for (int i = 0; i < imgs.length; ++i) {
-            adapter.addItem(new MypageGridItem(imgs[i]));
-        }
+//        GridView gridView = viewGroup.findViewById(R.id.gridView);
+//        GridListAdapter adapter = new GridListAdapter();
+//        gridView.setAdapter(adapter);
+//
+//        for (int i = 0; i < imgs.length; ++i) {
+//            adapter.addItem(new MypageGridItem(imgs[i]));
+//        }
 
         ImageView addPetBtn = viewGroup.findViewById(R.id.profile_petAddBtn);
 
@@ -188,14 +186,14 @@ public class FragmentMy2 extends Fragment {
 //        DocumentReference docRef = db.collection("users").document();
 
 
-
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), position + "번째 아이템이 클릭되었다!!", Toast.LENGTH_SHORT).show();
-            }
-        });
+//
+//
+//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Toast.makeText(getContext(), position + "번째 아이템이 클릭되었다!!", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
 
         // 프로필뷰 관련코드.
@@ -418,7 +416,7 @@ public class FragmentMy2 extends Fragment {
 
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.item_mypage_temp, parent, false);
+                convertView = inflater.inflate(R.layout.kon_mypage_item, parent, false);
             }
 
             //xml의 ImageView 참조
