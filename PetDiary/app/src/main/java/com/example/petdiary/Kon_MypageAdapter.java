@@ -78,7 +78,6 @@ public class Kon_MypageAdapter extends RecyclerView.Adapter<Kon_MypageAdapter.My
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, getAdapterPosition() + ": 입니다", Toast.LENGTH_SHORT).show();
                     goPost(arrayList.get(getAdapterPosition()));
                 }
             });

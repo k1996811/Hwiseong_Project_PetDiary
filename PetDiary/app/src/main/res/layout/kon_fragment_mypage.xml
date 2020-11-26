@@ -148,15 +148,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="20dp"
-        android:columnWidth="100dp"
         android:gravity="center"
-        android:horizontalSpacing="10dp"
-
         android:scrollbars="vertical"
-        android:verticalSpacing="10dp"
         tools:listitem="@layout/kon_mypage_item">
 
     </androidx.recyclerview.widget.RecyclerView>
-
+    <!--
+    android:verticalSpacing="10dp"
+       android:columnWidth="100dp"
+       android:horizontalSpacing="10dp"-->
 
 </LinearLayout>

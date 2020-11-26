@@ -130,7 +130,7 @@ public class FragmentMy extends Fragment {
 
 
 
-        // 프로필 이미지 수정
+        //////////////////////////////////// 프로필 이미지 수정
         profileImage.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -151,7 +151,7 @@ public class FragmentMy extends Fragment {
         });
 
 
-        // 펫 추가 버튼
+        // 펫 추가 버튼 (미구현)
         petAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,6 +177,7 @@ public class FragmentMy extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            Log.d("몇개의 아이템이 있나요 ? : ", "onComplete: " + task.getResult().size());
                             for (QueryDocumentSnapshot document : task.getResult()) {
 
                                 Data dataList = new Data();
@@ -209,10 +210,6 @@ public class FragmentMy extends Fragment {
         switch (requestCode) {
             case 0:
                 if (resultCode == RESULT_OK) {
-                    // userInfo.put("nickName", data.getStringExtra("nickName"));
-                    //  userInfo.put("memo",data.getStringExtra("memo"));
-                    //userInfo.put("profileImg", data.getStringExtra("profileImg"));
-
                     setProfileImg(data.getStringExtra("profileImg"));
                     profileName.setText(data.getStringExtra("nickName"));
                     profileMemo.setText(data.getStringExtra("memo"));
