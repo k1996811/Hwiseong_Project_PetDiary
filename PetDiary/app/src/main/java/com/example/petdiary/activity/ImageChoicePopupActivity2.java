@@ -58,7 +58,7 @@ public class ImageChoicePopupActivity2 extends Activity {
                 //startToast("권한을 허용해 주세요.");
             }
         } else {
-            StartActivity(CameraAppActivity.class);
+            StartActivity(CameraAppActivity2.class);
         }
     }
 
