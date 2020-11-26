@@ -3,6 +3,7 @@ package com.example.petdiary;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -46,6 +47,7 @@ public class Comment extends AppCompatActivity {
         uid = intent.getStringExtra("uid");
         nickName = intent.getStringExtra("nickName");
         content = intent.getStringExtra("content");
+        Log.d("@@@@", "onCreate: 들어온값은 무엇이드냐?"  + intent.getStringExtra("content"));
 
         final String[] profileImg = new String[1];
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(uid);

@@ -3,9 +3,12 @@ package com.example.petdiary;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +27,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class Expand_ImageView extends AppCompatActivity {
 
@@ -45,6 +50,7 @@ public class Expand_ImageView extends AppCompatActivity {
 
     TextView post_nickName;
     TextView post_content;
+    private Button Comment_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +70,24 @@ public class Expand_ImageView extends AppCompatActivity {
         imageUrl4 = intent.getStringExtra("imageUrl4");
         imageUrl5 = intent.getStringExtra("imageUrl5");
         favoriteCount = intent.getIntExtra("favoriteCount", 0);
+
+        Comment_btn = (Button)findViewById(R.id.Comment_btn);
+
+        Comment_btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(getApplicationContext(), Comment.class);
+
+                intent.putExtra("nickName", nickName);
+                intent.putExtra("uid", uid);
+                intent.putExtra("content", content);
+
+                getApplicationContext().startActivity(intent.addFlags(FLAG_ACTIVITY_NEW_TASK));
+                
+            }
+        });
+
 
         final String[] profileImg = new String[1];
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(uid);
