@@ -2,29 +2,26 @@ package com.example.petdiary.fragment;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
 
 import com.example.petdiary.CustomAdapter;
 import com.example.petdiary.Data;
 import com.example.petdiary.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -39,6 +36,7 @@ public class FragmentMain extends Fragment {
     private ArrayList<Data> arrayList;
     private View view;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    BottomNavigationView bottomNavigationView;
 
     @Nullable
     @Override
@@ -46,6 +44,8 @@ public class FragmentMain extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_main, container, false);
         mSwipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_layout);
+
+        moveTop();
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true); // 리사이클러뷰 기존성능 강화
@@ -68,7 +68,30 @@ public class FragmentMain extends Fragment {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
+
         return view;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(hidden){
+
+        } else {
+            moveTop();
+        }
+    }
+
+    private void moveTop(){
+        bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
+            @Override
+            public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
+                if(menuItem.getItemId() == R.id.tab1){
+                    recyclerView.smoothScrollToPosition(0);
+                }
+            }
+        });
     }
 
     private void setInfo(){
@@ -83,6 +106,7 @@ public class FragmentMain extends Fragment {
                             int i = 0;
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Data dataList = new Data();
+                                //Log.e("###2", document.getId().toString());
                                 dataList.setUid(document.getData().get("uid").toString());
                                 dataList.setContent(document.getData().get("content").toString());
                                 dataList.setImageUrl1(document.getData().get("imageUrl1").toString());

@@ -1,4 +1,4 @@
-package com.example.petdiary.fragment;
+package com.example.petdiary.activity;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,94 +29,26 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class FragmentSub extends Fragment {
+public class SettingBookMarkActivity extends AppCompatActivity{
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<Data> arrayList;
-    private View view;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private SearchView searchView;
-    BottomNavigationView bottomNavigationView;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_setting_bookmark);
 
-        view = inflater.inflate(R.layout.fragment_sub, container, false);
-        mSwipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_layout);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        moveTop();
-
-        searchView = view.findViewById(R.id.search);
-        searchView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                searchView.setIconified(false);
-            }
-        });
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override // 검색 버튼 눌렀을 때
-            public boolean onQueryTextSubmit(String s) {
-                Toast.makeText(getContext(), "검색!!!", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            @Override // 글자 변경시
-            public boolean onQueryTextChange(String s) {
-                return false;
-            }
-        });
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true); // 리사이클러뷰 기존성능 강화
-        layoutManager = new GridLayoutManager(getContext(), 3);
+        layoutManager = new GridLayoutManager(getApplicationContext(), 3);
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>(); // User 객체를 담을 어레이 리스트 (어댑터쪽으로)
 
-        setInfo();
-
-        adapter = new CustomAdapterSub(arrayList, getContext());
-        recyclerView.setAdapter(adapter); // 리사이클러뷰에 어댑터 연결
-
-        //새로고침
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                arrayList.clear();
-                setInfo();
-                // 동글동글 도는거 사라짐
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
-        return view;
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if(hidden){
-
-        } else {
-            moveTop();
-        }
-    }
-
-    private void moveTop(){
-        bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
-            @Override
-            public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
-                if(menuItem.getItemId() == R.id.tab2){
-                    recyclerView.smoothScrollToPosition(0);
-                }
-            }
-        });
-    }
-
-    private void setInfo(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("post")
                 .get()
@@ -145,5 +78,18 @@ public class FragmentSub extends Fragment {
                         }
                     }
                 });
+        adapter = new CustomAdapterSub(arrayList, getApplicationContext());
+        recyclerView.setAdapter(adapter); // 리사이클러뷰에 어댑터 연결
+
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home ){
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

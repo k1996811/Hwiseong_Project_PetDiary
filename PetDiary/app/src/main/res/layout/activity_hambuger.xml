@@ -24,7 +24,7 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/android_normal"
+            android:src="@drawable/icon_person"
             android:id="@+id/genter_icon"
             android:layout_marginTop="5dp">
         </ImageView>
@@ -61,12 +61,42 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:onClick="bookMarkOnClick">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/icon_setting"
+            android:layout_marginLeft="20dp">
+        </ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="북마크"
+            android:id="@+id/nav_ex0"
+            android:layout_marginLeft="24dp">
+        </TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#80ffffff">
+    </LinearLayout>
+
+    <LinearLayout
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:onClick="blockFriendOnClick">
 
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/android_normal"
+            android:src="@drawable/icon_setting"
             android:layout_marginLeft="20dp">
         </ImageView>
 
@@ -96,7 +126,7 @@
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/android_normal"
+            android:src="@drawable/icon_setting"
             android:layout_marginLeft="20dp">
         </ImageView>
 
@@ -126,7 +156,7 @@
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/android_normal"
+            android:src="@drawable/icon_setting"
             android:layout_marginLeft="20dp">
         </ImageView>
 
@@ -156,7 +186,7 @@
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/android_normal"
+            android:src="@drawable/icon_setting"
             android:layout_marginLeft="20dp">
         </ImageView>
 
@@ -186,7 +216,7 @@
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/android_normal"
+            android:src="@drawable/icon_setting"
             android:layout_marginLeft="20dp">
         </ImageView>
 
@@ -216,7 +246,7 @@
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/android_normal"
+            android:src="@drawable/icon_setting"
             android:layout_marginLeft="20dp">
         </ImageView>
 
@@ -246,7 +276,7 @@
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/android_normal"
+            android:src="@drawable/icon_setting"
             android:layout_marginLeft="20dp">
         </ImageView>
 

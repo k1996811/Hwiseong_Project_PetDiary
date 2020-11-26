@@ -116,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 햄버거메뉴
 
+    public void bookMarkOnClick(View view){
+        myStartActivity2(SettingBookMarkActivity.class);
+    }
+
     public void blockFriendOnClick(View view) {
         myStartActivity2(SettingBlockFriendsActivity.class);
     }
@@ -331,7 +335,6 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().hide(fragmentContentMain).commit();
         }
     }
-
 
     public static boolean isValidPassword(String password) {
         boolean err = false;

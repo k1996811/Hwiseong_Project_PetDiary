@@ -80,13 +80,6 @@ public class KakaoSignUpActivity extends AppCompatActivity {
         passwordCheckEditText = findViewById(R.id.passwordCheckEditText);
         nickNameEditText = findViewById(R.id.nickNameEditText);
 
-        if(isValidEmail(kakaoEmail)){
-            emailEditText.setText(kakaoEmail);
-        }
-        if(isValidNickName(kakaoNickName)){
-            nickNameEditText.setText(kakaoNickName);
-        }
-
         emailEditText.addTextChangedListener(textWatcherEmail);
         passwordEditText.addTextChangedListener(textWatcherPassword);
         passwordCheckEditText.addTextChangedListener(textWatcherPasswordCheck);
@@ -100,6 +93,17 @@ public class KakaoSignUpActivity extends AppCompatActivity {
         passwordCheckUnCheckedImg = findViewById(R.id.passwordCheckUnCheckedImg);
         nickNameCheckedImg = findViewById(R.id.nickNameCheckedImg);
         nickNameUnCheckedImg = findViewById(R.id.nickNameUnCheckedImg);
+
+        if(isValidEmail(kakaoEmail)){
+            emailEditText.setText(kakaoEmail);
+            emailUnCheckImg.setVisibility(View.INVISIBLE);
+            emailCheckedImg.setVisibility(View.VISIBLE);
+        }
+        if(isValidNickName(kakaoNickName)){
+            nickNameEditText.setText(kakaoNickName);
+            nickNameUnCheckedImg.setVisibility(View.INVISIBLE);
+            nickNameCheckedImg.setVisibility(View.VISIBLE);
+        }
 
         emailWatcher(emailEditText.getText().toString());
         nickNameWatcher(nickNameEditText.getText().toString());
