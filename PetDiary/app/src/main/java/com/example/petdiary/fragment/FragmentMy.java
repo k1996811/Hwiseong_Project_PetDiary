@@ -127,7 +127,7 @@ public class FragmentMy extends Fragment {
         recyclerView.setHasFixedSize(true); // 리사이클러뷰 기존성능 강화
 
         int columnNum = 3;
-        adapter = new Kon_MypageAdapter(postList, columnNum,  getContext());
+        adapter = new Kon_MypageAdapter(postList, columnNum, getContext());
         recyclerView.setAdapter(adapter); // 리사이클러뷰에 어댑터 연결
         layoutManager = new GridLayoutManager(getContext(), columnNum);
         recyclerView.setLayoutManager(layoutManager);
@@ -156,6 +156,8 @@ public class FragmentMy extends Fragment {
                 startActivityForResult(intent, 0);
                 return true;
             }
+
+
         });
 
 
@@ -173,26 +175,22 @@ public class FragmentMy extends Fragment {
             public void onRefresh() {
                 postList.clear();
                 loadPostsAfterCheck(false);
-                // 동글동글 도는거 사라짐
-                mSwipeRefreshLayout.setRefreshing(false);
+                mSwipeRefreshLayout.setRefreshing(false);  // 로딩 애니메이션 사라짐
             }
         });
+
+        // 최상단으로 가기 Listener추가 
+        moveTop();
 
         return viewGroup;
     }
 
-    //////////////////////////////////// 화면 활성화/비활성화 시 행동
 
+    //////////////////////////////////// 화면 처음 활성화 됐을 시 행동
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (hidden) {
-            Log.d("히든체크!! : ", "onHiddenChanged: " + hidden);
-        } else {
-            Log.d("히든체크!! 보임 : ", "onHiddenChanged: " + hidden);
-            loadPostsAfterCheck(true);
-            moveTop();
-        }
+    public void onResume() {
+        super.onResume();
+        loadPostsAfterCheck(true);
     }
 
 
@@ -215,7 +213,6 @@ public class FragmentMy extends Fragment {
                             return;
 
                     for (QueryDocumentSnapshot document : task.getResult()) {
-
                         Data dataList = new Data();
                         dataList.setUid(document.getData().get("uid").toString());
                         dataList.setContent(document.getData().get("content").toString());
@@ -229,6 +226,7 @@ public class FragmentMy extends Fragment {
                     }
                     adapter.notifyDataSetChanged();
                     listCount = resultCount;
+
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
@@ -280,13 +278,13 @@ public class FragmentMy extends Fragment {
     private void setProfileImg(String profileImg) {
         Glide.with(this).load(profileImg).centerCrop().override(500).into(profileEditImg);
     }
-    private void moveTop(){
+
+    private void moveTop() {
         bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
             @Override
             public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
-                Log.d("마지막 로그 확인 ", "onNavigationItemReselected: " + menuItem.getItemId());
-                if(menuItem.getItemId() == R.id.tab4){
+                if (menuItem.getItemId() == R.id.tab4) {
                     recyclerView.smoothScrollToPosition(0);
                 }
             }
