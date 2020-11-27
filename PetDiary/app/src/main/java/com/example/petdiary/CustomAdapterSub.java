@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +23,9 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.example.petdiary.adapter.ViewPageAdapter;
 import com.example.petdiary.adapter.ViewPageAdapterSub;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
@@ -29,11 +34,9 @@ public class CustomAdapterSub extends RecyclerView.Adapter<CustomAdapterSub.Cust
 
     private ArrayList<Data> arrayList;
     private Context context;
-    private LayoutInflater inf;
-    private int layout;
 
-    //어댑터에서 액티비티 액션을 가져올 때 context가 필요한데 어댑터에는 context가 없다.
-    //선택한 액티비티에 대한 context를 가져올 때 필요하다.
+    ViewPageAdapterSub viewPageAdapter;
+    ViewPager viewPager;
 
     public CustomAdapterSub(ArrayList<Data> arrayList, Context context) {
         this.arrayList = arrayList;
@@ -51,7 +54,7 @@ public class CustomAdapterSub extends RecyclerView.Adapter<CustomAdapterSub.Cust
 
     }
     @Override
-    public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CustomViewHolder holder, final int position) {
         viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
         viewPageAdapter = new ViewPageAdapterSub(arrayList.get(position),arrayList.get(position).getImageUrl1(), context);
         viewPager.setAdapter(viewPageAdapter);
@@ -64,10 +67,9 @@ public class CustomAdapterSub extends RecyclerView.Adapter<CustomAdapterSub.Cust
         holder.itemView.getLayoutParams().width = deviceWidth;  // 아이템 뷰의 세로 길이를 구한 길이로 변경
         holder.itemView.getLayoutParams().height = deviceWidth;  // 아이템 뷰의 세로 길이를 구한 길이로 변경
         holder.itemView.requestLayout(); // 변경 사항 적용
+
     }
 
-    ViewPageAdapterSub viewPageAdapter;
-    ViewPager viewPager;
     @Override
     public int getItemCount() {
         // 삼항 연산자

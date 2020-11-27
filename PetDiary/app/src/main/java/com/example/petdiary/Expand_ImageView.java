@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,9 +29,16 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
@@ -37,6 +46,9 @@ import java.util.ArrayList;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class Expand_ImageView extends AppCompatActivity {
+
+    private String friendChecked;
+    private String checked;
     private String postID;
     private String uid;
     private String imageUrl1;
@@ -61,6 +73,10 @@ public class Expand_ImageView extends AppCompatActivity {
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String myuid_server = user.getUid();
 
+
+    private CheckBox bookmark_button;
+    private FirebaseDatabase firebaseDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +85,8 @@ public class Expand_ImageView extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
+        friendChecked = intent.getStringExtra("friend");
+        checked = intent.getStringExtra("bookmark");
         postID = intent.getStringExtra("postID");
         uid = intent.getStringExtra("uid");
         nickName = intent.getStringExtra("nickName");
@@ -222,40 +240,115 @@ public class Expand_ImageView extends AppCompatActivity {
                 } else {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
-                    CharSequence info[] = new CharSequence[]{"신고하기", "사용자 차단", "게시물 숨기기"};
-                    builder.setTitle("");
-                    builder.setItems(info, new DialogInterface.OnClickListener() {
-                        @Override
+                    if(friendChecked.equals(checked)){
+                        final CharSequence info[] = new CharSequence[]{"친구삭제", "신고하기", "사용자 차단", "게시물 숨기기"};
+                        builder.setTitle("");
+                        builder.setItems(info, new DialogInterface.OnClickListener() {
+                            @Override
 
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which) {
-                                case 0:
-                                    // 내정보
-                                    Toast.makeText(view.getContext(), "신고하기", Toast.LENGTH_SHORT).show();
-                                    break;
-                                case 1:
-                                    // 로그아웃
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0:
+                                        Toast.makeText(view.getContext(), "addFriend", Toast.LENGTH_SHORT).show();
+                                        firebaseDatabase = FirebaseDatabase.getInstance();
+                                        DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid()+"/"+uid);
+                                        friendChecked = "unchecked";
+                                        FriendInfo friendInfo = new FriendInfo();
+                                        friend.setValue(friendInfo);
+                                        Toast.makeText(getApplicationContext(), "친구를 삭제하였습니다.", Toast.LENGTH_SHORT).show();
+                                        break;
+                                    case 1:
+                                        // 내정보
+                                        Toast.makeText(view.getContext(), "신고하기", Toast.LENGTH_SHORT).show();
+                                        break;
+                                    case 2:
+                                        // 로그아웃
 
-                                    Toast.makeText(view.getContext(), "사용자 차단", Toast.LENGTH_SHORT).show();
-                                    break;
-                                case 2:
+                                        Toast.makeText(view.getContext(), "사용자 차단", Toast.LENGTH_SHORT).show();
+                                        break;
+                                    case 3:
 
-                                    Toast.makeText(view.getContext(), "게시물 숨기기", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(view.getContext(), "게시물 숨기기", Toast.LENGTH_SHORT).show();
 
-                                    break;
+                                        break;
+                                }
+                                dialog.dismiss();
                             }
-                            dialog.dismiss();
-                        }
-                    });
+                        });
 
-                    builder.show();
+                        builder.show();
+                    } else {
+                        final CharSequence info[] = new CharSequence[]{"친구추가", "신고하기", "사용자 차단", "게시물 숨기기"};
+                        builder.setTitle("");
+                        builder.setItems(info, new DialogInterface.OnClickListener() {
+                            @Override
+
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0:
+                                        Toast.makeText(view.getContext(), "addFriend", Toast.LENGTH_SHORT).show();
+                                        firebaseDatabase = FirebaseDatabase.getInstance();
+                                        DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid()+"/"+uid);
+                                        friendChecked = "checked";
+                                        FriendInfo friendInfo = new FriendInfo();
+                                        friendInfo.setFriendUid(uid);
+                                        friend.setValue(friendInfo);
+                                        Toast.makeText(getApplicationContext(), "친구를 추가하였습니다.", Toast.LENGTH_SHORT).show();
+                                        break;
+                                    case 1:
+                                        // 내정보
+                                        Toast.makeText(view.getContext(), "신고하기", Toast.LENGTH_SHORT).show();
+                                        break;
+                                    case 2:
+                                        // 로그아웃
+
+                                        Toast.makeText(view.getContext(), "사용자 차단", Toast.LENGTH_SHORT).show();
+                                        break;
+                                    case 3:
+
+                                        Toast.makeText(view.getContext(), "게시물 숨기기", Toast.LENGTH_SHORT).show();
+
+                                        break;
+                                }
+                                dialog.dismiss();
+                            }
+                        });
+
+                        builder.show();
+                    }
+
+
 
                 }
 
             }
-    });
+        });
 
+        bookmark_button = (CheckBox)findViewById(R.id.bookmark_button);
+        if(checked.equals("checked")){
+            bookmark_button.setChecked(true);
         }
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        bookmark_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                DatabaseReference bookmark = firebaseDatabase.getReference("bookmark").child(user.getUid()+"/"+postID);
+                if(b){
+                    BookmarkInfo bookmarkInfo = new BookmarkInfo();
+                    bookmarkInfo.setPostID(postID);
+                    //게시물을 데이터를 생성 및 엑티비티 종료
+                    bookmark.setValue(bookmarkInfo);
+                    Toast.makeText(getApplicationContext(), "북마크에 등록하였습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    BookmarkInfo bookmarkInfo = new BookmarkInfo();
+                    //게시물을 데이터를 생성 및 엑티비티 종료
+                    bookmark.setValue(bookmarkInfo);
+                    Toast.makeText(getApplicationContext(), "북마크에 등록하였습니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -100,17 +100,15 @@ public class FragmentMain extends Fragment {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        //db.collection("post").whereEqualTo("uid", "Wvc9odc25MYAkejxIgUPTAr4e322")
         db.collection("post").whereEqualTo("uid",uid)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            int i = 0;
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Data dataList = new Data();
-                                Log.e("###2", document.getId().toString());
+                                //Log.e("###2", document.getId().toString());
                                 dataList.setPostID(document.getId());
                                 dataList.setUid(document.getData().get("uid").toString());
                                 dataList.setContent(document.getData().get("content").toString());
@@ -121,17 +119,6 @@ public class FragmentMain extends Fragment {
                                 dataList.setImageUrl5(document.getData().get("imageUrl5").toString());
                                 dataList.setNickName(document.getData().get("nickName").toString());
                                 arrayList.add(0, dataList);
-//                                if(document.getData().get("uid").toString().equals("muyMpkUCtxfScQQAZoVBv2USE3m1") || document.getData().get("uid").toString().equals("Wvc9odc25MYAkejxIgUPTAr4e322")){
-//                                    dataList.setUid(document.getData().get("uid").toString());
-//                                    dataList.setContent(document.getData().get("content").toString());
-//                                    dataList.setImageUrl1(document.getData().get("imageUrl1").toString());
-//                                    dataList.setImageUrl2(document.getData().get("imageUrl2").toString());
-//                                    dataList.setImageUrl3(document.getData().get("imageUrl3").toString());
-//                                    dataList.setImageUrl4(document.getData().get("imageUrl4").toString());
-//                                    dataList.setImageUrl5(document.getData().get("imageUrl5").toString());
-//                                    dataList.setNickName(document.getData().get("nickName").toString());
-//                                    arrayList.add(0, dataList);
-//                                }
                             }
                             adapter.notifyDataSetChanged();
                         } else {

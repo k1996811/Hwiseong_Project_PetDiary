@@ -11,8 +11,6 @@ import android.widget.LinearLayout;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
-import com.example.petdiary.Data;
-import com.example.petdiary.Expand_ImageView;
 import com.example.petdiary.R;
 
 import java.util.ArrayList;

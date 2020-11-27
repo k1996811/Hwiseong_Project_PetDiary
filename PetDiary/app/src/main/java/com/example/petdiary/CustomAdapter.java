@@ -1,4 +1,5 @@
 package com.example.petdiary;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -56,6 +58,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     //내 uid 가져오기
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
+
     //어댑터에서 액티비티 액션을 가져올 때 context가 필요한데 어댑터에는 context가 없다.
     //선택한 액티비티에 대한 context를 가져올 때 필요하다.
     public CustomAdapter(ArrayList<Data> arrayList, Context context) {
@@ -63,7 +66,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         this.context = context;
     }
 
-    public void clear(){
+    public void clear() {
         arrayList.clear();
     }
 
@@ -79,7 +82,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
     @Override
     public void onBindViewHolder(@NonNull final CustomViewHolder holder, final int position) {
-        if(arrayList.get(position).getImageUrl1() == null){
+        if (arrayList.get(position).getImageUrl1() == null) {
             ImageView imageView = holder.itemView.findViewById(R.id.main_image);
             Glide.with(context).load(R.drawable.ic_launcher_foreground).centerCrop().override(1000).into(imageView);
         }
@@ -92,12 +95,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         holder.nickName.setText(arrayList.get(position).getNickName());
 
         bookmark_button = (CheckBox) holder.itemView.findViewById(R.id.bookmark_button);
-        bookmark_button.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+        bookmark_button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 firebaseDatabase = FirebaseDatabase.getInstance();
-                DatabaseReference bookmark = firebaseDatabase.getReference("bookmark").child(FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+arrayList.get(position).getPostID());
-                if(b){
+                DatabaseReference bookmark = firebaseDatabase.getReference("bookmark").child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/" + arrayList.get(position).getPostID());
+                if (b) {
                     BookmarkInfo bookmarkInfo = new BookmarkInfo();
                     bookmarkInfo.setPostID(arrayList.get(position).getPostID());
                     //게시물을 데이터를 생성 및 엑티비티 종료
@@ -112,7 +115,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             }
         });
 
-        Comment_btn  = (Button) holder.itemView.findViewById(R.id.Comment_btn);
+        Comment_btn = (Button) holder.itemView.findViewById(R.id.Comment_btn);
         Comment_btn.findViewById(R.id.Comment_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -127,113 +130,110 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         });
 
 
+        onPopupButton = (Button) holder.itemView.findViewById(R.id.onPopupButton);
+        onPopupButton.setOnClickListener(new View.OnClickListener() {
 
+            String uids = uid;
+            //내 uid
+            String uids2 = arrayList.get(position).getUid();
 
-            onPopupButton = (Button) holder.itemView.findViewById(R.id.onPopupButton);
-            onPopupButton.setOnClickListener(new View.OnClickListener() {
+            //게시물 정보 uid
+            @Override
+            public void onClick(final View view) {
+                if (uids.equals(uids2)) {
+                    Log.d("@@@@", "onBindViewHolder: 클릭되었냐?" + uid + "////" + arrayList.get(position).getUid());
 
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
-                String uids = uid;
-                //내 uid
-                String uids2 =arrayList.get(position).getUid();
-                //게시물 정보 uid
-                @Override
-                public void onClick(final View view) {
-                    if (uids.equals(uids2)) {
-                        Log.d("@@@@", "onBindViewHolder: 클릭되었냐?" + uid + "////" + arrayList.get(position).getUid());
+                    CharSequence info[] = new CharSequence[]{"Edit", "Delete", "Share"};
+                    builder.setTitle("");
+                    builder.setItems(info, new DialogInterface.OnClickListener() {
+                        @Override
 
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    // 내정보
+                                    Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 1:
+                                    // 로그아웃
+                                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                    db.collection("post").document(arrayList.get(position).getPostID())
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
 
-                        CharSequence info[] = new CharSequence[]{"Edit", "Delete", "Share"};
-                        builder.setTitle("");
-                        builder.setItems(info, new DialogInterface.OnClickListener() {
-                            @Override
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("@@@", "DocumentSnapshot successfully deleted!");
 
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case 0:
-                                        // 내정보
-                                        Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case 1:
-                                        // 로그아웃
-                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                        db.collection("post").document(arrayList.get(position).getPostID())
-                                                .delete()
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    arrayList.remove(position);
+                                                    notifyItemRemoved(position);
+                                                    //this line below gives you the animation and also updates the
+                                                    //list items after the deleted item
+                                                    notifyItemRangeChanged(position, getItemCount());
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("@@@", "Error deleting document", e);
+                                                }
+                                            });
+                                    Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 2:
+                                    Intent msg = new Intent(Intent.ACTION_SEND);
+                                    msg.addCategory(Intent.CATEGORY_DEFAULT);
+                                    msg.putExtra(Intent.EXTRA_SUBJECT, "주제");
+                                    msg.putExtra(Intent.EXTRA_TEXT, "내용");
+                                    msg.putExtra(Intent.EXTRA_TITLE, "제목");
+                                    msg.setType("text/plain");
+                                    view.getContext().startActivity(Intent.createChooser(msg, "공유"));
 
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        Log.d("@@@", "DocumentSnapshot successfully deleted!");
-
-                                                        arrayList.remove(position);
-                                                        notifyItemRemoved(position);
-                                                        //this line below gives you the animation and also updates the
-                                                        //list items after the deleted item
-                                                        notifyItemRangeChanged(position, getItemCount());
-                                                    }
-                                                })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Log.w("@@@", "Error deleting document", e);
-                                                    }
-                                                });
-                                        Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case 2:
-                                        Intent msg = new Intent(Intent.ACTION_SEND);
-                                        msg.addCategory(Intent.CATEGORY_DEFAULT);
-                                        msg.putExtra(Intent.EXTRA_SUBJECT, "주제");
-                                        msg.putExtra(Intent.EXTRA_TEXT, "내용");
-                                        msg.putExtra(Intent.EXTRA_TITLE, "제목");
-                                        msg.setType("text/plain");
-                                        view.getContext().startActivity(Intent.createChooser(msg, "공유"));
-
-                                        break;
-                                }
-                                dialog.dismiss();
+                                    break;
                             }
-                        });
+                            dialog.dismiss();
+                        }
+                    });
 
-                        builder.show();
+                    builder.show();
 
-                    }
-                    else{
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
-                        CharSequence info[] = new CharSequence[]{"신고하기", "사용자 차단", "게시물 숨기기"};
-                        builder.setTitle("");
-                        builder.setItems(info, new DialogInterface.OnClickListener() {
-                            @Override
+                    CharSequence info[] = new CharSequence[]{"신고하기", "사용자 차단", "게시물 숨기기"};
+                    builder.setTitle("");
+                    builder.setItems(info, new DialogInterface.OnClickListener() {
+                        @Override
 
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case 0:
-                                        // 내정보
-                                        Toast.makeText(view.getContext(), "신고하기", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case 1:
-                                        // 로그아웃
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    // 내정보
+                                    Toast.makeText(view.getContext(), "신고하기", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 1:
+                                    // 로그아웃
 
-                                        Toast.makeText(view.getContext(), "사용자 차단", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case 2:
+                                    Toast.makeText(view.getContext(), "사용자 차단", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 2:
 
-                                        Toast.makeText(view.getContext(), "게시물 숨기기", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(view.getContext(), "게시물 숨기기", Toast.LENGTH_SHORT).show();
 
-                                        break;
-                                }
-                                dialog.dismiss();
+                                    break;
                             }
-                        });
+                            dialog.dismiss();
+                        }
+                    });
 
-                        builder.show();
+                    builder.show();
 
-                    }
                 }
+            }
 
-            });
+        });
 
         final String[] profileImg = new String[1];
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(arrayList.get(position).getUid());
@@ -245,7 +245,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                     if (document != null) {
                         if (document.exists()) {
                             profileImg[0] = document.getData().get("profileImg").toString();
-                            if(profileImg[0].length() > 0){
+                            if (profileImg[0].length() > 0) {
                                 ImageView profileImage = (ImageView) holder.itemView.findViewById(R.id.Profile_image);
                                 Glide.with(context).load(profileImg[0]).centerCrop().override(500).into(profileImage);
                             }
@@ -260,13 +260,14 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         });
 
 
-        wormDotsIndicator  = (WormDotsIndicator) holder.itemView.findViewById(R.id.worm_dots_indicator);
-        wormDotsIndicator .setViewPager(viewPager);
+        wormDotsIndicator = (WormDotsIndicator) holder.itemView.findViewById(R.id.worm_dots_indicator);
+        wormDotsIndicator.setViewPager(viewPager);
     }
 
     ViewPageAdapter viewPageAdapter;
     ViewPager viewPager;
     WormDotsIndicator wormDotsIndicator;
+
     @Override
     public int getItemCount() {
         // 삼항 연산자

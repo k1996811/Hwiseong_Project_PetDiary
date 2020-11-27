@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.petdiary.BookmarkInfo;
+import com.example.petdiary.Chat;
 import com.example.petdiary.CustomAdapterSub;
 import com.example.petdiary.Data;
 import com.example.petdiary.R;
@@ -24,10 +26,18 @@ import com.example.petdiary.RecyclerViewDecoration;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class FragmentSub extends Fragment {
@@ -57,14 +67,12 @@ public class FragmentSub extends Fragment {
                 searchView.setIconified(false);
             }
         });
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override // 검색 버튼 눌렀을 때
             public boolean onQueryTextSubmit(String s) {
                 Toast.makeText(getContext(), "검색!!!", Toast.LENGTH_SHORT).show();
                 return false;
             }
-
             @Override // 글자 변경시
             public boolean onQueryTextChange(String s) {
                 return false;
