@@ -1,9 +1,11 @@
 package com.example.petdiary;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,14 +50,20 @@ public class CustomAdapterSub extends RecyclerView.Adapter<CustomAdapterSub.Cust
         return holder;
 
     }
- //arrayList.get(position).getPostID()
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
         viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
         viewPageAdapter = new ViewPageAdapterSub(arrayList.get(position),arrayList.get(position).getImageUrl1(), context);
         viewPager.setAdapter(viewPageAdapter);
 
-
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) holder.itemView.getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int deviceWidth = displayMetrics.widthPixels;  // 핸드폰의 가로 해상도를 구함.
+        // int deviceHeight = displayMetrics.heightPixels;  // 핸드폰의 세로 해상도를 구함.
+        deviceWidth = (deviceWidth-60) / 3;
+        holder.itemView.getLayoutParams().width = deviceWidth;  // 아이템 뷰의 세로 길이를 구한 길이로 변경
+        holder.itemView.getLayoutParams().height = deviceWidth;  // 아이템 뷰의 세로 길이를 구한 길이로 변경
+        holder.itemView.requestLayout(); // 변경 사항 적용
     }
 
     ViewPageAdapterSub viewPageAdapter;

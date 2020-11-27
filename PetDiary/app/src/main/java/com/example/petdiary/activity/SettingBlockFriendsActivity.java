@@ -64,9 +64,6 @@ public class SettingBlockFriendsActivity extends AppCompatActivity {
                     }
                 });
 
-
-
-
     }
 
     @Override

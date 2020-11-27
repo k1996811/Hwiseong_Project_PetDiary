@@ -19,6 +19,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.petdiary.CustomAdapterSub;
 import com.example.petdiary.Data;
 import com.example.petdiary.R;
+import com.example.petdiary.RecyclerDecorationWidth;
+import com.example.petdiary.RecyclerViewDecoration;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -73,6 +75,8 @@ public class FragmentSub extends Fragment {
         recyclerView.setHasFixedSize(true); // 리사이클러뷰 기존성능 강화
         layoutManager = new GridLayoutManager(getContext(), 3);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new RecyclerViewDecoration(5));
+        //recyclerView.addItemDecoration(new RecyclerDecorationWidth(30));
         arrayList = new ArrayList<>(); // User 객체를 담을 어레이 리스트 (어댑터쪽으로)
 
         setInfo();
