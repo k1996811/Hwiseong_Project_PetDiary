@@ -240,7 +240,7 @@ public class Expand_ImageView extends AppCompatActivity {
                 } else {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
-                    if(friendChecked.equals(checked)){
+                    if(friendChecked.equals("checked")){
                         final CharSequence info[] = new CharSequence[]{"친구삭제", "신고하기", "사용자 차단", "게시물 숨기기"};
                         builder.setTitle("");
                         builder.setItems(info, new DialogInterface.OnClickListener() {
@@ -249,10 +249,10 @@ public class Expand_ImageView extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-                                        Toast.makeText(view.getContext(), "addFriend", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(view.getContext(), "deleteFriend", Toast.LENGTH_SHORT).show();
+                                        friendChecked = "unchecked";
                                         firebaseDatabase = FirebaseDatabase.getInstance();
                                         DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid()+"/"+uid);
-                                        friendChecked = "unchecked";
                                         FriendInfo friendInfo = new FriendInfo();
                                         friend.setValue(friendInfo);
                                         Toast.makeText(getApplicationContext(), "친구를 삭제하였습니다.", Toast.LENGTH_SHORT).show();
@@ -275,8 +275,6 @@ public class Expand_ImageView extends AppCompatActivity {
                                 dialog.dismiss();
                             }
                         });
-
-                        builder.show();
                     } else {
                         final CharSequence info[] = new CharSequence[]{"친구추가", "신고하기", "사용자 차단", "게시물 숨기기"};
                         builder.setTitle("");
@@ -287,9 +285,9 @@ public class Expand_ImageView extends AppCompatActivity {
                                 switch (which) {
                                     case 0:
                                         Toast.makeText(view.getContext(), "addFriend", Toast.LENGTH_SHORT).show();
+                                        friendChecked = "checked";
                                         firebaseDatabase = FirebaseDatabase.getInstance();
                                         DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid()+"/"+uid);
-                                        friendChecked = "checked";
                                         FriendInfo friendInfo = new FriendInfo();
                                         friendInfo.setFriendUid(uid);
                                         friend.setValue(friendInfo);
@@ -313,14 +311,9 @@ public class Expand_ImageView extends AppCompatActivity {
                                 dialog.dismiss();
                             }
                         });
-
-                        builder.show();
                     }
-
-
-
+                    builder.show();
                 }
-
             }
         });
 
