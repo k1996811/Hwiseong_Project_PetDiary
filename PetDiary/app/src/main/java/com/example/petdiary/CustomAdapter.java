@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.example.petdiary.activity.MainActivity;
 import com.example.petdiary.activity.SetPasswordActivity;
 import com.example.petdiary.adapter.ViewPageAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,11 +32,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 import com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
@@ -52,10 +58,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     private Context context;
     private Button Comment_btn;
     private Button onPopupButton;
-    private CheckBox bookmark_button;
+
+    ViewPageAdapter viewPageAdapter;
+    ViewPager viewPager;
+    WormDotsIndicator wormDotsIndicator;
 
     private FirebaseDatabase firebaseDatabase;
-    //내 uid 가져오기
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
 
@@ -94,26 +102,90 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         holder.content.setText(arrayList.get(position).getContent());
         holder.nickName.setText(arrayList.get(position).getNickName());
 
-        bookmark_button = (CheckBox) holder.itemView.findViewById(R.id.bookmark_button);
-        bookmark_button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                firebaseDatabase = FirebaseDatabase.getInstance();
-                DatabaseReference bookmark = firebaseDatabase.getReference("bookmark").child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/" + arrayList.get(position).getPostID());
-                if (b) {
-                    BookmarkInfo bookmarkInfo = new BookmarkInfo();
-                    bookmarkInfo.setPostID(arrayList.get(position).getPostID());
-                    //게시물을 데이터를 생성 및 엑티비티 종료
-                    bookmark.setValue(bookmarkInfo);
-                    Toast.makeText(context, "북마크에 등록하였습니다.", Toast.LENGTH_SHORT).show();
-                } else {
-                    BookmarkInfo bookmarkInfo = new BookmarkInfo();
-                    //게시물을 데이터를 생성 및 엑티비티 종료
-                    bookmark.setValue(bookmarkInfo);
-                    Toast.makeText(context, "북마크에 등록하였습니다.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        if(arrayList.get(position).getBookmark()){
+            holder.bookmark_button.setChecked(true);
+        } else {
+            holder.bookmark_button.setChecked(false);
+        }
+        if(arrayList.get(position).getLike()){
+            holder.Like_button.setChecked(true);
+        } else {
+            holder.Like_button.setChecked(false);
+        }
+
+//        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        firebaseDatabase = FirebaseDatabase.getInstance();
+//
+//        bookmark_button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                BookmarkInfo bookmarkInfo = new BookmarkInfo();
+//                if (b) {
+//                    bookmarkInfo.setPostID(arrayList.get(position).getPostID());
+//                    db.collection("user-checked/"+user.getUid()+"/bookmark").document(arrayList.get(position).getPostID()).set(bookmarkInfo)
+//                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                @Override
+//                                public void onSuccess(Void aVoid) {
+//                                }
+//                            })
+//                            .addOnFailureListener(new OnFailureListener() {
+//                                @Override
+//                                public void onFailure(@NonNull Exception e) {
+//                                }
+//                            });
+//                } else {
+//                    db.collection("user-checked/"+user.getUid()+"/bookmark").document(arrayList.get(position).getPostID())
+//                            .delete()
+//                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                @Override
+//                                public void onSuccess(Void aVoid) {
+//                                    Log.d("CustomAdapter", "DocumentSnapshot successfully deleted!");
+//                                }
+//                            })
+//                            .addOnFailureListener(new OnFailureListener() {
+//                                @Override
+//                                public void onFailure(@NonNull Exception e) {
+//                                    Log.w("CustomAdapter", "Error deleting document", e);
+//                                }
+//                            });
+//                }
+//            }
+//        });
+//        Like_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                PostLikeInfo postLikeInfo = new PostLikeInfo();
+//                if (b) {
+//                    postLikeInfo.setPostID(arrayList.get(position).getPostID());
+//                    db.collection("user-checked/"+user.getUid()+"/like").document(arrayList.get(position).getPostID()).set(postLikeInfo)
+//                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                @Override
+//                                public void onSuccess(Void aVoid) {
+//                                }
+//                            })
+//                            .addOnFailureListener(new OnFailureListener() {
+//                                @Override
+//                                public void onFailure(@NonNull Exception e) {
+//                                }
+//                            });
+//                } else {
+//                    db.collection("user-checked/"+user.getUid()+"/like").document(arrayList.get(position).getPostID())
+//                            .delete()
+//                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                @Override
+//                                public void onSuccess(Void aVoid) {
+//                                    Log.d("CustomAdapter", "DocumentSnapshot successfully deleted!");
+//                                }
+//                            })
+//                            .addOnFailureListener(new OnFailureListener() {
+//                                @Override
+//                                public void onFailure(@NonNull Exception e) {
+//                                    Log.w("CustomAdapter", "Error deleting document", e);
+//                                }
+//                            });
+//                }
+//            }
+//        });
 
         Comment_btn = (Button) holder.itemView.findViewById(R.id.Comment_btn);
         Comment_btn.findViewById(R.id.Comment_btn).setOnClickListener(new View.OnClickListener() {
@@ -128,7 +200,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                 context.startActivity(intent);
             }
         });
-
 
         onPopupButton = (Button) holder.itemView.findViewById(R.id.onPopupButton);
         onPopupButton.setOnClickListener(new View.OnClickListener() {
@@ -202,7 +273,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                 } else {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
-                    CharSequence info[] = new CharSequence[]{"신고하기", "사용자 차단", "게시물 숨기기"};
+                    CharSequence info[] = new CharSequence[]{"친구삭제", "신고하기", "사용자 차단", "게시물 숨기기"};
                     builder.setTitle("");
                     builder.setItems(info, new DialogInterface.OnClickListener() {
                         @Override
@@ -210,15 +281,22 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                                 case 0:
+                                    Toast.makeText(view.getContext(), "deleteFriend", Toast.LENGTH_SHORT).show();
+                                    DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid() + "/" + uid);
+                                    FriendInfo friendInfo = new FriendInfo();
+                                    friend.setValue(friendInfo);
+                                    Toast.makeText(context, "친구를 삭제하였습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 1:
                                     // 내정보
                                     Toast.makeText(view.getContext(), "신고하기", Toast.LENGTH_SHORT).show();
                                     break;
-                                case 1:
+                                case 2:
                                     // 로그아웃
 
                                     Toast.makeText(view.getContext(), "사용자 차단", Toast.LENGTH_SHORT).show();
                                     break;
-                                case 2:
+                                case 3:
 
                                     Toast.makeText(view.getContext(), "게시물 숨기기", Toast.LENGTH_SHORT).show();
 
@@ -259,18 +337,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             }
         });
 
-
         wormDotsIndicator = (WormDotsIndicator) holder.itemView.findViewById(R.id.worm_dots_indicator);
         wormDotsIndicator.setViewPager(viewPager);
     }
 
-    ViewPageAdapter viewPageAdapter;
-    ViewPager viewPager;
-    WormDotsIndicator wormDotsIndicator;
-
     @Override
     public int getItemCount() {
-        // 삼항 연산자
         return (arrayList != null ? arrayList.size() : 0);
     }
 
@@ -278,12 +350,112 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         TextView content;
         TextView nickName;
         ImageView profileImage;
+        CheckBox bookmark_button;
+        CheckBox Like_button;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.content = itemView.findViewById(R.id.main_textView);
             this.nickName = itemView.findViewById(R.id.Profile_Name);
             this.profileImage = itemView.findViewById(R.id.Profile_image);
+            this.bookmark_button = itemView.findViewById(R.id.bookmark_button);
+            this.Like_button = itemView.findViewById(R.id.Like_button);
+
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    int pos = getAdapterPosition();
+//                    if(arrayList.get(pos).getBookmark()){
+//                        Log.e("###Custom", pos + " ### " + arrayList.get(pos).getPostID());
+//                        bookmark_button.setChecked(true);
+//                    } else {
+//                        bookmark_button.setChecked(false);
+//                    }
+//                    if(arrayList.get(pos).getLike()){
+//                        Like_button.setChecked(true);
+//                    } else {
+//                        Like_button.setChecked(false);
+//                    }
+//                }
+//            });
+
+            itemView.findViewById(R.id.bookmark_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = getAdapterPosition();
+                    final FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    BookmarkInfo bookmarkInfo = new BookmarkInfo();
+                    Log.e("###custom", bookmark_button.isChecked() + "");
+                    if(((CheckBox)view).isChecked()){
+                        bookmarkInfo.setPostID(arrayList.get(pos).getPostID());
+                        db.collection("user-checked/"+user.getUid()+"/bookmark").document(arrayList.get(pos).getPostID()).set(bookmarkInfo)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                    }
+                                });
+                    } else {
+                        db.collection("user-checked/"+user.getUid()+"/bookmark").document(arrayList.get(pos).getPostID())
+                                .delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("CustomAdapter", "DocumentSnapshot successfully deleted!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("CustomAdapter", "Error deleting document", e);
+                                    }
+                                });
+                    }
+                }
+            });
+
+            itemView.findViewById(R.id.Like_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = getAdapterPosition();
+                    final FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    PostLikeInfo postLikeInfo = new PostLikeInfo();
+                    Log.e("###custom", bookmark_button.isChecked() + "");
+                    if(((CheckBox)view).isChecked()){
+                        postLikeInfo.setPostID(arrayList.get(pos).getPostID());
+                        db.collection("user-checked/"+user.getUid()+"/like").document(arrayList.get(pos).getPostID()).set(postLikeInfo)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                    }
+                                });
+                    } else {
+                        db.collection("user-checked/"+user.getUid()+"/like").document(arrayList.get(pos).getPostID())
+                                .delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("CustomAdapter", "DocumentSnapshot successfully deleted!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("CustomAdapter", "Error deleting document", e);
+                                    }
+                                });
+                    }
+                }
+            });
         }
     }
 }

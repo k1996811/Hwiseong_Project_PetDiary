@@ -48,7 +48,8 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 public class Expand_ImageView extends AppCompatActivity {
 
     private String friendChecked;
-    private String checked;
+    private String bookmarkChecked;
+    private String likeChecked;
     private String postID;
     private String uid;
     private String imageUrl1;
@@ -75,6 +76,7 @@ public class Expand_ImageView extends AppCompatActivity {
 
 
     private CheckBox bookmark_button;
+    private CheckBox Like_button;
     private FirebaseDatabase firebaseDatabase;
 
     @Override
@@ -86,7 +88,8 @@ public class Expand_ImageView extends AppCompatActivity {
 
         Intent intent = getIntent();
         friendChecked = intent.getStringExtra("friend");
-        checked = intent.getStringExtra("bookmark");
+        likeChecked = intent.getStringExtra("postLike");
+        bookmarkChecked = intent.getStringExtra("bookmark");
         postID = intent.getStringExtra("postID");
         uid = intent.getStringExtra("uid");
         nickName = intent.getStringExtra("nickName");
@@ -317,8 +320,10 @@ public class Expand_ImageView extends AppCompatActivity {
             }
         });
 
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         bookmark_button = (CheckBox)findViewById(R.id.bookmark_button);
-        if(checked.equals("checked")){
+        if(bookmarkChecked.equals("checked")){
             bookmark_button.setChecked(true);
         }
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -326,17 +331,73 @@ public class Expand_ImageView extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 DatabaseReference bookmark = firebaseDatabase.getReference("bookmark").child(user.getUid()+"/"+postID);
+                BookmarkInfo bookmarkInfo = new BookmarkInfo();
                 if(b){
-                    BookmarkInfo bookmarkInfo = new BookmarkInfo();
                     bookmarkInfo.setPostID(postID);
-                    //게시물을 데이터를 생성 및 엑티비티 종료
-                    bookmark.setValue(bookmarkInfo);
-                    Toast.makeText(getApplicationContext(), "북마크에 등록하였습니다.", Toast.LENGTH_SHORT).show();
+                    db.collection("user-checked/"+user.getUid()+"/bookmark").document(postID).set(bookmarkInfo)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                }
+                            });
                 } else {
-                    BookmarkInfo bookmarkInfo = new BookmarkInfo();
-                    //게시물을 데이터를 생성 및 엑티비티 종료
-                    bookmark.setValue(bookmarkInfo);
-                    Toast.makeText(getApplicationContext(), "북마크에 등록하였습니다.", Toast.LENGTH_SHORT).show();
+                    db.collection("user-checked/"+user.getUid()+"/bookmark").document(postID)
+                            .delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("CustomAdapter", "DocumentSnapshot successfully deleted!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("CustomAdapter", "Error deleting document", e);
+                                }
+                            });
+                }
+            }
+        });
+
+        Like_button = (CheckBox)findViewById(R.id.Like_button);
+        if(likeChecked.equals("checked")){
+            Like_button.setChecked(true);
+        }
+        Like_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                PostLikeInfo postLikeInfo = new PostLikeInfo();
+                if (b) {
+                    postLikeInfo.setPostID(postID);
+                    db.collection("user-checked/"+user.getUid()+"/like").document(postID).set(postLikeInfo)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                }
+                            });
+                } else {
+                    db.collection("user-checked/"+user.getUid()+"/like").document(postID)
+                            .delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                }
+                            });
                 }
             }
         });

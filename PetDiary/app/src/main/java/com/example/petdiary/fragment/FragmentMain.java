@@ -5,17 +5,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.petdiary.BookmarkInfo;
 import com.example.petdiary.CustomAdapter;
 import com.example.petdiary.Data;
 import com.example.petdiary.R;
@@ -24,6 +23,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -39,6 +43,9 @@ public class FragmentMain extends Fragment {
     private View view;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     BottomNavigationView bottomNavigationView;
+
+    private ArrayList<String> bookmark = new ArrayList<String>();
+    private ArrayList<String> like = new ArrayList<String>();
 
     @Nullable
     @Override
@@ -64,7 +71,6 @@ public class FragmentMain extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                arrayList.clear();
                 setInfo();
                 // 동글동글 도는거 사라짐
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -97,34 +103,84 @@ public class FragmentMain extends Fragment {
     }
 
     private void setInfo(){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String uid = user.getUid();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("post").whereEqualTo("uid",uid)
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String uid = user.getUid();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        arrayList.clear();
+        bookmark.clear();
+        like.clear();
+
+        db.collection("user-checked/"+uid+"/bookmark")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Data dataList = new Data();
-                                //Log.e("###2", document.getId().toString());
-                                dataList.setPostID(document.getId());
-                                dataList.setUid(document.getData().get("uid").toString());
-                                dataList.setContent(document.getData().get("content").toString());
-                                dataList.setImageUrl1(document.getData().get("imageUrl1").toString());
-                                dataList.setImageUrl2(document.getData().get("imageUrl2").toString());
-                                dataList.setImageUrl3(document.getData().get("imageUrl3").toString());
-                                dataList.setImageUrl4(document.getData().get("imageUrl4").toString());
-                                dataList.setImageUrl5(document.getData().get("imageUrl5").toString());
-                                dataList.setNickName(document.getData().get("nickName").toString());
-                                arrayList.add(0, dataList);
+                            for (final QueryDocumentSnapshot document : task.getResult()) {
+                                bookmark.add(document.getData().get("postID").toString());
                             }
+                            db.collection("user-checked/"+uid+"/like")
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (final QueryDocumentSnapshot document : task.getResult()) {
+                                                    like.add(document.getData().get("postID").toString());
+                                                }
+                                                db.collection("post").whereEqualTo("uid",uid)
+                                                        .get()
+                                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    for (final QueryDocumentSnapshot document : task.getResult()) {
+                                                                        final Data dataList = new Data();
+                                                                        dataList.setBookmark(false);
+                                                                        for(int i=0; i<bookmark.size(); i++){
+                                                                            if(bookmark.get(i).equals(document.getId())){
+                                                                                dataList.setBookmark(true);
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                        dataList.setLike(false);
+                                                                        for(int i=0; i<like.size(); i++){
+                                                                            if(like.get(i).equals(document.getId())){
+                                                                                dataList.setLike(true);
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                        dataList.setPostID(document.getId());
+                                                                        dataList.setUid(document.getData().get("uid").toString());
+                                                                        dataList.setContent(document.getData().get("content").toString());
+                                                                        dataList.setImageUrl1(document.getData().get("imageUrl1").toString());
+                                                                        dataList.setImageUrl2(document.getData().get("imageUrl2").toString());
+                                                                        dataList.setImageUrl3(document.getData().get("imageUrl3").toString());
+                                                                        dataList.setImageUrl4(document.getData().get("imageUrl4").toString());
+                                                                        dataList.setImageUrl5(document.getData().get("imageUrl5").toString());
+                                                                        dataList.setNickName(document.getData().get("nickName").toString());
+                                                                        arrayList.add(0, dataList);
+                                                                    }
+                                                                    adapter.notifyDataSetChanged();
+                                                                } else {
+                                                                    Log.d("###", "Error getting documents: ", task.getException());
+                                                                }
+                                                            }
+                                                        });
+                                                adapter.notifyDataSetChanged();
+                                            } else {
+                                                Log.d("###", "Error getting documents: ", task.getException());
+                                            }
+                                        }
+                                    });
                             adapter.notifyDataSetChanged();
                         } else {
                             Log.d("###", "Error getting documents: ", task.getException());
                         }
                     }
                 });
+
+
     }
 }
