@@ -126,14 +126,16 @@ public class FragmentMy extends Fragment {
         recyclerView = (RecyclerView) viewGroup.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true); // 리사이클러뷰 기존성능 강화
 
-        adapter = new Kon_MypageAdapter(postList, getContext());
+        int columnNum = 3;
+        adapter = new Kon_MypageAdapter(postList, columnNum,  getContext());
         recyclerView.setAdapter(adapter); // 리사이클러뷰에 어댑터 연결
-        layoutManager = new GridLayoutManager(getContext(), 3);
+        layoutManager = new GridLayoutManager(getContext(), columnNum);
         recyclerView.setLayoutManager(layoutManager);
 
         // 리사이클러뷰 간격추가
-        RecyclerDecoration spaceDecoration = new RecyclerDecoration(10, 20);
+        RecyclerDecoration spaceDecoration = new RecyclerDecoration(10);
         recyclerView.addItemDecoration(spaceDecoration);
+        //////////////////
 
 
         //////////////////////////////////// 프로필 이미지 수정

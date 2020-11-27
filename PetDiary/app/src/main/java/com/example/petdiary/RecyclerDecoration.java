@@ -9,11 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerDecoration extends RecyclerView.ItemDecoration {
 
-    private final int divHeight;
     private final int divWidth;
 
-    public RecyclerDecoration(int divWidth ,int divHeight) {
-        this.divHeight = divHeight;
+    public RecyclerDecoration(int divWidth) {
         this.divWidth = divWidth;
     }
 
@@ -22,9 +20,9 @@ public class RecyclerDecoration extends RecyclerView.ItemDecoration {
         super.getItemOffsets(outRect, view, parent, state);
         Log.d("아이템 정보 : ", "getItemOffsets: " + parent.getChildAdapterPosition(view) + ", " +  parent.getAdapter().getItemCount());
        // if (parent.getChildAdapterPosition(view) != parent.getAdapter().getItemCount() - 1) {
-            outRect.right=divWidth;
+            outRect.right= divWidth;
             outRect.left = divWidth;
-            outRect.bottom = divHeight;
+            outRect.bottom = divWidth;
       //  }
     }
 }
