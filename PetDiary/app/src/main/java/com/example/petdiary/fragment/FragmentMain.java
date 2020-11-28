@@ -160,6 +160,7 @@ public class FragmentMain extends Fragment {
                                                                         dataList.setImageUrl4(document.getData().get("imageUrl4").toString());
                                                                         dataList.setImageUrl5(document.getData().get("imageUrl5").toString());
                                                                         dataList.setNickName(document.getData().get("nickName").toString());
+                                                                        dataList.setCategory(document.getData().get("category").toString());
                                                                         arrayList.add(0, dataList);
                                                                     }
                                                                     adapter.notifyDataSetChanged();

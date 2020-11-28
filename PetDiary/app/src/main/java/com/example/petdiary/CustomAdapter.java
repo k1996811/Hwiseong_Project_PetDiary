@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.example.petdiary.activity.ContentEditActivity;
 import com.example.petdiary.activity.MainActivity;
 import com.example.petdiary.activity.SetPasswordActivity;
 import com.example.petdiary.adapter.ViewPageAdapter;
@@ -225,6 +226,21 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                             switch (which) {
                                 case 0:
                                     // 내정보
+                                    Intent intent = new Intent(context, ContentEditActivity.class);
+
+                                    //intent.putExtra("nickName", arrayList.get(position).getNickName());
+                                    // intent.putExtra("uid", arrayList.get(position).getUid());
+                                    // intent.putExtra("content", arrayList.get(position).getContent());
+                                    intent.putExtra("imageUrl1", arrayList.get(position).getImageUrl1());
+                                    intent.putExtra("imageUrl2", arrayList.get(position).getImageUrl2());
+                                    intent.putExtra("imageUrl3", arrayList.get(position).getImageUrl3());
+                                    intent.putExtra("imageUrl4", arrayList.get(position).getImageUrl4());
+                                    intent.putExtra("imageUrl5", arrayList.get(position).getImageUrl5());
+                                    intent.putExtra("category", arrayList.get(position).getCategory());
+                                    intent.putExtra("content", arrayList.get(position).getContent());
+                                    intent.putExtra("postID", arrayList.get(position).getPostID());
+
+                                    context.startActivity(intent);
                                     Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 1:
