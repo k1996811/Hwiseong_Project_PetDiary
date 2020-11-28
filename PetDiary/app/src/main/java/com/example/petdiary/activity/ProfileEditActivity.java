@@ -76,6 +76,7 @@ public class ProfileEditActivity extends AppCompatActivity {
         cancelBtn = findViewById(R.id.userPage_cancel);
 
 
+
         //데이터 수신
         Intent intent = getIntent();
         userId = intent.getExtras().getString("userId");

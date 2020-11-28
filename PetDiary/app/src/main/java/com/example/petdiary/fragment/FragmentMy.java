@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -95,18 +96,13 @@ public class FragmentMy extends Fragment {
         //////////////////////////////////// 프로필 이미지, 닉네임, 메모 가져오기,
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    //userInfo.put("email",document.getString("email"));
                     userInfo.put("nickName", document.getString("nickName"));
-                    //userInfo.put("password",document.getString("password"));
                     userInfo.put("profileImg", document.getString("profileImg"));
                     userInfo.put("memo", document.getString("memo"));
-
 
                     profileName.setText(userInfo.get(("nickName")));
                     profileMemo.setText(userInfo.get(("memo")));
@@ -123,22 +119,9 @@ public class FragmentMy extends Fragment {
         loadPostsAfterCheck(false);
 
         //////////////////////////////////// 리사이클러뷰 setting
-        recyclerView = (RecyclerView) viewGroup.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true); // 리사이클러뷰 기존성능 강화
+        setRecyclerView();
 
-        int columnNum = 3;
-        adapter = new Kon_MypageAdapter(postList, columnNum, getContext());
-        recyclerView.setAdapter(adapter); // 리사이클러뷰에 어댑터 연결
-        layoutManager = new GridLayoutManager(getContext(), columnNum);
-        recyclerView.setLayoutManager(layoutManager);
-
-        // 리사이클러뷰 간격추가
-        RecyclerDecoration spaceDecoration = new RecyclerDecoration(10);
-        recyclerView.addItemDecoration(spaceDecoration);
-        //////////////////
-
-
-        //////////////////////////////////// 프로필 이미지 수정
+        //////////////////////////////////// 프로필 이미지 수정 이벤트 추가
         profileImage.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -160,12 +143,22 @@ public class FragmentMy extends Fragment {
 
         });
 
+        //////////////////////////////////// 모두 보기 버튼
+        TextView allBtn = viewGroup.findViewById(R.id.profile_allBtn);
+        allBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
 
         // 펫 추가 버튼 (미구현)
         petAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "이제 당신이 해야 할 일은 버튼 기능을 추가하는 것 입니다.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), kon_AnimalProfileActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -179,22 +172,31 @@ public class FragmentMy extends Fragment {
             }
         });
 
-        // 최상단으로 가기 Listener추가 
+        //////////////////////////////////// 최상단으로 가기 이벤트 추가
         moveTop();
 
         return viewGroup;
     }
 
 
-    //////////////////////////////////// 화면 처음 활성화 됐을 시 행동
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadPostsAfterCheck(true);
+
+    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 0:   // ProfileEditActivity에서 받아온 값
+                if (resultCode == RESULT_OK) {
+                    setProfileImg(data.getStringExtra("profileImg"));
+                    profileName.setText(data.getStringExtra("nickName"));
+                    profileMemo.setText(data.getStringExtra("memo"));
+
+                } else {
+                }
+                break;
+        }
     }
 
-
-    // 개인 게시물 로드. 체크하게 되면 이전 게시물 개수와 비교후 업데이트, 체크 안하면 그냥 업데이트
+    //////////////////////////////////// 개인 게시물 로드. 체크하게 되면 이전 게시물 개수와 비교후 업데이트,
+    //////////////////////////////////// 체크 안하면 그냥 업데이트
     private void loadPostsAfterCheck(final boolean needCheck) {
         //  유저
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -239,46 +241,11 @@ public class FragmentMy extends Fragment {
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
-    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case 0:   // ProfileEditActivity에서 받아온 값
-                if (resultCode == RESULT_OK) {
-                    setProfileImg(data.getStringExtra("profileImg"));
-                    profileName.setText(data.getStringExtra("nickName"));
-                    profileMemo.setText(data.getStringExtra("memo"));
-
-                } else {
-                }
-                break;
-        }
-    }
-
-    // 첫 초기화
-    private void setImg() {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-
-        StorageReference storageRef = storage.getReference();
-
-        storageRef.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-
-                String profileImg = uri.toString();
-                setProfileImg(profileImg);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-            }
-        });
-    }
-
     private void setProfileImg(String profileImg) {
         Glide.with(this).load(profileImg).centerCrop().override(500).into(profileEditImg);
     }
 
+    //////////////////////////////////// 최상단으로 가기 이벤트 추가
     private void moveTop() {
         bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
@@ -290,5 +257,33 @@ public class FragmentMy extends Fragment {
             }
         });
     }
+
+    //////////////////////////////////// 리사이클러뷰 setting
+    private void setRecyclerView()
+    {
+        recyclerView = (RecyclerView) viewGroup.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true); // 리사이클러뷰 기존성능 강화
+
+        int columnNum = 3;
+        adapter = new Kon_MypageAdapter(postList, columnNum, getContext());
+        recyclerView.setAdapter(adapter); // 리사이클러뷰에 어댑터 연결
+        layoutManager = new GridLayoutManager(getContext(), columnNum);
+        recyclerView.setLayoutManager(layoutManager);
+
+        // 리사이클러뷰 간격추가
+        RecyclerDecoration spaceDecoration = new RecyclerDecoration(10);
+        recyclerView.addItemDecoration(spaceDecoration);
+    }
+
+
+
+    //////////////////////////////////// 화면 처음 활성화 됐을 시 행동
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadPostsAfterCheck(true);
+    }
+
+
 
 }

@@ -48,6 +48,7 @@
         <activity android:name=".activity.CameraAppActivity"></activity>
         <activity android:name=".activity.CameraAppActivity2"></activity>
         <activity android:name=".activity.ProfileEditActivity"></activity>
+        <activity android:name=".activity.kon_AnimalProfileActivity"></activity>
         <activity android:name=".activity.SettingBookMarkActivity" android:parentActivityName=".activity.MainActivity"></activity>
         <activity android:name=".activity.SettingBlockFriendsActivity" android:parentActivityName=".activity.MainActivity"></activity>
         <activity android:name=".activity.SettingCustomerActivity" android:parentActivityName=".activity.MainActivity"></activity>
