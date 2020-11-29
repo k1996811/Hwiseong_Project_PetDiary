@@ -158,7 +158,10 @@ public class FragmentMy extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), kon_AnimalProfileActivity.class);
-                startActivity(intent);
+                intent.putExtra("isAddMode", true);
+                intent.putExtra("isEditMode", true);
+                //startActivity(intent);
+                startActivityForResult(intent,1);
             }
         });
 
