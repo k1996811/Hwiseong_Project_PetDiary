@@ -16,9 +16,9 @@
         android:background="@drawable/button"/>
 
     <View
-        android:layout_alignParentTop="true"
         android:id="@+id/hidden_Square"
-        android:layout_above="@+id/third_Square"
+        android:layout_above="@+id/Guide_line"
+        android:layout_alignParentTop="true"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:layout_marginTop="5dp"
@@ -116,7 +116,7 @@
         app:stiffness="300" />
 
     <TextView
-        android:textSize="15sp"
+        android:textSize="15dp"
         android:id="@+id/main_textView"
         android:text="하이히앟잏ㄴㅇㅎㅇㅎㄴㅇㅎㄴㅇㄹㄴㅇㄹ"
         android:layout_marginBottom="10dp"
@@ -141,7 +141,7 @@
 
     <Button
         android:id="@+id/Comment_btn"
-        android:layout_below="@+id/hidden_Square"
+        android:layout_below="@+id/main_textView"
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/Like_button"
         android:layout_width="60dp"
@@ -158,6 +158,14 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:background="@drawable/bookmark_check"/>
+
+    <RelativeLayout
+        android:id="@+id/Guide_line"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/bookmark_button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
 </RelativeLayout>
 
 
