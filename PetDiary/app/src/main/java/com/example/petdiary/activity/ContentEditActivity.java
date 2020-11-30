@@ -686,7 +686,6 @@ public class ContentEditActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        startToast("게시글을 수정하였습니다.");
                         Log.d(TAG, "DocumentSnapshot successfully written!");
                         loaderLayout.setVisibility(View.INVISIBLE);
 
@@ -720,6 +719,7 @@ public class ContentEditActivity extends AppCompatActivity {
 
                                 setResult(RESULT_OK, intent);
 
+                                startToast("게시글을 수정하였습니다.");
 
                                 finish();
                             }
@@ -746,6 +746,7 @@ public class ContentEditActivity extends AppCompatActivity {
 
                             setResult(RESULT_OK, intent);
 
+                            startToast("게시글을 수정하였습니다.");
 
                             finish();
                         }
@@ -772,6 +773,7 @@ public class ContentEditActivity extends AppCompatActivity {
 
                                 setResult(RESULT_OK, intent);
 
+                                startToast("게시글을 수정하였습니다.");
 
                                 finish();
                             }
@@ -797,6 +799,7 @@ public class ContentEditActivity extends AppCompatActivity {
 
                                 setResult(RESULT_OK, intent);
 
+                                startToast("게시글을 수정하였습니다.");
 
                                 finish();
                             }
@@ -820,6 +823,7 @@ public class ContentEditActivity extends AppCompatActivity {
                             intent.putExtra("imageUrl5", Data5);
 
                             setResult(RESULT_OK, intent);
+                            startToast("게시글을 수정하였습니다.");
 
 
                             finish();
