@@ -24,8 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.petdiary.Expand_ImageView;
-import com.example.petdiary.PostInfo;
+
 import com.example.petdiary.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -194,6 +193,10 @@ public class ContentEditActivity extends AppCompatActivity {
         deletePostImg[3].bringToFront();
         deletePostImg[4].bringToFront();
 
+        for (int i = 0; i < 5; i++) {
+            imgUri[i] = "";
+        }
+
         String postImgPath[] = {imageUrl1,imageUrl2,imageUrl3,imageUrl4,imageUrl5};
         if(!imageUrl1.equals("")) {
             Log.d("@@##", "onCreate: 이미지url"+ imageUrl1);
@@ -222,12 +225,6 @@ public class ContentEditActivity extends AppCompatActivity {
             choiceNum = 4;
             setPostImg(postImgPath[4]);
         }
-
-        for (int i = 0; i < 5; i++) {
-            imgUri[i] = "";
-        }
-
-
     }
 
 
@@ -586,7 +583,7 @@ public class ContentEditActivity extends AppCompatActivity {
         final UploadTask[] uploadTask = new UploadTask[1];
 
         if(postNumCheck == 0){
-            postData();
+
         }
 
         else {
@@ -598,7 +595,7 @@ public class ContentEditActivity extends AppCompatActivity {
                 if(postImgCheck[i] == 1){
                     final Uri file;
                     if(imgCheck){
-
+                        postData();
 
                         file = Uri.fromFile(new File(img[i]));
 
@@ -644,9 +641,9 @@ public class ContentEditActivity extends AppCompatActivity {
 
                                         imgUri[finalI1] = downloadUri.toString();
 
-                                        if(!imgUri[finalI1].equals("")){
+
                                             postData();
-                                        }
+
 
 
 
@@ -659,12 +656,26 @@ public class ContentEditActivity extends AppCompatActivity {
                 }
             }
         }
+
     }
 
 
 
     private void postData(){
         content = ((EditText) findViewById(R.id.contents)).getText().toString();
+
+        final String Data = imgUri[0];
+        final String Data2 = imgUri[1];
+        final String Data3 = imgUri[2];
+        final String Data4 = imgUri[3];
+        final String Data5 = imgUri[4];
+
+        final String imgData = img[0];
+        final String imgData2 = img[1];
+        final String imgData3 = img[2];
+        final String imgData4 = img[3];
+        final String imgData5 = img[4];
+
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference washingtonRef = db.collection("post").document(PostID);
@@ -681,26 +692,139 @@ public class ContentEditActivity extends AppCompatActivity {
 
                         setDirEmpty();
 
+                        Log.d(TAG, "onSuccess: 이미지1값"+imgData);
+                        Log.d(TAG, "onSuccess: 이미지2값"+imgData2);
+                        Log.d(TAG, "onSuccess: 이미지3값"+imgData3);
+                        Log.d(TAG, "onSuccess: 이미지4값"+imgData4);
+                        Log.d(TAG, "onSuccess: 이미지5값"+imgData5);
+                        Log.d(TAG, "onSuccess: if문 안타냐?"+Data2);
 
+                        if(imgData!=null&&imgData2==null){//&&imgData3.equals(null)&&imgData4.equals(null)&&imgData5.equals(null)) {
+                            Log.d(TAG, "onSuccess: 첫번째 if 오류????" + Data2);
+                            if(!Data.equals("")) {
+                                Log.d(TAG, "onSuccess: 첫번째 if 오류????" + Data2);
+
+                                Intent intent = new Intent();
+                                intent.putExtra("content", content);
+
+                                intent.putExtra("imageUrl1", Data);
+
+                                intent.putExtra("imageUrl2", Data2);
+
+                                intent.putExtra("imageUrl3", Data3);
+                                Log.d(TAG, "onSuccess: 값보내지나?" + intent.putExtra("imageUrl3", imgUri[2]));
+                                intent.putExtra("imageUrl4", Data4);
+
+
+                                intent.putExtra("imageUrl5", Data5);
+
+                                setResult(RESULT_OK, intent);
+
+
+                                finish();
+                            }
+                        }
+
+                   else if(imgData!=null&&imgData2!=null&&imgData3==null){//&&imgData3.equals(null)&&imgData4.equals(null)&&imgData5.equals(null)) {
+                        Log.d(TAG, "onSuccess: 첫번째 if 오류????" + Data2);
+                        if(!Data.equals("")&&!Data2.equals("")) {
+                            Log.d(TAG, "onSuccess: 첫번째 if 오류????" + Data2);
 
                             Intent intent = new Intent();
-                            intent.putExtra("content",content);
+                            intent.putExtra("content", content);
 
-                            intent.putExtra("imageUrl1", imgUri[0]);
+                            intent.putExtra("imageUrl1", Data);
 
-                            intent.putExtra("imageUrl2", imgUri[1]);
+                            intent.putExtra("imageUrl2", Data2);
 
-                            intent.putExtra("imageUrl3", imgUri[2]);
-                            Log.d(TAG, "onSuccess: 값보내지나?"+intent.putExtra("imageUrl3", imgUri[2]));
-                            intent.putExtra("imageUrl4", imgUri[3]);
+                            intent.putExtra("imageUrl3", Data3);
+                            Log.d(TAG, "onSuccess: 값보내지나?" + intent.putExtra("imageUrl3", imgUri[2]));
+                            intent.putExtra("imageUrl4", Data4);
 
 
-                            intent.putExtra("imageUrl5", imgUri[4]);
+                            intent.putExtra("imageUrl5", Data5);
 
                             setResult(RESULT_OK, intent);
 
 
-                    finish();
+                            finish();
+                        }
+                    }
+
+                       else if(imgData!=null&&imgData2!=null&&imgData3!=null&&imgData4==null){//&&imgData3.equals(null)&&imgData4.equals(null)&&imgData5.equals(null)) {
+                            Log.d(TAG, "onSuccess: 이거탔어여?!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                            if(!Data.equals("")&&!Data2.equals("")&&!Data3.equals("")) {
+                                Log.d(TAG, "onSuccess: 탔어요 if" + Data2);
+
+                                Intent intent = new Intent();
+                                intent.putExtra("content", content);
+
+                                intent.putExtra("imageUrl1", Data);
+
+                                intent.putExtra("imageUrl2", Data2);
+
+                                intent.putExtra("imageUrl3", Data3);
+                                Log.d(TAG, "onSuccess: 값보내지나?" + intent.putExtra("imageUrl3", imgUri[2]));
+                                intent.putExtra("imageUrl4", Data4);
+
+
+                                intent.putExtra("imageUrl5", Data5);
+
+                                setResult(RESULT_OK, intent);
+
+
+                                finish();
+                            }
+                        }
+
+                     else if(imgData!=null&&imgData2!=null&&imgData3!=null&&imgData4!=null&&imgData5==null){//&&imgData3.equals(null)&&imgData4.equals(null)&&imgData5.equals(null)) {
+                            if(!Data.equals("")&&!Data2.equals("")&&!Data3.equals("")&&!Data4.equals("")) {
+                                Log.d(TAG, "onSuccess: 탔어요 ififififififififif" + Data2);
+
+                                Intent intent = new Intent();
+                                intent.putExtra("content", content);
+
+                                intent.putExtra("imageUrl1", Data);
+
+                                intent.putExtra("imageUrl2", Data2);
+
+                                intent.putExtra("imageUrl3", Data3);
+                                Log.d(TAG, "onSuccess: 값보내지나?" + intent.putExtra("imageUrl3", imgUri[2]));
+                                intent.putExtra("imageUrl4", Data4);
+
+
+                                intent.putExtra("imageUrl5", Data5);
+
+                                setResult(RESULT_OK, intent);
+
+
+                                finish();
+                            }
+                        }
+                    else if(imgData!=null&&imgData2!=null&&imgData3!=null&&imgData4!=null&&imgData5!=null){//&&imgData3.equals(null)&&imgData4.equals(null)&&imgData5.equals(null)) {
+                        if(!Data.equals("")&&!Data2.equals("")&&!Data3.equals("")&&!Data4.equals("")&&!Data5.equals("")) {
+                            Log.d(TAG, "onSuccess: 탔어요 ififififififififif" + Data2);
+
+                            Intent intent = new Intent();
+                            intent.putExtra("content", content);
+
+                            intent.putExtra("imageUrl1", Data);
+
+                            intent.putExtra("imageUrl2", Data2);
+
+                            intent.putExtra("imageUrl3", Data3);
+                            Log.d(TAG, "onSuccess: 값보내지나?" + intent.putExtra("imageUrl3", imgUri[2]));
+                            intent.putExtra("imageUrl4", Data4);
+
+
+                            intent.putExtra("imageUrl5", Data5);
+
+                            setResult(RESULT_OK, intent);
+
+
+                            finish();
+                        }
+                    }
 
                     }
                 })
@@ -730,6 +854,8 @@ public class ContentEditActivity extends AppCompatActivity {
             dir.delete();
         }
     }
+
+
 
 
 }
