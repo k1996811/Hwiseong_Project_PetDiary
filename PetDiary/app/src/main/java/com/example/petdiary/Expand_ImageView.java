@@ -59,11 +59,6 @@ public class Expand_ImageView extends AppCompatActivity {
     private String imageUrl3;
     private String imageUrl4;
     private String imageUrl5;
-    private String imageUrl11;
-    private String imageUrl22;
-    private String imageUrl33;
-    private String imageUrl44;
-    private String imageUrl55;
     private String content;
     private ArrayList<String> hashTag = new ArrayList<String>();
     private String date;
@@ -117,7 +112,7 @@ public class Expand_ImageView extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                Intent intent = new Intent(getApplicationContext(), Comment2.class);
+                Intent intent = new Intent(getApplicationContext(), Comment.class);
 
                 intent.putExtra("postID", postID);
                 intent.putExtra("nickName", nickName);
@@ -128,7 +123,6 @@ public class Expand_ImageView extends AppCompatActivity {
                 
             }
         });
-
 
         final String[] profileImg = new String[1];
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(uid);
