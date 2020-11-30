@@ -198,7 +198,7 @@ public class ContentEditActivity extends AppCompatActivity {
         }
 
         String postImgPath[] = {imageUrl1,imageUrl2,imageUrl3,imageUrl4,imageUrl5};
-        if(!imageUrl1.equals("")) {
+        if(!imageUrl1.equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=eb832feb-bb39-48a0-9f46-81ffea724871")) {
             Log.d("@@##", "onCreate: 이미지url"+ imageUrl1);
             postImgCheck[0] = 0;
             choiceNum = 0;
@@ -687,21 +687,13 @@ public class ContentEditActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot successfully written!");
-                        loaderLayout.setVisibility(View.INVISIBLE);
 
                         setDirEmpty();
 
-                        Log.d(TAG, "onSuccess: 이미지1값"+imgData);
-                        Log.d(TAG, "onSuccess: 이미지2값"+imgData2);
-                        Log.d(TAG, "onSuccess: 이미지3값"+imgData3);
-                        Log.d(TAG, "onSuccess: 이미지4값"+imgData4);
-                        Log.d(TAG, "onSuccess: 이미지5값"+imgData5);
-                        Log.d(TAG, "onSuccess: if문 안타냐?"+Data2);
+
 
                         if(imgData!=null&&imgData2==null){//&&imgData3.equals(null)&&imgData4.equals(null)&&imgData5.equals(null)) {
-                            Log.d(TAG, "onSuccess: 첫번째 if 오류????" + Data2);
                             if(!Data.equals("")) {
-                                Log.d(TAG, "onSuccess: 첫번째 if 오류????" + Data2);
 
                                 Intent intent = new Intent();
                                 intent.putExtra("content", content);
@@ -711,14 +703,13 @@ public class ContentEditActivity extends AppCompatActivity {
                                 intent.putExtra("imageUrl2", Data2);
 
                                 intent.putExtra("imageUrl3", Data3);
-                                Log.d(TAG, "onSuccess: 값보내지나?" + intent.putExtra("imageUrl3", imgUri[2]));
                                 intent.putExtra("imageUrl4", Data4);
 
 
                                 intent.putExtra("imageUrl5", Data5);
 
                                 setResult(RESULT_OK, intent);
-
+                                loaderLayout.setVisibility(View.INVISIBLE);
                                 startToast("게시글을 수정하였습니다.");
 
                                 finish();
@@ -726,9 +717,7 @@ public class ContentEditActivity extends AppCompatActivity {
                         }
 
                    else if(imgData!=null&&imgData2!=null&&imgData3==null){//&&imgData3.equals(null)&&imgData4.equals(null)&&imgData5.equals(null)) {
-                        Log.d(TAG, "onSuccess: 첫번째 if 오류????" + Data2);
                         if(!Data.equals("")&&!Data2.equals("")) {
-                            Log.d(TAG, "onSuccess: 첫번째 if 오류????" + Data2);
 
                             Intent intent = new Intent();
                             intent.putExtra("content", content);
@@ -738,14 +727,13 @@ public class ContentEditActivity extends AppCompatActivity {
                             intent.putExtra("imageUrl2", Data2);
 
                             intent.putExtra("imageUrl3", Data3);
-                            Log.d(TAG, "onSuccess: 값보내지나?" + intent.putExtra("imageUrl3", imgUri[2]));
                             intent.putExtra("imageUrl4", Data4);
 
 
                             intent.putExtra("imageUrl5", Data5);
 
                             setResult(RESULT_OK, intent);
-
+                            loaderLayout.setVisibility(View.INVISIBLE);
                             startToast("게시글을 수정하였습니다.");
 
                             finish();
@@ -753,9 +741,7 @@ public class ContentEditActivity extends AppCompatActivity {
                     }
 
                        else if(imgData!=null&&imgData2!=null&&imgData3!=null&&imgData4==null){//&&imgData3.equals(null)&&imgData4.equals(null)&&imgData5.equals(null)) {
-                            Log.d(TAG, "onSuccess: 이거탔어여?!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                             if(!Data.equals("")&&!Data2.equals("")&&!Data3.equals("")) {
-                                Log.d(TAG, "onSuccess: 탔어요 if" + Data2);
 
                                 Intent intent = new Intent();
                                 intent.putExtra("content", content);
@@ -765,14 +751,13 @@ public class ContentEditActivity extends AppCompatActivity {
                                 intent.putExtra("imageUrl2", Data2);
 
                                 intent.putExtra("imageUrl3", Data3);
-                                Log.d(TAG, "onSuccess: 값보내지나?" + intent.putExtra("imageUrl3", imgUri[2]));
                                 intent.putExtra("imageUrl4", Data4);
 
 
                                 intent.putExtra("imageUrl5", Data5);
 
                                 setResult(RESULT_OK, intent);
-
+                                loaderLayout.setVisibility(View.INVISIBLE);
                                 startToast("게시글을 수정하였습니다.");
 
                                 finish();
@@ -781,7 +766,6 @@ public class ContentEditActivity extends AppCompatActivity {
 
                      else if(imgData!=null&&imgData2!=null&&imgData3!=null&&imgData4!=null&&imgData5==null){//&&imgData3.equals(null)&&imgData4.equals(null)&&imgData5.equals(null)) {
                             if(!Data.equals("")&&!Data2.equals("")&&!Data3.equals("")&&!Data4.equals("")) {
-                                Log.d(TAG, "onSuccess: 탔어요 ififififififififif" + Data2);
 
                                 Intent intent = new Intent();
                                 intent.putExtra("content", content);
@@ -791,14 +775,13 @@ public class ContentEditActivity extends AppCompatActivity {
                                 intent.putExtra("imageUrl2", Data2);
 
                                 intent.putExtra("imageUrl3", Data3);
-                                Log.d(TAG, "onSuccess: 값보내지나?" + intent.putExtra("imageUrl3", imgUri[2]));
                                 intent.putExtra("imageUrl4", Data4);
 
 
                                 intent.putExtra("imageUrl5", Data5);
 
                                 setResult(RESULT_OK, intent);
-
+                                loaderLayout.setVisibility(View.INVISIBLE);
                                 startToast("게시글을 수정하였습니다.");
 
                                 finish();
@@ -806,7 +789,6 @@ public class ContentEditActivity extends AppCompatActivity {
                         }
                     else if(imgData!=null&&imgData2!=null&&imgData3!=null&&imgData4!=null&&imgData5!=null){//&&imgData3.equals(null)&&imgData4.equals(null)&&imgData5.equals(null)) {
                         if(!Data.equals("")&&!Data2.equals("")&&!Data3.equals("")&&!Data4.equals("")&&!Data5.equals("")) {
-                            Log.d(TAG, "onSuccess: 탔어요 ififififififififif" + Data2);
 
                             Intent intent = new Intent();
                             intent.putExtra("content", content);
@@ -816,13 +798,13 @@ public class ContentEditActivity extends AppCompatActivity {
                             intent.putExtra("imageUrl2", Data2);
 
                             intent.putExtra("imageUrl3", Data3);
-                            Log.d(TAG, "onSuccess: 값보내지나?" + intent.putExtra("imageUrl3", imgUri[2]));
                             intent.putExtra("imageUrl4", Data4);
 
 
                             intent.putExtra("imageUrl5", Data5);
 
                             setResult(RESULT_OK, intent);
+                            loaderLayout.setVisibility(View.INVISIBLE);
                             startToast("게시글을 수정하였습니다.");
 
 
