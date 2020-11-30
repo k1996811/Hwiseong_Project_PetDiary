@@ -76,7 +76,7 @@ public class ViewPageAdapterSub extends PagerAdapter {
                 (Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.slider_sub, container, false);
         ImageView imageView = (ImageView) v.findViewById(R.id.imageView);
-        Glide.with(context).load(images.get(position)).centerCrop().override(500).into(imageView);
+        Glide.with(context).load(images.get(position)).centerCrop().override(1000).into(imageView);
 
         imageView.setOnClickListener(new OnSingleClickListener() {
             @Override
@@ -167,90 +167,6 @@ public class ViewPageAdapterSub extends PagerAdapter {
                         }
                     }
                 });
-//        firebaseDatabase = FirebaseDatabase.getInstance();
-//        mReference = firebaseDatabase.getReference("bookmark/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-//        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                boolean chk = false;
-//                for (DataSnapshot messageData : dataSnapshot.getChildren()) {
-//                    BookmarkInfo bookmark = messageData.getValue(BookmarkInfo.class);
-//                    if (arrayList.getPostID().equals(bookmark.getPostID())) {
-//                        chk = true;
-//                        break;
-//                    }
-//                }
-//                if (chk) {
-//                    intent.putExtra("bookmark", "checked");
-//                } else {
-//                    intent.putExtra("bookmark", "unchecked");
-//                }
-//                mReference = firebaseDatabase.getReference("postLike/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-//                mReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        boolean chk_like = false;
-//                        for (DataSnapshot messageData : dataSnapshot.getChildren()) {
-//                            PostLikeInfo postLikeInfo = messageData.getValue(PostLikeInfo.class);
-//                            if (arrayList.getPostID().equals(postLikeInfo.getPostID())) {
-//                                chk_like = true;
-//                                break;
-//                            }
-//                        }
-//                        if (chk_like) {
-//                            intent.putExtra("postLike", "checked");
-//                        } else {
-//                            intent.putExtra("postLike", "unchecked");
-//                        }
-//                        mReference = firebaseDatabase.getReference("friend/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-//                        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                            @Override
-//                            public void onDataChange(DataSnapshot dataSnapshot) {
-//                                boolean chkFriend = false;
-//                                for (DataSnapshot messageData : dataSnapshot.getChildren()) {
-//                                    FriendInfo friend = messageData.getValue(FriendInfo.class);
-//                                    if (arrayList.getUid().equals(friend.getFriendUid())) {
-//                                        chkFriend = true;
-//                                        break;
-//                                    }
-//                                }
-//                                if (chkFriend) {
-//                                    intent.putExtra("friend", "checked");
-//                                } else {
-//                                    intent.putExtra("friend", "unchecked");
-//                                }
-//                                intent.putExtra("postID", arrayList.getPostID());
-//                                intent.putExtra("nickName", arrayList.getNickName());
-//                                intent.putExtra("uid", arrayList.getUid());
-//                                intent.putExtra("imageUrl1", arrayList.getImageUrl1());
-//                                intent.putExtra("imageUrl2", arrayList.getImageUrl2());
-//                                intent.putExtra("imageUrl3", arrayList.getImageUrl3());
-//                                intent.putExtra("imageUrl4", arrayList.getImageUrl4());
-//                                intent.putExtra("imageUrl5", arrayList.getImageUrl5());
-//                                intent.putExtra("favoriteCount", arrayList.getFavoriteCount());
-//                                intent.putExtra("date", arrayList.getDate());
-//                                intent.putExtra("content", arrayList.getContent());
-//                                intent.putExtra("postID", arrayList.getPostID());
-//                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                context.startActivity(intent);
-//                            }
-//
-//                            @Override
-//                            public void onCancelled(DatabaseError databaseError) {
-//                            }
-//                        });
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//            }
-//        });
     }
 
     @Override

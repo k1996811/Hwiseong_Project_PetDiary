@@ -30,8 +30,9 @@ public class ViewPageAdapterDetail extends PagerAdapter {
     private String url3;
     private String url4;
     private String url5;
+    boolean check;
 
-    public ViewPageAdapterDetail(String url1, String url2, String url3, String url4, String url5, Context context){
+    public ViewPageAdapterDetail(boolean check, String url1, String url2, String url3, String url4, String url5, Context context){
         if(url1.length() > 0 ){
             images.add(url1);
         }
@@ -54,6 +55,7 @@ public class ViewPageAdapterDetail extends PagerAdapter {
         this.url3 = url3;
         this.url4 = url4;
         this.url5 = url5;
+        this.check = check;
 
     }
 
@@ -74,13 +76,16 @@ public class ViewPageAdapterDetail extends PagerAdapter {
                 (Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.slider, container, false);
         ImageView imageView = (ImageView)v.findViewById(R.id.imageView);
-        Glide.with(context).load(images.get(position)).into(imageView);
-
-        v.setOnClickListener(new OnSingleClickListener(){
-            public void onSingleClick(View v){
-                goPost(url1,url2,url3,url4,url5);
-            }
-        });
+        if(check){
+            Glide.with(context).load(images.get(position)).centerCrop().override(1000).into(imageView);
+            v.setOnClickListener(new OnSingleClickListener(){
+                public void onSingleClick(View v){
+                    goPost(url1,url2,url3,url4,url5);
+                }
+            });
+        } else {
+            Glide.with(context).load(images.get(position)).into(imageView);
+        }
 
         container.addView(v);
         return v;

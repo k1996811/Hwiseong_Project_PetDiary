@@ -36,7 +36,7 @@ public class Main_Expand_ImageView extends AppCompatActivity {
         imageUrl5 = intent.getStringExtra("imageUrl5");
 
         viewPager = (ViewPager) findViewById(R.id.main_image);
-        viewPageAdapter = new ViewPageAdapterDetail(imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5, getApplicationContext());
+        viewPageAdapter = new ViewPageAdapterDetail(false, imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5, getApplicationContext());
         viewPager.setAdapter(viewPageAdapter);
 
         wormDotsIndicator = (WormDotsIndicator) findViewById(R.id.worm_dots_indicator);
