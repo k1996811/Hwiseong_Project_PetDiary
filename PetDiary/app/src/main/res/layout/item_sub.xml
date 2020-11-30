@@ -11,7 +11,7 @@
         android:id="@+id/main_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/ic_launcher_foreground">
+        android:background="@drawable/empty">
 
     </androidx.viewpager.widget.ViewPager>
 

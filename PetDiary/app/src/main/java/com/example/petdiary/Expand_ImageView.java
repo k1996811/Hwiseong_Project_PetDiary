@@ -117,8 +117,9 @@ public class Expand_ImageView extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                Intent intent = new Intent(getApplicationContext(), Comment.class);
+                Intent intent = new Intent(getApplicationContext(), Comment2.class);
 
+                intent.putExtra("postID", postID);
                 intent.putExtra("nickName", nickName);
                 intent.putExtra("uid", uid);
                 intent.putExtra("content", content);

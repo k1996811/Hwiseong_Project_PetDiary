@@ -84,6 +84,7 @@
             android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".Expand_ImageView" />
         <activity android:name=".Comment" />
+        <activity android:name=".Comment2" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -78,7 +78,7 @@
         android:layout_below="@+id/Profile_image"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:background="@drawable/ic_launcher_foreground">
+        android:background="@drawable/empty">
 
 
     </androidx.viewpager.widget.ViewPager>

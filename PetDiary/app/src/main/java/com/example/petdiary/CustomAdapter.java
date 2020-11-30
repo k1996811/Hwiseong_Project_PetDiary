@@ -192,8 +192,9 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         Comment_btn.findViewById(R.id.Comment_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                Intent intent = new Intent(context, Comment.class);
+                Intent intent = new Intent(context, Comment2.class);
 
+                intent.putExtra("postID", arrayList.get(position).getPostID());
                 intent.putExtra("nickName", arrayList.get(position).getNickName());
                 intent.putExtra("uid", arrayList.get(position).getUid());
                 intent.putExtra("content", arrayList.get(position).getContent());

@@ -94,10 +94,6 @@ public class Comment extends AppCompatActivity {
             public void onSuccess(Uri uri) {
 
                 String profileImg = uri.toString();
-//                while(profileImg.length() == 0){
-//                    continue;
-//                }
-                //Log.e("@@@!", profileImg);
                 setProfileImg(profileImg);
             }
         }).addOnFailureListener(new OnFailureListener() {

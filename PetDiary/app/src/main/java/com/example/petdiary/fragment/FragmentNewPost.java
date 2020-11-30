@@ -391,27 +391,19 @@ public class FragmentNewPost extends Fragment {
     boolean imgCheck = true;
 
     private void saveImage(){
-        if(img[0] == null){
-            imgCheck = false;
-            postImgCheck[0] = 1;
-            postNumCheck = 1;
-        }
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         final StorageReference storageRef = storage.getReference();
         final UploadTask[] uploadTask = new UploadTask[1];
 
         if(postNumCheck == 0){
+            imgUri[0] = "https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=eb832feb-bb39-48a0-9f46-81ffea724871";
             postData();
         } else {
             for(int i=0; i<5; i++){
                 if(postImgCheck[i] == 1){
                     final Uri file;
-                    if(imgCheck){
-                        file = Uri.fromFile(new File(img[i]));
-                    } else {
-                        file = Uri.parse("android.resource://com.example.petdiary/" + R.drawable.ic_launcher_foreground);
-                    }
+                    file = Uri.fromFile(new File(img[i]));
 
                     StorageReference riversRef = storageRef.child("images/"+date2+"_postImg_"+i);
                     uploadTask[0] = riversRef.putFile(file);
