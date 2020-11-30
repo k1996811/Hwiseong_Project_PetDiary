@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.petdiary.Expand_ImageView;
 import com.example.petdiary.PostInfo;
 import com.example.petdiary.R;
 import com.google.android.gms.tasks.Continuation;
@@ -198,28 +199,28 @@ public class ContentEditActivity extends AppCompatActivity {
             Log.d("@@##", "onCreate: 이미지url"+ imageUrl1);
             postImgCheck[0] = 0;
             choiceNum = 0;
-            setPostImg2(postImgPath[0]);
+            setPostImg(postImgPath[0]);
         }
         if(!imageUrl2.equals("")) {
             postImgCheck[1] = 0;
             choiceNum = 1;
-            setPostImg2(postImgPath[1]);
+            setPostImg(postImgPath[1]);
         }
         if(!imageUrl3.equals("")) {
             postImgCheck[2] = 0;
             choiceNum = 2;
-            setPostImg2(postImgPath[2]);
+            setPostImg(postImgPath[2]);
         }
         if(!imageUrl4.equals("")) {
             postImgCheck[3] = 0;
             choiceNum = 3;
-            setPostImg2(postImgPath[3]);
+            setPostImg(postImgPath[3]);
         }
         if(!imageUrl5.equals("")) {
             Log.d("@@##", "onCreate: 이미지url"+ imageUrl5);
             postImgCheck[4] = 0;
             choiceNum = 4;
-            setPostImg2(postImgPath[4]);
+            setPostImg(postImgPath[4]);
         }
 
         for (int i = 0; i < 5; i++) {
@@ -384,49 +385,6 @@ public class ContentEditActivity extends AppCompatActivity {
     }
 
 
-    private void setPostImg2(String postImgPath){
-        if(postImgCheck[0] == 0){
-            Log.d("@@@@!@@", "오류가나는이유가 뭐야? "+postImgPath);
-            Glide.with(this).load(postImgPath).centerCrop().override(500).into(postImg[0]);
-            img[0] = postImgPath;
-            Log.d("@@@@!@@", "setPostImg: 값은 "+img[0] + "/////포스트이미지패스값은?"+postImgPath);
-            postImgCheck[0] = 1;
-            postNumCheck = 1;
-            deletePostImg[0].setVisibility(View.VISIBLE);
-        } else if(postImgCheck[1] == 0){
-            Glide.with(this).load(postImgPath).centerCrop().override(500).into(postImg[1]);
-            img[1] = postImgPath;
-            postImgCheck[1] = 1;
-            postNumCheck = 2;
-            deletePostImg[1].setVisibility(View.VISIBLE);
-        } else if(postImgCheck[2] == 0){
-            Glide.with(this).load(postImgPath).centerCrop().override(500).into(postImg[2]);
-            img[2] = postImgPath;
-            postImgCheck[2] = 1;
-            postNumCheck = 3;
-            deletePostImg[2].setVisibility(View.VISIBLE);
-        } else if(postImgCheck[3] == 0){
-            Glide.with(this).load(postImgPath).centerCrop().override(500).into(postImg[3]);
-            img[3] = postImgPath;
-            postImgCheck[3] = 1;
-            postNumCheck = 4;
-            deletePostImg[3].setVisibility(View.VISIBLE);
-        } else if(postImgCheck[4] == 0){
-            Glide.with(this).load(postImgPath).centerCrop().override(500).into(postImg[4]);
-            Log.v("@@@@", "onCreate: 이미지값은 뭐에여//"+ postImgPath);
-            img[4] = postImgPath;
-            postImgCheck[4] = 1;
-            postNumCheck = 5;
-            deletePostImg[4].setVisibility(View.VISIBLE);
-        } else if(postImgCheck[0] == 1 && postImgCheck[1] == 1 && postImgCheck[2] == 1 && postImgCheck[3] == 1 && postImgCheck[4] == 1){
-            Glide.with(this).load(postImgPath).centerCrop().override(500).into(postImg[choiceNum]);
-            img[choiceNum] = postImgPath;
-        }
-
-    }
-
-
-
     private int num;
     private String category;
     private String[] img = new String[5];
@@ -483,131 +441,131 @@ public class ContentEditActivity extends AppCompatActivity {
 
 
     private void saveImage(){
-        if(img[0]==imageUrl1){
+        if(img[0]==imageUrl1&&imgUri[0].equals("")){
             imgUri[0]=imageUrl1;
             postImgCheck[0] = 0;
             postData();
         }
-        else if(img[0]==imageUrl2){
+        else if(img[0]==imageUrl2&&imgUri[0].equals("")){
             imgUri[0]=imageUrl2;
             postImgCheck[0] = 0;
             postData();
         }
-        else if(img[0]==imageUrl3){
+        else if(img[0]==imageUrl3&&imgUri[0].equals("")){
             imgUri[0]=imageUrl3;
             postImgCheck[0] = 0;
             postData();
         }
-        else if(img[0]==imageUrl4){
+        else if(img[0]==imageUrl4&&imgUri[0].equals("")){
             imgUri[0]=imageUrl4;
             postImgCheck[0] = 0;
             postData();
         }
-        else if(img[0]==imageUrl5){
+        else if(img[0]==imageUrl5&&imgUri[0].equals("")){
             imgUri[0]=imageUrl5;
             postImgCheck[0] = 0;
             postData();
         }
 
-        if(img[1]==imageUrl1){
+        if(img[1]==imageUrl1&&imgUri[1].equals("")){
             imgUri[1]=imageUrl1;
             postImgCheck[1] = 0;
             postData();
         }
-        else if(img[1]==imageUrl2){
+        else if(img[1]==imageUrl2&&imgUri[1].equals("")){
             imgUri[1]=imageUrl2;
             postImgCheck[1] = 0;
             postData();
         }
-        else if(img[1]==imageUrl3){
+        else if(img[1]==imageUrl3&&imgUri[1].equals("")){
             imgUri[1]=imageUrl3;
             postImgCheck[1] = 0;
             postData();
         }
-        else if(img[1]==imageUrl4){
+        else if(img[1]==imageUrl4&&imgUri[1].equals("")){
             imgUri[1]=imageUrl4;
             postImgCheck[1] = 0;
             postData();
         }
-        else if(img[1]==imageUrl5){
+        else if(img[1]==imageUrl5&&imgUri[1].equals("")){
             imgUri[1]=imageUrl5;
             postImgCheck[1] = 0;
             postData();
         }
 
-        if(img[2]==imageUrl1){
+        if(img[2]==imageUrl1&&imgUri[2].equals("")){
             imgUri[2]=imageUrl1;
             postImgCheck[2] = 0;
             postData();
         }
-        else if(img[2]==imageUrl2){
+        else if(img[2]==imageUrl2&&imgUri[2].equals("")){
             imgUri[2]=imageUrl2;
             postImgCheck[2] = 0;
             postData();
         }
-        else if(img[2]==imageUrl3){
+        else if(img[2]==imageUrl3&&imgUri[2].equals("")){
             imgUri[2]=imageUrl3;
             postImgCheck[2] = 0;
             postData();
         }
-        else if(img[2]==imageUrl4){
+        else if(img[2]==imageUrl4&&imgUri[2].equals("")){
             imgUri[2]=imageUrl4;
             postImgCheck[2] = 0;
             postData();
         }
-        else if(img[2]==imageUrl5){
+        else if(img[2]==imageUrl5&&imgUri[2].equals("")){
             imgUri[2]=imageUrl5;
             postImgCheck[2] = 0;
             postData();
         }
 
-        if(img[3]==imageUrl1){
+        if(img[3]==imageUrl1&&imgUri[3].equals("")){
             imgUri[3]=imageUrl1;
             postImgCheck[3] = 0;
             postData();
         }
-        else if(img[3]==imageUrl2){
+        else if(img[3]==imageUrl2&&imgUri[3].equals("")){
             imgUri[3]=imageUrl2;
             postImgCheck[3] = 0;
             postData();
         }
-        else if(img[3]==imageUrl3){
+        else if(img[3]==imageUrl3&&imgUri[3].equals("")){
             imgUri[3]=imageUrl3;
             postImgCheck[3] = 0;
             postData();
         }
-        else if(img[3]==imageUrl4){
+        else if(img[3]==imageUrl4&&imgUri[3].equals("")){
             imgUri[3]=imageUrl4;
             postImgCheck[3] = 0;
             postData();
         }
-        else if(img[3]==imageUrl5){
+        else if(img[3]==imageUrl5&&imgUri[3].equals("")){
             imgUri[3]=imageUrl5;
             postImgCheck[3] = 0;
             postData();
         }
 
-        if(img[4]==imageUrl1){
+        if(img[4]==imageUrl1&&imgUri[4].equals("")){
             imgUri[4]=imageUrl1;
             postImgCheck[4] = 0;
             postData();
         }
-        else if(img[4]==imageUrl2){
+        else if(img[4]==imageUrl2&&imgUri[4].equals("")){
             imgUri[4]=imageUrl2;
             postImgCheck[4] = 0;
             postData();
         }
-        else if(img[4]==imageUrl3){
+        else if(img[4]==imageUrl3&&imgUri[4].equals("")){
             imgUri[4]=imageUrl3;
             postImgCheck[4] = 0;
             postData();
         }
-        else if(img[4]==imageUrl4){
+        else if(img[4]==imageUrl4&&imgUri[4].equals("")){
             imgUri[4]=imageUrl4;
             postImgCheck[4] = 0;
             postData();
         }
-        else if(img[4]==imageUrl5){
+        else if(img[4]==imageUrl5&&imgUri[4].equals("")){
             imgUri[4]=imageUrl5;
             postImgCheck[4] = 0;
             postData();
@@ -616,7 +574,6 @@ public class ContentEditActivity extends AppCompatActivity {
 
 
 
-        Log.v("dsdsdsdsds", "여기탑니까");
         if(img[0]==null){
             imgCheck = false;
             postImgCheck[0] = 1;
@@ -635,6 +592,7 @@ public class ContentEditActivity extends AppCompatActivity {
         else {
 
             for(int i=0; i<5; i++){
+
 
 
                 if(postImgCheck[i] == 1){
@@ -685,7 +643,11 @@ public class ContentEditActivity extends AppCompatActivity {
                                         Uri downloadUri = task.getResult();
 
                                         imgUri[finalI1] = downloadUri.toString();
-                                        postData();
+
+                                        if(!imgUri[finalI1].equals("")){
+                                            postData();
+                                        }
+
 
 
                                     } else {
@@ -704,12 +666,12 @@ public class ContentEditActivity extends AppCompatActivity {
     private void postData(){
         content = ((EditText) findViewById(R.id.contents)).getText().toString();
 
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference washingtonRef = db.collection("post").document(PostID);
 
+
         washingtonRef
-                .update("category",category,"content",content,"imageUrl1",imgUri[0],"imageUrl2",imgUri[1],"imageUrl3",imgUri[2],"imageUrl4",imgUri[3],"imageUrl5",imgUri[4])
+                .update("category",category,"content",content,"imageUrl1",imgUri[0],"imageUrl2",imgUri[1],"imageUrl3",imgUri[2],"imageUrl4",imgUri[3],"imageUrl5",imgUri[4],"hashTag",hashTag)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -718,7 +680,28 @@ public class ContentEditActivity extends AppCompatActivity {
                         loaderLayout.setVisibility(View.INVISIBLE);
 
                         setDirEmpty();
-                        finish();
+
+
+
+                            Intent intent = new Intent();
+                            intent.putExtra("content",content);
+
+                            intent.putExtra("imageUrl1", imgUri[0]);
+
+                            intent.putExtra("imageUrl2", imgUri[1]);
+
+                            intent.putExtra("imageUrl3", imgUri[2]);
+                            Log.d(TAG, "onSuccess: 값보내지나?"+intent.putExtra("imageUrl3", imgUri[2]));
+                            intent.putExtra("imageUrl4", imgUri[3]);
+
+
+                            intent.putExtra("imageUrl5", imgUri[4]);
+
+                            setResult(RESULT_OK, intent);
+
+
+                    finish();
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

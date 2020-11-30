@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.example.petdiary.activity.ContentEditActivity;
 import com.example.petdiary.adapter.ViewPageAdapterDetail;
 import com.example.petdiary.adapter.ViewPageAdapterSub;
 import com.example.petdiary.fragment.FragmentSub;
@@ -42,6 +43,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -57,10 +59,16 @@ public class Expand_ImageView extends AppCompatActivity {
     private String imageUrl3;
     private String imageUrl4;
     private String imageUrl5;
+    private String imageUrl11;
+    private String imageUrl22;
+    private String imageUrl33;
+    private String imageUrl44;
+    private String imageUrl55;
     private String content;
     private ArrayList<String> hashTag = new ArrayList<String>();
     private String date;
     private String nickName;
+    private String Category;
     private int favoriteCount;
 
     ViewPageAdapterDetail viewPageAdapter;
@@ -101,6 +109,7 @@ public class Expand_ImageView extends AppCompatActivity {
         imageUrl4 = intent.getStringExtra("imageUrl4");
         imageUrl5 = intent.getStringExtra("imageUrl5");
         favoriteCount = intent.getIntExtra("favoriteCount", 0);
+        Category = intent.getStringExtra("category");
 
         Comment_btn = (Button)findViewById(R.id.Comment_btn);
 
@@ -185,6 +194,21 @@ public class Expand_ImageView extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                                 case 0:
+
+                                    Intent intent = new Intent(getApplicationContext(), ContentEditActivity.class);
+
+                                    intent.putExtra("imageUrl1", imageUrl1);
+                                    intent.putExtra("imageUrl2", imageUrl2);
+                                    intent.putExtra("imageUrl3", imageUrl3);
+                                    intent.putExtra("imageUrl4", imageUrl4);
+                                    intent.putExtra("imageUrl5", imageUrl5);
+                                    intent.putExtra("postID", postID);
+                                    intent.putExtra("content", content);
+                                    intent.putExtra("category", Category);
+
+                                    //getApplicationContext().startActivity(intent.addFlags(FLAG_ACTIVITY_NEW_TASK));
+                                    startActivityForResult(intent,0);
+
                                     // 내정보
                                     Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
                                     break;
@@ -366,6 +390,7 @@ public class Expand_ImageView extends AppCompatActivity {
 
         Like_button = (CheckBox)findViewById(R.id.Like_button);
         if(likeChecked.equals("checked")){
+
             Like_button.setChecked(true);
         }
         Like_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
@@ -412,4 +437,38 @@ public class Expand_ImageView extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 0:
+                if (resultCode == RESULT_OK) {
+                    content = data.getStringExtra("content");
+                    imageUrl1 = data.getStringExtra("imageUrl1");
+                    imageUrl2 = data.getStringExtra("imageUrl2");
+                    Log.d("ㅍ", "onActivityResult: 값은?"+imageUrl2);
+                    imageUrl3= data.getStringExtra("imageUrl3");
+                    Log.d("ㅍ", "onActivityResult: 값은?"+imageUrl3);
+                    imageUrl4 = data.getStringExtra("imageUrl4");
+                    Log.d("ㅍ", "onActivityResult: 값은?"+imageUrl4);
+                    imageUrl5 = data.getStringExtra("imageUrl5");
+                    Log.d("ㅍ", "onActivityResult: 값은?"+imageUrl5);
+
+
+                    post_content = findViewById(R.id.main_textView);
+                    post_content.setText(content);
+
+                    viewPager = (ViewPager) findViewById(R.id.main_image);
+                    viewPageAdapter = new ViewPageAdapterDetail(imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5, getApplicationContext());
+                    viewPager.setAdapter(viewPageAdapter);
+
+                    wormDotsIndicator  = (WormDotsIndicator) findViewById(R.id.worm_dots_indicator);
+                    wormDotsIndicator .setViewPager(viewPager);
+
+                } else {
+                }
+                break;
+        }
+    }
+
 }
