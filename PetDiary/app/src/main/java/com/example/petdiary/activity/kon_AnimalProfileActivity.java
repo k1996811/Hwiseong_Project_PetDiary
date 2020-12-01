@@ -238,7 +238,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
     private void addDataToFirebase(){
         // pet id에 사용될 데이터 생성
         Date today = new Date();
-        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final String uid = user.getUid();
