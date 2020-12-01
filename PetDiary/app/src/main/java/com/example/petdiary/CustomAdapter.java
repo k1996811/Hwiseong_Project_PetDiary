@@ -346,7 +346,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                     int pos = getAdapterPosition();
                     final FirebaseFirestore db = FirebaseFirestore.getInstance();
                     BookmarkInfo bookmarkInfo = new BookmarkInfo();
-                    Log.e("###custom", bookmark_button.isChecked() + "");
                     if(((CheckBox)view).isChecked()){
                         bookmarkInfo.setPostID(arrayList.get(pos).getPostID());
                         db.collection("user-checked/"+user.getUid()+"/bookmark").document(arrayList.get(pos).getPostID()).set(bookmarkInfo)
@@ -385,7 +384,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                     int pos = getAdapterPosition();
                     final FirebaseFirestore db = FirebaseFirestore.getInstance();
                     PostLikeInfo postLikeInfo = new PostLikeInfo();
-                    Log.e("###custom", bookmark_button.isChecked() + "");
                     if(((CheckBox)view).isChecked()){
                         postLikeInfo.setPostID(arrayList.get(pos).getPostID());
                         db.collection("user-checked/"+user.getUid()+"/like").document(arrayList.get(pos).getPostID()).set(postLikeInfo)
