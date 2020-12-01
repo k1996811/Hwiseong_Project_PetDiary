@@ -57,6 +57,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Hashtable;
 
@@ -67,11 +68,8 @@ public class ChatActivity extends AppCompatActivity {
     FirebaseDatabase database;
     EditText etText;
     Button btnSend, picture;
-    String stEmail;
-    String nickName;
-    String my;
-    String value;
-
+    String stEmail, nickName, my;
+    String nn[];
     ArrayList<Chat> chatArrayList;
     MyAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -86,7 +84,6 @@ public class ChatActivity extends AppCompatActivity {
         Intent intent = getIntent();
         nickName = intent.getStringExtra("nickName");
         my = intent.getStringExtra("my");
-        value = intent.getStringExtra("value");
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         ActionBar actionBar = getSupportActionBar();
@@ -98,6 +95,7 @@ public class ChatActivity extends AppCompatActivity {
 
         chatArrayList = new ArrayList<>();
         stEmail = user.getEmail();
+        nn = new String[2];
 
         btnSend = findViewById(R.id.btn_send);
         etText = findViewById(R.id.chat);
@@ -110,44 +108,57 @@ public class ChatActivity extends AppCompatActivity {
 
         mAdapter = new MyAdapter(chatArrayList, stEmail);
         recyclerView.setAdapter(mAdapter);
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
-        ChildEventListener childEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
-
-
-                Chat chat = dataSnapshot.getValue(Chat.class);
-
-                chatArrayList.add(chat);
-                mAdapter.notifyDataSetChanged();
-                recyclerView.post(new Runnable() {
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void run() {
-                        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                if(document.get("nickName").toString().equals(nickName)) {
+
+                                    ChildEventListener childEventListener = new ChildEventListener() {
+                                        @Override
+                                        public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+                                            Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
+
+                                            Chat chat = dataSnapshot.getValue(Chat.class);
+
+                                            chatArrayList.add(chat);
+                                            mAdapter.notifyDataSetChanged();
+                                            recyclerView.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                                                }
+                                            });
+                                        }
+
+                                        public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) { }
+                                        public void onChildRemoved(DataSnapshot dataSnapshot) { }
+                                        public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {}
+                                        public void onCancelled(DatabaseError databaseError) {}
+                                    };
+
+                                    nn[0] = user.getUid();
+                                    nn[1] = document.getId();
+                                    Arrays.sort(nn);
+                                    
+//                                    DatabaseReference ref = database.getReference("friend").child(user.getUid()).child(document.getId()).child("message");
+//                                    ref.addChildEventListener(childEventListener);
+                                    DatabaseReference ref = database.getReference("chat").child(nn[0] + "&" + nn[1]).child("message");
+                                    ref.addChildEventListener(childEventListener);
+
+                                }
+                            }
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
                     }
                 });
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) { }
-            public void onChildRemoved(DataSnapshot dataSnapshot) { }
-            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {}
-            public void onCancelled(DatabaseError databaseError) {}
-        };
-
-//        DatabaseReference ref = database.getReference("friend").child(my).child(nickName).child("message");
-//        ref.addChildEventListener(childEventListener);
-
-        if(database.getReference("friend").child(nickName).child(my).child("message") == null){
-            DatabaseReference ref = database.getReference("friend").child(my).child(nickName).child("message");
-            ref.addChildEventListener(childEventListener);
-        }else{
-            DatabaseReference ref = database.getReference("friend").child(nickName).child(my).child("message");
-            ref.addChildEventListener(childEventListener);
-        }
-
 
         //보내기Send
 
@@ -156,54 +167,57 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (etText.getText().toString().length() > 0) {
-                    String stText = etText.getText().toString();
+                    final String stText = etText.getText().toString();
 
                     Toast.makeText(ChatActivity.this, "MSG : " + stText, Toast.LENGTH_SHORT).show();
                     etText.getText().clear();
-
-
-                    // Write a message to the database
                     database = FirebaseDatabase.getInstance();
 
-                    Calendar c = Calendar.getInstance();
-                    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
-                    String datetime = dateformat.format(c.getTime());
+                    db.collection("users")
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            Log.d(TAG, document.getId() + " => " + document.getData());
+                                            if(document.get("nickName").toString().equals(nickName)) {
 
-                    final String[] empty = new String[1];
-                    DatabaseReference dr = database.getReference("friend").child(my).child(nickName).child("message");
-                    dr.addChildEventListener(new ChildEventListener() {
-                        @Override
-                        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                            empty[0] = snapshot.getKey();
-                        }
-                        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
-                        public void onChildRemoved(@NonNull DataSnapshot snapshot) { }
-                        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
-                        public void onCancelled(@NonNull DatabaseError error) { }
-                    });
+                                                Calendar c = Calendar.getInstance();
+                                                SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
+                                                String datetime = dateformat.format(c.getTime());
 
-                    if(database.getReference("friend").child(my).child(nickName).child("message") == null){
-                        DatabaseReference myRef = database.getReference("friend").child(my).child(nickName).child("message").child(datetime);
+                                                nn[0] = user.getUid();
+                                                nn[1] = document.getId();
+                                                Arrays.sort(nn);
 
-                        Hashtable<String, String> numbers
-                                = new Hashtable<String, String>();
-                        numbers.put("email", stEmail);
-                        numbers.put("text", stText);
-                        myRef.setValue(numbers);
-                    }else{
-
-                        DatabaseReference myRef = database.getReference("friend").child(nickName).child(my).child("message").child(datetime);
-
-                        Hashtable<String, String> numbers
-                                = new Hashtable<String, String>();
-                        numbers.put("email", stEmail);
-                        numbers.put("text", stText);
-                        myRef.setValue(numbers);
-                    }
+                                                //DatabaseReference myRef = database.getReference("friend").child(user.getUid()).child(document.getId()).child("message").child(datetime);
+                                                DatabaseReference myRef = database.getReference("chat").child(nn[0] + "&" + nn[1]).child("message").child(datetime);
+                                                Hashtable<String, String> numbers
+                                                        = new Hashtable<String, String>();
+                                                numbers.put("email", stEmail);
+                                                numbers.put("text", stText);
+                                                myRef.setValue(numbers);
 
 
-                    //DatabaseReference myRef = database.getReference("friend").child(my).child(nickName).child("message").child(datetime);
+                                            }
+                                        }
+                                    } else {
+                                        Log.w(TAG, "Error getting documents.", task.getException());
+                                    }
+                                }
+                            });
 
+                    // Write a message to the database
+
+
+//                    Calendar c = Calendar.getInstance();
+//                    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
+//                    String datetime = dateformat.format(c.getTime());
+//
+//
+//                    DatabaseReference myRef = database.getReference("friend").child(user.getUid()).child("c0MwUsHrWaVyhKu8dXkV9SmolRE3").child("message").child(datetime);
+//
 //                    Hashtable<String, String> numbers
 //                            = new Hashtable<String, String>();
 //                    numbers.put("email", stEmail);

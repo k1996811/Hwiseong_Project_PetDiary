@@ -43,6 +43,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Locale;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -310,9 +311,14 @@ public class Expand_ImageView extends AppCompatActivity {
                                         friendChecked = "checked";
                                         firebaseDatabase = FirebaseDatabase.getInstance();
                                         DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid()+"/"+uid);
-                                        FriendInfo friendInfo = new FriendInfo();
-                                        friendInfo.setFriendUid(uid);
-                                        friend.setValue(friendInfo);
+//                                        FriendInfo friendInfo = new FriendInfo();
+//                                        friendInfo.setFriendUid(uid);
+//                                        friend.setValue(friendInfo);
+
+                                        Hashtable<String, String> numbers = new Hashtable<String, String>();
+                                        numbers.put("message","없음");
+                                        friend.setValue(numbers);
+
                                         Toast.makeText(getApplicationContext(), "친구를 추가하였습니다.", Toast.LENGTH_SHORT).show();
                                         break;
                                     case 1:

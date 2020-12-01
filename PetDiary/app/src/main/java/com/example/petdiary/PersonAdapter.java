@@ -79,7 +79,6 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     Log.d("asdf", document.getId() + " => " + document.getData());
                                     if(document.get("email").toString().equals(user.getEmail())){
-                                        System.out.println("들어감?");
                                         nn[0] = document.get("nickName").toString();
                                     }
                                 }
@@ -87,6 +86,7 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
                             }
                         }
                     });
+
 
             chat.setOnClickListener(new View.OnClickListener() {
                 @Override
