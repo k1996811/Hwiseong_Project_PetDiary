@@ -4,9 +4,18 @@ public class PetData {
     private String name;
     private String imageUrl;
     private String memo;
+    private String petId;
 
+    public String getPetId() {
+        return petId;
+    }
 
-    public PetData(String name, String imageUrl, String memo) {
+    public void setPetId(String petId) {
+        this.petId = petId;
+    }
+
+    public PetData(String petId, String name, String imageUrl, String memo) {
+        this.petId = petId;
         this.name = name;
         this.imageUrl = imageUrl;
         this.memo = memo;

@@ -37,6 +37,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -49,7 +50,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.security.auth.callback.Callback;
+
 import static android.app.Activity.RESULT_OK;
+
 
 public class FragmentMy extends Fragment {
 
@@ -76,10 +80,20 @@ public class FragmentMy extends Fragment {
     RecyclerView.Adapter adapter;
     RecyclerView.LayoutManager layoutManager;
 
+
     // 펫 정보 리사이클뷰 선언
     RecyclerView petRecyclerView;
     RecyclerView.Adapter petAdapter;
+    String choicePetId;
 
+    /*  choicePetId = choice;
+        Log.d("로그로그로그~~~~", "callback: " + choicePetId +" 이라구!");*/
+
+
+    public interface StringCallback {
+        void callback(String choice);
+
+    }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,7 +168,7 @@ public class FragmentMy extends Fragment {
                 intent.putExtra("isAddMode", true);
                 intent.putExtra("isEditMode", true);
                 //startActivity(intent);
-                startActivityForResult(intent,1);
+                startActivityForResult(intent, 1);
             }
         });
 
@@ -175,7 +189,6 @@ public class FragmentMy extends Fragment {
     }
 
 
-
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
@@ -192,8 +205,7 @@ public class FragmentMy extends Fragment {
     }
 
     //////////////////////////////////// 프로필 이미지, 닉네임, 메모 가져오기,
-    private void getUserInfo()
-    {
+    private void getUserInfo() {
         //  유저
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
@@ -220,9 +232,9 @@ public class FragmentMy extends Fragment {
         });
     }
 
+
     //////////////////////////////////// 펫 정보 가져오기
-    private  void getPetInfo()
-    {
+    private void getPetInfo() {
         Log.d("로그로그로그~~~~~", "getPetInfo: 안에 들어왔다 ");
         //  유저
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -237,13 +249,13 @@ public class FragmentMy extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
                         if (task.isSuccessful()) {
-                            Log.d("로그로그로그~~~~~", "addOnCompleteListener 안에 들어왔다 : 성공");
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                Log.d("로그로그로그~~~~", document.getId() + " => " + document.getData());
 
-                                Map<String,Object> data = document.getData();
+                                Map<String, Object> data = document.getData();
                                 // 이름 이미지 메모
                                 PetData pet = new PetData(
+                                        document.getId(),
                                         data.get("petName").toString(),
                                         data.get("profileImg").toString(),
                                         data.get("petMemo").toString());
@@ -259,6 +271,76 @@ public class FragmentMy extends Fragment {
                     }
                 });
 
+    }
+
+    //////////////////////////////////// 특정 펫 정보 가져오기
+    private void getPetInfo(String petId){
+        Log.d("로그로그로그~~~~~", "getPetInfo: 안에 들어왔다 ");
+        //  유저
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+        db.collection("pets")
+                .whereEqualTo("petsId", petId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+
+                                petList.clear();
+                                Map<String, Object> data = document.getData();
+                                // 이름 이미지 메모
+                                PetData pet = new PetData(
+                                        document.getId(),
+                                        data.get("petName").toString(),
+                                        data.get("profileImg").toString(),
+                                        data.get("petMemo").toString());
+                                petList.add(pet);
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+        petAdapter.notifyDataSetChanged();
+
+
+/*
+        db.collection("pets").document(uid).collection("pets")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("로그로그로그~~~~", document.getId() + " => " + document.getData());
+
+                                Map<String, Object> data = document.getData();
+                                // 이름 이미지 메모
+                                PetData pet = new PetData(
+                                        document.getId(),
+                                        data.get("petName").toString(),
+                                        data.get("profileImg").toString(),
+                                        data.get("petMemo").toString());
+                                petList.add(pet);
+
+                            }
+                        } else {
+                            Log.d("로그로그로그~~~~~", "addOnCompleteListener 안에 들어왔다 : 실패");
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+
+                        petAdapter.notifyDataSetChanged();
+                    }
+                });
+*/
     }
 
     //////////////////////////////////// 개인 게시물 로드. 체크하게 되면 이전 게시물 개수와 비교후 업데이트,
@@ -325,8 +407,7 @@ public class FragmentMy extends Fragment {
     }
 
     //////////////////////////////////// 사진 리사이클러뷰 setting
-    private void setPicRecyclerView()
-    {
+    private void setPicRecyclerView() {
         recyclerView = (RecyclerView) viewGroup.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true); // 리사이클러뷰 기존성능 강화
 
@@ -342,20 +423,25 @@ public class FragmentMy extends Fragment {
     }
 
     //////////////////////////////////// 펫 리사이클러뷰 setting
-    private void setPetRecyclerView()
-    {
+    private void setPetRecyclerView() {
         petRecyclerView = (RecyclerView) viewGroup.findViewById(R.id.pet_recyclerView);
         petRecyclerView.setHasFixedSize(true); // 리사이클러뷰 기존성능 강화
 
         int columnNum = 3;
-        petAdapter = new Kon_Mypage_petAdapter(petList, getContext());
+        petAdapter = new Kon_Mypage_petAdapter(petList, getContext(), new StringCallback() {
+            @Override
+            public void callback(String choice) {
+                choicePetId = choice;
+                getPetInfo(choicePetId);
+            }
+        });
         petRecyclerView.setAdapter(petAdapter); // 리사이클러뷰에 어댑터 연결
         //layoutManager = new GridLayoutManager(getContext(), columnNum);
         //petRecyclerView.setLayoutManager(layoutManager);
 
         // 리사이클러뷰 간격추가
         //RecyclerDecoration spaceDecoration = new RecyclerDecoration(10);
-       // petRecyclerView.addItemDecoration(spaceDecoration);
+        // petRecyclerView.addItemDecoration(spaceDecoration);
     }
 
 
@@ -365,7 +451,6 @@ public class FragmentMy extends Fragment {
         super.onResume();
         loadPostsAfterCheck(true);
     }
-
 
 
 }
