@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.example.petdiary.BookmarkInfo;
 import com.example.petdiary.Data;
 import com.example.petdiary.Expand_ImageView;
+import com.example.petdiary.Expand_ImageView2;
 import com.example.petdiary.FriendInfo;
 import com.example.petdiary.OnSingleClickListener;
 import com.example.petdiary.PostLikeInfo;
@@ -90,7 +91,7 @@ public class ViewPageAdapterSub extends PagerAdapter {
     }
 
     private void goPost(final Data arrayList) {
-        final Intent intent = new Intent(context, Expand_ImageView.class);
+        final Intent intent = new Intent(context, Expand_ImageView2.class);
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         db.collection("user-checked/"+uid+"/bookmark")

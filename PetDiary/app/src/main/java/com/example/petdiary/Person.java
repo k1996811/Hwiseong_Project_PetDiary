@@ -4,7 +4,9 @@ public class Person {
 
     String nickname;
 
+    public Person(){
 
+    }
     public Person(String nickname){
 
         this.nickname = nickname;

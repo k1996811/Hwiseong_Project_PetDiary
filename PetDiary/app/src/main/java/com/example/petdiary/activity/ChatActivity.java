@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,10 +29,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.petdiary.MyAdapter;
+import com.example.petdiary.Person;
 import com.example.petdiary.R;
 import com.example.petdiary.Chat;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -39,6 +43,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -61,17 +68,25 @@ public class ChatActivity extends AppCompatActivity {
     EditText etText;
     Button btnSend, picture;
     String stEmail;
+    String nickName;
+    String my;
+    String value;
 
     ArrayList<Chat> chatArrayList;
     MyAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
 
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chatroom);
 
-
+        Intent intent = getIntent();
+        nickName = intent.getStringExtra("nickName");
+        my = intent.getStringExtra("my");
+        value = intent.getStringExtra("value");
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         ActionBar actionBar = getSupportActionBar();
@@ -82,8 +97,6 @@ public class ChatActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
 
         chatArrayList = new ArrayList<>();
-
-        FirebaseUser user = mAuth.getCurrentUser();
         stEmail = user.getEmail();
 
         btnSend = findViewById(R.id.btn_send);
@@ -98,20 +111,15 @@ public class ChatActivity extends AppCompatActivity {
         mAdapter = new MyAdapter(chatArrayList, stEmail);
         recyclerView.setAdapter(mAdapter);
 
+
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
                 Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
 
-                // A new comment has been added, add it to the displayed list
+
                 Chat chat = dataSnapshot.getValue(Chat.class);
-                String commentKey = dataSnapshot.getKey();
-                String stEmail = chat.getEmail();
-                String stText = chat.getText();
-                String stImage = chat.getImage();
-                Log.d(TAG, "stImage:" + stImage+"");
-                Log.d(TAG, "stEmail:" + stEmail);
-                Log.d(TAG, "stText:" + stText);
+
                 chatArrayList.add(chat);
                 mAdapter.notifyDataSetChanged();
                 recyclerView.post(new Runnable() {
@@ -120,46 +128,25 @@ public class ChatActivity extends AppCompatActivity {
                         recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
                     }
                 });
-                // ...
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-                Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
-
-                // A comment has changed, use the key to determine if we are displaying this
-                // comment and if so displayed the changed comment.
-                //Chat chat = dataSnapshot.getValue(Chat.class);
-
-                // ...
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
-
-                // A comment has changed, use the key to determine if we are displaying this
-                // comment and if so remove it.
-                String commentKey = dataSnapshot.getKey();
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-                Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
-
-                // A comment has changed position, use the key to determine if we are
-                // displaying this comment and if so move it.
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "postComments:onCancelled", databaseError.toException());
-                Toast.makeText(ChatActivity.this, "Failed to load comments.",
-                        Toast.LENGTH_SHORT).show();
-            }
+            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) { }
+            public void onChildRemoved(DataSnapshot dataSnapshot) { }
+            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {}
+            public void onCancelled(DatabaseError databaseError) {}
         };
-        DatabaseReference ref = database.getReference("message");
-        ref.addChildEventListener(childEventListener);
+
+//        DatabaseReference ref = database.getReference("friend").child(my).child(nickName).child("message");
+//        ref.addChildEventListener(childEventListener);
+
+        if(database.getReference("friend").child(nickName).child(my).child("message") == null){
+            DatabaseReference ref = database.getReference("friend").child(my).child(nickName).child("message");
+            ref.addChildEventListener(childEventListener);
+        }else{
+            DatabaseReference ref = database.getReference("friend").child(nickName).child(my).child("message");
+            ref.addChildEventListener(childEventListener);
+        }
 
 
         //보내기Send
@@ -174,6 +161,7 @@ public class ChatActivity extends AppCompatActivity {
                     Toast.makeText(ChatActivity.this, "MSG : " + stText, Toast.LENGTH_SHORT).show();
                     etText.getText().clear();
 
+
                     // Write a message to the database
                     database = FirebaseDatabase.getInstance();
 
@@ -181,13 +169,46 @@ public class ChatActivity extends AppCompatActivity {
                     SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
                     String datetime = dateformat.format(c.getTime());
 
-                    DatabaseReference myRef = database.getReference("message").child(datetime);
+                    final String[] empty = new String[1];
+                    DatabaseReference dr = database.getReference("friend").child(my).child(nickName).child("message");
+                    dr.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                            empty[0] = snapshot.getKey();
+                        }
+                        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+                        public void onChildRemoved(@NonNull DataSnapshot snapshot) { }
+                        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+                        public void onCancelled(@NonNull DatabaseError error) { }
+                    });
 
-                    Hashtable<String, String> numbers
-                            = new Hashtable<String, String>();
-                    numbers.put("email", stEmail);
-                    numbers.put("text", stText);
-                    myRef.setValue(numbers);
+                    if(database.getReference("friend").child(my).child(nickName).child("message") == null){
+                        DatabaseReference myRef = database.getReference("friend").child(my).child(nickName).child("message").child(datetime);
+
+                        Hashtable<String, String> numbers
+                                = new Hashtable<String, String>();
+                        numbers.put("email", stEmail);
+                        numbers.put("text", stText);
+                        myRef.setValue(numbers);
+                    }else{
+
+                        DatabaseReference myRef = database.getReference("friend").child(nickName).child(my).child("message").child(datetime);
+
+                        Hashtable<String, String> numbers
+                                = new Hashtable<String, String>();
+                        numbers.put("email", stEmail);
+                        numbers.put("text", stText);
+                        myRef.setValue(numbers);
+                    }
+
+
+                    //DatabaseReference myRef = database.getReference("friend").child(my).child(nickName).child("message").child(datetime);
+
+//                    Hashtable<String, String> numbers
+//                            = new Hashtable<String, String>();
+//                    numbers.put("email", stEmail);
+//                    numbers.put("text", stText);
+//                    myRef.setValue(numbers);
 
                     recyclerView.post(new Runnable() {
                         @Override

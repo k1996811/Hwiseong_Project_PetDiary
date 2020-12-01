@@ -1,3 +1,4 @@
+
 package com.example.petdiary.adapter;
 
 import android.content.Context;
@@ -46,20 +47,20 @@ public class ViewPageAdapter extends PagerAdapter {
     private Context context;
     private Data arrayList;
 
-    public ViewPageAdapter(Data arrayList, String url1, String url2, String url3, String url4, String url5, Context context){
-        if(url1.length() > 0 ){
+    public ViewPageAdapter(Data arrayList, String url1, String url2, String url3, String url4, String url5, Context context) {
+        if (url1.length() > 0) {
             images.add(url1);
         }
-        if(url2.length() > 0 ){
+        if (url2.length() > 0) {
             images.add(url2);
         }
-        if(url3.length() > 0 ){
+        if (url3.length() > 0) {
             images.add(url3);
         }
-        if(url4.length() > 0 ){
+        if (url4.length() > 0) {
             images.add(url4);
         }
-        if(url5.length() > 0 ){
+        if (url5.length() > 0) {
             images.add(url5);
         }
 
@@ -80,14 +81,14 @@ public class ViewPageAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        inflater = (LayoutInflater)context.getSystemService
+        inflater = (LayoutInflater) context.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.slider, container, false);
-        ImageView imageView = (ImageView)v.findViewById(R.id.imageView);
+        ImageView imageView = (ImageView) v.findViewById(R.id.imageView);
         Glide.with(context).load(images.get(position)).centerCrop().override(1000).into(imageView);
 
-        v.setOnClickListener(new OnSingleClickListener(){
-            public void onSingleClick(View v){
+        v.setOnClickListener(new OnSingleClickListener() {
+            public void onSingleClick(View v) {
                 goPost(arrayList);
             }
         });
@@ -96,7 +97,7 @@ public class ViewPageAdapter extends PagerAdapter {
         return v;
     }
 
-    private void goPost(final Data arrayList){
+    private void goPost(final Data arrayList) {
         final Intent intent = new Intent(context, Main_Expand_ImageView.class);
 
         intent.putExtra("imageUrl1", arrayList.getImageUrl1());
@@ -113,5 +114,4 @@ public class ViewPageAdapter extends PagerAdapter {
         container.invalidate();
     }
 }
-
 
