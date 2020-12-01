@@ -1,7 +1,6 @@
 package com.example.petdiary;
 
 
-
 import android.app.Activity;
 import android.content.Context;
 
@@ -20,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.petdiary.adapter.ViewPageAdapterSub;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 
@@ -49,7 +49,7 @@ public class Kon_MypageAdapter extends RecyclerView.Adapter<Kon_MypageAdapter.My
         int layout_width = parent.getMeasuredWidth();
         //int layout_height = parent.getMeasuredHeight();
         int itemSize = layout_width / columnNum;
-        squareSize = itemSize - (itemSize / 32 );
+        squareSize = itemSize - (itemSize / 32);
 
         return holder;
     }
@@ -62,10 +62,10 @@ public class Kon_MypageAdapter extends RecyclerView.Adapter<Kon_MypageAdapter.My
         holder.itemView.requestLayout(); // 변경 사항 적용
 
         String url = arrayList.get(position).getImageUrl1();
-       // if(url != null)
-             Glide.with(context).load(url).centerCrop().override(500).into(holder.postImage);
+        // if(url != null)
+        Glide.with(context).load(url).centerCrop().override(500).into(holder.postImage);
 
-             ///////////////////////test
+        ///////////////////////test
 //        DisplayMetrics displayMetrics = new DisplayMetrics();
 //        ((Activity) holder.itemView.getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 //        int deviceWidth = displayMetrics.widthPixels;  // 핸드폰의 가로 해상도를 구함.
@@ -78,11 +78,10 @@ public class Kon_MypageAdapter extends RecyclerView.Adapter<Kon_MypageAdapter.My
 //
 
     }
+
     ViewPageAdapterSub viewPageAdapter;
-  //  ViewPager viewPager;
+    //  ViewPager viewPager;
     ImageView pageView;
-
-
 
 
     @Override
@@ -93,15 +92,16 @@ public class Kon_MypageAdapter extends RecyclerView.Adapter<Kon_MypageAdapter.My
 
     public class MypageViewHolder extends RecyclerView.ViewHolder {
         ImageView postImage;
+
         public MypageViewHolder(@NonNull final View itemView) {
             super(itemView);
             this.postImage = itemView.findViewById(R.id.mypage_image);
 
-                 //   DisplayMetrics displayMetrics = new DisplayMetrics();
-        //((Activity) itemView.getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-      //  int deviceWidth = displayMetrics.widthPixels;  // 핸드폰의 가로 해상도를 구함.
-        // int deviceHeight = displayMetrics.heightPixels;  // 핸드폰의 세로 해상도를 구함.
-      //  deviceWidth = (deviceWidth-60) / 3;
+            //   DisplayMetrics displayMetrics = new DisplayMetrics();
+            //((Activity) itemView.getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            //  int deviceWidth = displayMetrics.widthPixels;  // 핸드폰의 가로 해상도를 구함.
+            // int deviceHeight = displayMetrics.heightPixels;  // 핸드폰의 세로 해상도를 구함.
+            //  deviceWidth = (deviceWidth-60) / 3;
 //        itemView.getLayoutParams().width = squareSize;  // 아이템 뷰의 세로 길이를 구한 길이로 변경
 //        itemView.getLayoutParams().height = squareSize;  // 아이템 뷰의 세로 길이를 구한 길이로 변경
 //        itemView.requestLayout(); // 변경 사항 적용
@@ -116,10 +116,10 @@ public class Kon_MypageAdapter extends RecyclerView.Adapter<Kon_MypageAdapter.My
         }
     }
 
-    private void goPost(Data arrayList){
-        Intent intent = new Intent(context, Expand_ImageView2.class);
+    private void goPost(Data arrayList) {
+        Intent intent = new Intent(context, Expand_ImageView.class);
 
-        intent.putExtra("postLike","unchecked");
+        intent.putExtra("postLike", "unchecked");
         intent.putExtra("bookmark", "unchecked");
         intent.putExtra("friend", "unchecked");
 

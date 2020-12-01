@@ -1,6 +1,5 @@
 package com.example.petdiary.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,18 +30,24 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class kon_AnimalProfileActivity extends AppCompatActivity {
 
     ImageView editBtn;
-    ImageView aniProfileImage;
-    EditText aniName;
+    ImageView petImg;
+    EditText petName;
+    EditText petMemo;
     Button saveBtn;
     Button cancelBtn;
 
     String postImgPath;
     String preImage;    // 편집 전 이미지
     String preName;     // 편집 전 이름
+    String preMemo;     // 편집 전 메모
 
     boolean isAddMode = false; // 펫 추가 버튼을 눌렀을시에만 true
     boolean isEditMode = false;
@@ -63,13 +68,14 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         isEditMode = getIntent().getBooleanExtra("isEditMode",false);
 
         editBtn = findViewById(R.id.animalPage_edit);
-        aniProfileImage = findViewById(R.id.animalPage_Image);
-        aniName = findViewById(R.id.animalPage_name);
+        petImg = findViewById(R.id.animalPage_Image);
+        petName = findViewById(R.id.animalPage_name);
+        petMemo = findViewById(R.id.animalPage_memo);
         saveBtn = findViewById(R.id.animalPage_save);
         cancelBtn = findViewById(R.id.animalPage_cancel);
 
         editBtn.setOnClickListener(onClickListener);
-        aniProfileImage.setOnClickListener(onClickListener);
+        petImg.setOnClickListener(onClickListener);
         saveBtn.setOnClickListener(onClickListener);
         cancelBtn.setOnClickListener(onClickListener);
 
@@ -97,7 +103,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                     break;
                 case R.id.animalPage_save:
                     if(isAddMode) {
-
+                        addDataToFirebase();
                     }
                     else {
                         isPressedSaveBtn = true;
@@ -111,8 +117,8 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                         setEditIcon(true);
                         setEditMode(false);
 
-                        preName = aniName.getText().toString();
-                        //preMemo = userMemo.getText().toString();
+                        preName = petName.getText().toString();
+                        preMemo = petMemo.getText().toString();
                         preImage = postImgPath;
 
                     }
@@ -123,8 +129,8 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                     postImgPath = null;
                     postImgPath = preImage;
                     setProfileImg(preImage);
-                    aniName.setText(preName);
-                //    userMemo.setText(preMemo);
+                    petName.setText(preName);
+                    petMemo.setText(preMemo);
                     setEditIcon(true);
                     setEditMode(false);
                     onBackPressed();
@@ -188,23 +194,23 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
     private void setEditMode(boolean isEditMode) {
         if (isEditMode) {
             //  isEdit = true;
-            aniName.setBackgroundColor(getBaseContext().getResources().getColor(R.color.colorAccent));
-            aniName.setFocusableInTouchMode(true);
+            petName.setBackgroundColor(getBaseContext().getResources().getColor(R.color.colorAccent));
+            petName.setFocusableInTouchMode(true);
 
-           // userMemo.setBackgroundColor(getBaseContext().getResources().getColor(R.color.colorAccent));
-         //   userMemo.setFocusableInTouchMode(true);
+            petMemo.setBackgroundColor(getBaseContext().getResources().getColor(R.color.colorAccent));
+            petMemo.setFocusableInTouchMode(true);
 
             saveBtn.setVisibility(View.VISIBLE);
             cancelBtn.setVisibility(View.VISIBLE);
         } else {
             // isEdit = false;
-            aniName.setBackground(null);
-            aniName.setFocusableInTouchMode(false);
-            aniName.setFocusable(false);
+            petName.setBackground(null);
+            petName.setFocusableInTouchMode(false);
+            petName.setFocusable(false);
 
-         //   userMemo.setBackground(null);
-          //  userMemo.setFocusableInTouchMode(false);
-          //  userMemo.setFocusable(false);
+            petMemo.setBackground(null);
+            petMemo.setFocusableInTouchMode(false);
+            petMemo.setFocusable(false);
 
             saveBtn.setVisibility(View.INVISIBLE);
             cancelBtn.setVisibility(View.INVISIBLE);
@@ -217,7 +223,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         //if (activity.isFinishing())
             //return;
 
-        Glide.with(this).load(profileImg).centerCrop().override(500).into(aniProfileImage);
+        Glide.with(this).load(profileImg).centerCrop().override(500).into(petImg);
     }
 
 
@@ -228,14 +234,123 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         startActivityForResult(intent, 0);
     }
 
+    // 새 애완동물을 추가할때 사용하는 함수
+    private void addDataToFirebase(){
+        // pet id에 사용될 데이터 생성
+        Date today = new Date();
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String uid = user.getUid();
+        final String petId = formatDate.format(today) + uid;
+
+        // 추가할 애완동물 정보
+        Map<String, Object> petData = new HashMap<>();
+        petData.put("petName",  petName.getText().toString());
+        petData.put("petMemo", petMemo.getText().toString());
+        petData.put("master", uid);
+
+        ///////////////////////////////////// 텍스트 추가
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        db.collection("pets").document(petId)
+        db.collection("pets").document(uid).collection("pets").document(petId)
+                .set(petData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("AnimalProfile Add", "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("AnimalProfile Add", "Error writing document", e);
+                    }
+                });
+
+        ///////////////////////////////////// 이미지 추가
+        final String[] profileImg = new String[1];
+
+        // 파이어베이스 스토리지에 이미지 저장
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        final StorageReference storageRef = storage.getReference();
+        final UploadTask[] uploadTask = new UploadTask[1];
+
+        // 로컬 파일에서 업로드(스토리지)
+        final Uri file = Uri.fromFile(new File(postImgPath));
+        StorageReference riversRef = storageRef.child("pets/" + petId + "_profileImage.jpg");
+        uploadTask[0] = riversRef.putFile(file);
+
+        uploadTask[0].addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                // 파이어베이스의 스토리지에 저장한 이미지의 다운로드 경로를 가져옴
+                final StorageReference ref = storageRef.child("pets/" + petId + "_profileImage.jpg");
+                uploadTask[0] = ref.putFile(file);
+
+                Task<Uri> urlTask = uploadTask[0].continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
+                        return ref.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+                            profileImg[0] = downloadUri.toString();
+
+                            postImgPath = profileImg[0];
+
+                           // FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                          //  String uid = user.getUid();
+
+                            // 클라우드 파이어스토어의 users에 프로필 이미지 주소 저장
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            DocumentReference documentUserReference = db.collection("pets").document(uid).collection("pets").document(petId);
+
+                            documentUserReference
+                                    .update("profileImg", profileImg[0])
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("ProfileEditActivity", "DocumentSnapshot successfully updated!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("ProfileEditActivity", "Error updating document", e);
+                                        }
+                                    });
+                            setProfileImg(postImgPath);
+                        } else {
+                        }
+                    }
+                });
+
+            }
+        });
+
+
+    }
+
+    // 데이터 수정 시 불리는 함수
     private void saveDataToFirebase() {
         // 이미지 변경시
         if(postImgPath.compareTo(preImage) !=0)
             setProfileImageToFirebase();
 
         // 텍스트 변경시
-      //  if(preMemo.compareTo(userMemo.getText().toString()) !=0 || preName.compareTo(userName.getText().toString()) != 0)
-        if( !preName.equals(aniName.getText().toString()))
+        if(!preMemo.equals(petMemo.getText().toString())|| !preName.equals(petName.getText().toString()))
             setProfileTextToFirebase();
     }
     private void setProfileImageToFirebase() {
@@ -249,7 +364,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
 
         // 로컬 파일에서 업로드(스토리지)
         final Uri file = Uri.fromFile(new File(postImgPath));
-        StorageReference riversRef = storageRef.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg");
+        StorageReference riversRef = storageRef.child("pets/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg");
         uploadTask[0] = riversRef.putFile(file);
 
         uploadTask[0].addOnFailureListener(new OnFailureListener() {
@@ -288,7 +403,6 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
                             DocumentReference documentUserReference = db.collection("users").document(uid);
 
-                            String temp = aniName.getText().toString();
                             documentUserReference
                                     .update("profileImg", profileImg[0])
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -321,22 +435,26 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
 
         //  클라우드 파이어스토어의 users에 프로필 이미지 주소 저장
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference documentUserReference = db.collection("users").document(uid);
+        Date date = new Date();
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+
+
+        DocumentReference documentUserReference = db.collection("pets").document(uid+formatDate);
 
         documentUserReference
                 .update(
-                        "aniName", aniName.getText().toString()
+                        "aniName", petName.getText().toString()
                 )
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d("ProfileEditActivity", "DocumentSnapshot successfully updated!");
+                        Log.d("AnimalProfileActivity", "DocumentSnapshot successfully updated!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w("ProfileEditActivity", "Error updating document", e);
+                        Log.w("AnimalProfileActivity", "Error updating document", e);
                     }
                 });
     }
