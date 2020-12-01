@@ -1,4 +1,4 @@
-package com.example.petdiary;
+package com.example.petdiary.info;
 
 import java.util.ArrayList;
 import java.util.HashMap;

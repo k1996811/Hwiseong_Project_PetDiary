@@ -10,12 +10,10 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.petdiary.BlockFriendInfo;
+import com.example.petdiary.info.BlockFriendInfo;
 import com.example.petdiary.adapter.BlockFriendsAdapter;
 import com.example.petdiary.ItemTouchHelperCallback;
-import com.example.petdiary.Person;
 import com.example.petdiary.R;
-import com.example.petdiary.RecyclerViewDecoration;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;

@@ -1,4 +1,4 @@
-package com.example.petdiary;
+package com.example.petdiary.adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -10,9 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,36 +19,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.example.petdiary.info.BlockFriendInfo;
+import com.example.petdiary.info.BookmarkInfo;
+import com.example.petdiary.Comment;
+import com.example.petdiary.Data;
+import com.example.petdiary.info.FriendInfo;
+import com.example.petdiary.info.PostLikeInfo;
+import com.example.petdiary.R;
 import com.example.petdiary.activity.ContentEditActivity;
-import com.example.petdiary.activity.MainActivity;
-import com.example.petdiary.activity.SetPasswordActivity;
-import com.example.petdiary.adapter.ViewPageAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
-import com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-
-import static android.app.Activity.RESULT_OK;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomViewHolder> {
 

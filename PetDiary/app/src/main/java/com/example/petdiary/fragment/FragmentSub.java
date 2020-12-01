@@ -7,7 +7,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,32 +17,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.petdiary.BlockFriendInfo;
-import com.example.petdiary.BookmarkInfo;
-import com.example.petdiary.Chat;
-import com.example.petdiary.CustomAdapterSub;
+import com.example.petdiary.info.BlockFriendInfo;
+import com.example.petdiary.adapter.CustomAdapterSub;
 import com.example.petdiary.Data;
 import com.example.petdiary.ItemTouchHelperCallback;
 import com.example.petdiary.R;
-import com.example.petdiary.RecyclerDecorationWidth;
 import com.example.petdiary.RecyclerViewDecoration;
-import com.example.petdiary.adapter.BlockFriendsAdapter;
 import com.example.petdiary.adapter.SearchUserAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class FragmentSub extends Fragment {

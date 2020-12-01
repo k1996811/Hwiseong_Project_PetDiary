@@ -1,32 +1,18 @@
-package com.example.petdiary;
+package com.example.petdiary.adapter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.bumptech.glide.Glide;
-import com.example.petdiary.adapter.ViewPageAdapter;
-import com.example.petdiary.adapter.ViewPageAdapterSub;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
+import com.example.petdiary.Data;
+import com.example.petdiary.R;
 
 import java.util.ArrayList;
 

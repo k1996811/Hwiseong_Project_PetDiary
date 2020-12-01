@@ -1,10 +1,14 @@
-package com.example.petdiary;
+package com.example.petdiary.info;
 
-public class FriendInfo {
+public class BlockFriendInfo {
 
     private String friendUid;
 
-    public FriendInfo(){
+    public BlockFriendInfo(){
+    }
+
+    public BlockFriendInfo(String friendUid){
+        this.friendUid = friendUid;
     }
 
     public String getFriendUid(){

@@ -1,4 +1,4 @@
-package com.example.petdiary;
+package com.example.petdiary.info;
 
 public class CostomerCenterInfo {
 

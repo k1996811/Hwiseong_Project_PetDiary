@@ -14,9 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.petdiary.BlockFriendInfo;
-import com.example.petdiary.Chat;
-import com.example.petdiary.Data;
+import com.example.petdiary.info.BlockFriendInfo;
 import com.example.petdiary.ItemTouchHelperListener;
 import com.example.petdiary.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,7 +22,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
