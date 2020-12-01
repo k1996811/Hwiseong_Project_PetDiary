@@ -24,11 +24,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.petdiary.BlockFriendInfo;
+import com.example.petdiary.ItemTouchHelperCallback;
 import com.example.petdiary.PostInfo;
 import com.example.petdiary.activity.*;
 import com.example.petdiary.R;
+import com.example.petdiary.adapter.BlockFriendsAdapter;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,6 +51,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -72,6 +80,8 @@ public class FragmentNewPost extends Fragment {
 
     ViewGroup viewGroup;
 
+    ArrayList<String> items;
+    ArrayList<String> petsID;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,12 +92,28 @@ public class FragmentNewPost extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_newpost, container, false);
 
-        String[] items = {"강아지", "고양이", "앵무새", "두더지", "물고기"};
-        //ArrayList<String> itemss = new ArrayList<String>();
-        //itemss.add("가");
+        items = new ArrayList<String>();
+        petsID = new ArrayList<String>();
+        items.add("전체");
+        petsID.add("ALL");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("pets/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/pets")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                items.add(document.getData().get("petName").toString());
+                                petsID.add(document.getId());
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
         spinner = (Spinner)viewGroup.findViewById(R.id.categorySpinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, items);
-        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, itemss);
         adapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(adapter);
 
@@ -318,7 +344,6 @@ public class FragmentNewPost extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private int num;
     private String email;
     private String category;
     private String[] img = new String[5];
@@ -333,7 +358,6 @@ public class FragmentNewPost extends Fragment {
     private ArrayList<String> hashTag;
 
     private void post(){
-        num = 0;
         //category = spinner.getSelectedItem().toString();
         content = ((EditText) viewGroup.findViewById(R.id.contents)).getText().toString();
         tag = "";
@@ -388,7 +412,6 @@ public class FragmentNewPost extends Fragment {
 
     int postNum = 0;
     int postNumCheck = 0;
-    boolean imgCheck = true;
 
     private void saveImage(){
 
@@ -404,7 +427,6 @@ public class FragmentNewPost extends Fragment {
                 if(postImgCheck[i] == 1){
                     final Uri file;
                     file = Uri.fromFile(new File(img[i]));
-
                     StorageReference riversRef = storageRef.child("images/"+date2+"_postImg_"+i);
                     uploadTask[0] = riversRef.putFile(file);
 
@@ -457,6 +479,13 @@ public class FragmentNewPost extends Fragment {
 
         PostInfo postInfo = new PostInfo();
 
+        int i;
+        for(i=0; i<items.size(); i++){
+            if(items.get(i).equals(category)){
+                break;
+            }
+        }
+
         postInfo.setImageUrl1(imgUri[0]);
         postInfo.setImageUrl2(imgUri[1]);
         postInfo.setImageUrl3(imgUri[2]);
@@ -466,6 +495,7 @@ public class FragmentNewPost extends Fragment {
         postInfo.setContent(content);
         postInfo.setEmail(email);
         postInfo.setCategory(category);
+        postInfo.setPetsID(petsID.get(i));
         postInfo.setDate(date);
         postInfo.setNickName(nickName);
         postInfo.setHashTag(hashTag);

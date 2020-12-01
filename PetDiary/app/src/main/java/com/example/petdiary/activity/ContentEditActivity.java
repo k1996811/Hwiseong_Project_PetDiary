@@ -37,6 +37,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -67,6 +69,10 @@ public class ContentEditActivity extends AppCompatActivity {
     private String Category;
     private String Content;
     private String PostID;
+
+    ArrayList<String> items;
+    ArrayList<String> petsID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,38 +91,26 @@ public class ContentEditActivity extends AppCompatActivity {
 
         Log.d("ddddddd", "onCreate: 포스트아이디"+PostID);
 
-
-
-
-        ArrayList<String> items = new ArrayList<>();
-
-        items.add(0,Category);
-        items.add(1,"강아지");
-        items.add(2,"고양이");
-        items.add(3,"앵무새");
-        items.add(4,"두더지");
-        items.add(5,"물고기");
-
-        if(Category.equals("강아지")){
-            items.remove(1);
-        }
-        else if(Category.equals("고양이")){
-            items.remove(2);
-        }
-        else if(Category.equals("앵무새")){
-            items.remove(3);
-        }
-        else if(Category.equals("두더지")){
-            items.remove(4);
-        }
-        else {
-            items.remove(5);
-        }
-
-
-
-        //ArrayList<String> itemss = new ArrayList<String>();
-        //itemss.add("가");
+        items = new ArrayList<String>();
+        petsID = new ArrayList<String>();
+        items.add("전체");
+        petsID.add("ALL");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("pets/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/pets")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                items.add(document.getData().get("petName").toString());
+                                petsID.add(document.getId());
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
         spinner = (Spinner) findViewById(R.id.categorySpinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinner_item, items);
         //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, itemss);
@@ -568,41 +562,18 @@ public class ContentEditActivity extends AppCompatActivity {
             postData();
         }
 
-
-
-
-        if(img[0]==null){
-            imgCheck = false;
-            postImgCheck[0] = 1;
-            postNumCheck = 1;
-
-        }
-
         FirebaseStorage storage = FirebaseStorage.getInstance();
         final StorageReference storageRef = storage.getReference();
         final UploadTask[] uploadTask = new UploadTask[1];
 
         if(postNumCheck == 0){
-
-        }
-
-        else {
-
+            imgUri[0] = "https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=eb832feb-bb39-48a0-9f46-81ffea724871";
+            postData();
+        } else {
             for(int i=0; i<5; i++){
-
-
-
                 if(postImgCheck[i] == 1){
                     final Uri file;
-                    if(imgCheck){
-                        postData();
-
-                        file = Uri.fromFile(new File(img[i]));
-
-                    } else {
-                        file = Uri.parse("android.resource://com.example.petdiary/" + R.drawable.ic_launcher_foreground);
-                    }
-
+                    file = Uri.fromFile(new File(img[i]));
                     StorageReference riversRef = storageRef.child("images/"+date2+"_postImg_"+i);
                     uploadTask[0] = riversRef.putFile(file);
 
@@ -662,6 +633,14 @@ public class ContentEditActivity extends AppCompatActivity {
 
 
     private void postData(){
+
+        int i;
+        for(i=0; i<items.size(); i++){
+            if(items.get(i).equals(category)){
+                break;
+            }
+        }
+
         content = ((EditText) findViewById(R.id.contents)).getText().toString();
 
         final String Data = imgUri[0];
@@ -682,7 +661,7 @@ public class ContentEditActivity extends AppCompatActivity {
 
 
         washingtonRef
-                .update("category",category,"content",content,"imageUrl1",imgUri[0],"imageUrl2",imgUri[1],"imageUrl3",imgUri[2],"imageUrl4",imgUri[3],"imageUrl5",imgUri[4],"hashTag",hashTag)
+                .update("category",category, "petsID", petsID.get(i), "content",content,"imageUrl1",imgUri[0],"imageUrl2",imgUri[1],"imageUrl3",imgUri[2],"imageUrl4",imgUri[3],"imageUrl5",imgUri[4],"hashTag",hashTag)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

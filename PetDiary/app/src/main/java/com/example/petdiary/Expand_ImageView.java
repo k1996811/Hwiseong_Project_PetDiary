@@ -316,12 +316,23 @@ public class Expand_ImageView extends AppCompatActivity {
                                         Toast.makeText(getApplicationContext(), "친구를 추가하였습니다.", Toast.LENGTH_SHORT).show();
                                         break;
                                     case 1:
-                                        // 내정보
                                         Toast.makeText(view.getContext(), "신고하기", Toast.LENGTH_SHORT).show();
                                         break;
                                     case 2:
-                                        // 로그아웃
-
+                                        BlockFriendInfo blockFriendInfo = new BlockFriendInfo();
+                                        blockFriendInfo.setFriendUid(uid);
+                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                        db.collection("blockFriends/"+user.getUid()+"/friends").document(uid).set(blockFriendInfo)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                    }
+                                                });
                                         Toast.makeText(view.getContext(), "사용자 차단", Toast.LENGTH_SHORT).show();
                                         break;
                                     case 3:

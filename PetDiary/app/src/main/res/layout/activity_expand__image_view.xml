@@ -126,7 +126,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_centerVertical="true"
-            android:background="@drawable/commnet"/>
+            android:background="@drawable/icon_comment"/>
 
         <CheckBox
             android:layout_marginRight="0dp"

@@ -256,12 +256,23 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                                     Toast.makeText(context, "친구를 삭제하였습니다.", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 1:
-                                    // 내정보
                                     Toast.makeText(view.getContext(), "신고하기", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 2:
-                                    // 로그아웃
-
+                                    BlockFriendInfo blockFriendInfo = new BlockFriendInfo();
+                                    blockFriendInfo.setFriendUid(arrayList.get(position).getUid());
+                                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                    db.collection("blockFriends/"+user.getUid()+"/friends").document(uid).set(blockFriendInfo)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                }
+                                            });
                                     Toast.makeText(view.getContext(), "사용자 차단", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 3:
@@ -328,24 +339,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             this.profileImage = itemView.findViewById(R.id.Profile_image);
             this.bookmark_button = itemView.findViewById(R.id.bookmark_button);
             this.Like_button = itemView.findViewById(R.id.Like_button);
-
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    int pos = getAdapterPosition();
-//                    if(arrayList.get(pos).getBookmark()){
-//                        Log.e("###Custom", pos + " ### " + arrayList.get(pos).getPostID());
-//                        bookmark_button.setChecked(true);
-//                    } else {
-//                        bookmark_button.setChecked(false);
-//                    }
-//                    if(arrayList.get(pos).getLike()){
-//                        Like_button.setChecked(true);
-//                    } else {
-//                        Like_button.setChecked(false);
-//                    }
-//                }
-//            });
 
             itemView.findViewById(R.id.bookmark_button).setOnClickListener(new View.OnClickListener() {
                 @Override

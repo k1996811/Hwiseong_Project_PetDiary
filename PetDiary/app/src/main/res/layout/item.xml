@@ -142,11 +142,12 @@
     <Button
         android:id="@+id/Comment_btn"
         android:layout_below="@+id/main_textView"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/Like_button"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@drawable/comment"/>
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/icon_comment"/>
 
     <CheckBox
         android:layout_marginRight="0dp"

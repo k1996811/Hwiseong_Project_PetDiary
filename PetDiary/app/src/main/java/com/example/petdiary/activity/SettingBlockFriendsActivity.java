@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.petdiary.BlockFriendInfo;
 import com.example.petdiary.adapter.BlockFriendsAdapter;
 import com.example.petdiary.ItemTouchHelperCallback;
 import com.example.petdiary.Person;
@@ -36,7 +37,7 @@ public class SettingBlockFriendsActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Log.e("###", FirebaseAuth.getInstance().getUid());
 
-        db.collection("blockFriends")
+        db.collection("blockFriends/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/friends")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -46,14 +47,13 @@ public class SettingBlockFriendsActivity extends AppCompatActivity {
                             LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL, false);
 
                             recyclerView.setLayoutManager(layoutManager);
-                            recyclerView.addItemDecoration(new RecyclerViewDecoration(1));
+                            //recyclerView.addItemDecoration(new RecyclerViewDecoration(1));
 
                             BlockFriendsAdapter adapter = new BlockFriendsAdapter(getApplicationContext());
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                String nick = document.getData().get("nickName").toString();
-                                adapter.addItem(new Person(nick));
-                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                String friendUid = document.getData().get("friendUid").toString();
+                                adapter.addItem(new BlockFriendInfo(friendUid));
                             }
                             recyclerView.setAdapter(adapter);
                             ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelperCallback(adapter));
