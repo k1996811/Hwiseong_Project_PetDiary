@@ -83,8 +83,9 @@
             android:name=".activity.LogoutPopupActivity"
             android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".Expand_ImageView" />
+        <activity android:name=".Expand_ImageView2" />
         <activity android:name=".Comment" />
-        <activity android:name=".Comment2" />
+        <activity android:name=".Main_Expand_ImageView" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

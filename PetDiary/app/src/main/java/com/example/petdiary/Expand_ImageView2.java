@@ -3,7 +3,6 @@ package com.example.petdiary;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -22,19 +21,14 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.example.petdiary.activity.ContentEditActivity;
 import com.example.petdiary.adapter.ViewPageAdapterDetail;
-import com.example.petdiary.adapter.ViewPageAdapterSub;
-import com.example.petdiary.fragment.FragmentSub;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -43,11 +37,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
-import java.util.Locale;
+import java.util.Hashtable;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-public class Expand_ImageView extends AppCompatActivity {
+public class Expand_ImageView2 extends AppCompatActivity {
 
     private String friendChecked;
     private String bookmarkChecked;
@@ -59,6 +53,11 @@ public class Expand_ImageView extends AppCompatActivity {
     private String imageUrl3;
     private String imageUrl4;
     private String imageUrl5;
+    private String imageUrl11;
+    private String imageUrl22;
+    private String imageUrl33;
+    private String imageUrl44;
+    private String imageUrl55;
     private String content;
     private ArrayList<String> hashTag = new ArrayList<String>();
     private String date;
@@ -105,6 +104,7 @@ public class Expand_ImageView extends AppCompatActivity {
         imageUrl5 = intent.getStringExtra("imageUrl5");
         favoriteCount = intent.getIntExtra("favoriteCount", 0);
         Category = intent.getStringExtra("category");
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Comment_btn = (Button)findViewById(R.id.Comment_btn);
 
@@ -120,9 +120,10 @@ public class Expand_ImageView extends AppCompatActivity {
                 intent.putExtra("content", content);
 
                 getApplicationContext().startActivity(intent.addFlags(FLAG_ACTIVITY_NEW_TASK));
-                
+
             }
         });
+
 
         final String[] profileImg = new String[1];
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(uid);
@@ -149,7 +150,7 @@ public class Expand_ImageView extends AppCompatActivity {
         });
 
         viewPager = (ViewPager) findViewById(R.id.main_image);
-        viewPageAdapter = new ViewPageAdapterDetail(true, imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5, getApplicationContext());
+        viewPageAdapter = new ViewPageAdapterDetail(true,imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5, getApplicationContext());
         viewPager.setAdapter(viewPageAdapter);
 
         wormDotsIndicator  = (WormDotsIndicator) findViewById(R.id.worm_dots_indicator);
@@ -164,7 +165,26 @@ public class Expand_ImageView extends AppCompatActivity {
             post_content.setVisibility(View.INVISIBLE);
         }
 
+        final String[] nn = new String[1];
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("asdf", document.getId() + " => " + document.getData());
 
+                                if(document.get("email").toString().equals(user.getEmail())){
+                                    nn[0] = document.get("nickName").toString();
+                                }
+
+                            }
+                        } else {
+
+                        }
+                    }
+                });
 
         findViewById(R.id.onPopupButton).setOnClickListener(new View.OnClickListener(){
 
@@ -274,7 +294,7 @@ public class Expand_ImageView extends AppCompatActivity {
                                         Toast.makeText(view.getContext(), "deleteFriend", Toast.LENGTH_SHORT).show();
                                         friendChecked = "unchecked";
                                         firebaseDatabase = FirebaseDatabase.getInstance();
-                                        DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid()+"/"+uid);
+                                        DatabaseReference friend = firebaseDatabase.getReference("friend").child(nn[0]+"/"+nickName);
                                         FriendInfo friendInfo = new FriendInfo();
                                         friend.setValue(friendInfo);
                                         Toast.makeText(getApplicationContext(), "친구를 삭제하였습니다.", Toast.LENGTH_SHORT).show();
@@ -309,10 +329,13 @@ public class Expand_ImageView extends AppCompatActivity {
                                         Toast.makeText(view.getContext(), "addFriend", Toast.LENGTH_SHORT).show();
                                         friendChecked = "checked";
                                         firebaseDatabase = FirebaseDatabase.getInstance();
-                                        DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid()+"/"+uid);
-                                        FriendInfo friendInfo = new FriendInfo();
-                                        friendInfo.setFriendUid(uid);
-                                        friend.setValue(friendInfo);
+                                        System.out.println(nn[0]+"fffff");
+                                        DatabaseReference friend = firebaseDatabase.getReference("friend").child(nn[0]+"/"+nickName);
+
+                                        Hashtable<String, String> numbers = new Hashtable<String, String>();
+                                        numbers.put("message","없음");
+                                        friend.setValue(numbers);
+
                                         Toast.makeText(getApplicationContext(), "친구를 추가하였습니다.", Toast.LENGTH_SHORT).show();
                                         break;
                                     case 1:
@@ -339,7 +362,7 @@ public class Expand_ImageView extends AppCompatActivity {
             }
         });
 
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
         bookmark_button = (CheckBox)findViewById(R.id.bookmark_button);
         if(bookmarkChecked.equals("checked")){

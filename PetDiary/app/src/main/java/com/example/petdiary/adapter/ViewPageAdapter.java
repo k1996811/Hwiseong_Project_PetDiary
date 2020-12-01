@@ -17,7 +17,9 @@ import com.bumptech.glide.Glide;
 import com.example.petdiary.BookmarkInfo;
 import com.example.petdiary.Data;
 import com.example.petdiary.Expand_ImageView;
+import com.example.petdiary.Expand_ImageView2;
 import com.example.petdiary.FriendInfo;
+import com.example.petdiary.Main_Expand_ImageView;
 import com.example.petdiary.OnSingleClickListener;
 import com.example.petdiary.PostLikeInfo;
 import com.example.petdiary.R;
@@ -39,11 +41,6 @@ import java.util.ArrayList;
 
 public class ViewPageAdapter extends PagerAdapter {
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    String uid = user.getUid();
-
-    private DatabaseReference mReference;
-    private FirebaseDatabase firebaseDatabase;
 
     private ArrayList<String> images = new ArrayList<String>();
     private LayoutInflater inflater;
@@ -101,7 +98,8 @@ public class ViewPageAdapter extends PagerAdapter {
     }
 
     private void goPost(final Data arrayList){
-        final Intent intent = new Intent(context, Expand_ImageView.class);
+<<<<<<< HEAD
+        final Intent intent = new Intent(context, Expand_ImageView2.class);
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         db.collection("user-checked/"+uid+"/bookmark")
@@ -178,6 +176,17 @@ public class ViewPageAdapter extends PagerAdapter {
                         }
                     }
                 });
+=======
+        final Intent intent = new Intent(context, Main_Expand_ImageView.class);
+
+        intent.putExtra("imageUrl1", arrayList.getImageUrl1());
+        intent.putExtra("imageUrl2", arrayList.getImageUrl2());
+        intent.putExtra("imageUrl3", arrayList.getImageUrl3());
+        intent.putExtra("imageUrl4", arrayList.getImageUrl4());
+        intent.putExtra("imageUrl5", arrayList.getImageUrl5());
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+>>>>>>> 78fc5d71c8eb9549999306485aaf7e4e3a30f11a
     }
 
     @Override

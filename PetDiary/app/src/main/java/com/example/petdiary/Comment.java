@@ -6,48 +6,75 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.petdiary.activity.ChatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Hashtable;
+
 public class Comment extends AppCompatActivity {
+
+    private static final String TAG = "Comment2";
+    private FirebaseAuth mAuth;
+    private RecyclerView recyclerView;
+    FirebaseDatabase database;
+    EditText etText;
+    Button btnSend;
+    String stEmail;
+
+    ArrayList<Chat> commentArrayList;
+    CommentAdapter cAdapter;
+    private RecyclerView.LayoutManager layoutManager;
+
     ImageView user_profileImage_ImageView;
 
+    private String postID;
     private String uid;
     private String content;
     private String nickName;
 
     TextView post_nickName;
     TextView post_content;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_comment);
-        user_profileImage_ImageView = findViewById(R.id.bottom_Profile_Image);
-        setImg();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
+        setContentView(R.layout.activity_comment2);
 
         Intent intent = getIntent();
+        postID = intent.getStringExtra("postID");
         uid = intent.getStringExtra("uid");
         nickName = intent.getStringExtra("nickName");
         content = intent.getStringExtra("content");
-        Log.d("@@@@", "onCreate: 들어온값은 무엇이드냐?"  + intent.getStringExtra("content"));
 
         final String[] profileImg = new String[1];
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(uid);
@@ -73,7 +100,6 @@ public class Comment extends AppCompatActivity {
             }
         });
 
-
         post_nickName = findViewById(R.id.Profile_Name);
         post_content = findViewById(R.id.PostText_view);
 
@@ -82,17 +108,112 @@ public class Comment extends AppCompatActivity {
         if(content.length() == 0){
             post_content.setVisibility(View.INVISIBLE);
         }
+
+        user_profileImage_ImageView = findViewById(R.id.bottom_Profile_Image);
+        setImg();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mAuth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+        commentArrayList = new ArrayList<>();
+        FirebaseUser user = mAuth.getCurrentUser();
+        stEmail = user.getEmail();
+
+        btnSend = findViewById(R.id.input_button);
+        etText = findViewById(R.id.text_input);
+
+        recyclerView = findViewById(R.id.comment_recyclerview);
+        recyclerView.setHasFixedSize(true);
+
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        cAdapter = new CommentAdapter(commentArrayList, stEmail, getApplicationContext());
+        recyclerView.setAdapter(cAdapter);
+
+        ChildEventListener childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+                Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
+                // A new comment has been added, add it to the displayed list
+                Chat chat = dataSnapshot.getValue(Chat.class);
+                commentArrayList.add(chat);
+                cAdapter.notifyDataSetChanged();
+                recyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                    }
+                });
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+                Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
+
+                String commentKey = dataSnapshot.getKey();
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
+                Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "postComments:onCancelled", databaseError.toException());
+                Toast.makeText(getApplicationContext(), "Failed to load comments.", Toast.LENGTH_SHORT).show();
+            }
+        };
+        DatabaseReference ref = database.getReference("comment/"+postID);
+        ref.addChildEventListener(childEventListener);
+
+
+        /////////////////////////////////////////입력
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (etText.getText().toString().length() > 0) {
+                    String stText = etText.getText().toString();
+                    //Toast.makeText(getApplicationContext(), "MSG : " + stText, Toast.LENGTH_SHORT).show();
+                    etText.getText().clear();
+                    database = FirebaseDatabase.getInstance();
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
+                    String datetime = dateformat.format(c.getTime());
+                    DatabaseReference myRef = database.getReference("comment/"+postID).child(datetime);
+                    Hashtable<String, String> numbers
+                            = new Hashtable<String, String>();
+                    numbers.put("email", stEmail);
+                    numbers.put("text", stText);
+                    myRef.setValue(numbers);
+
+                    recyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                        }
+                    });
+
+                }
+            }
+        });
+
     }
 
     private void setImg(){
         FirebaseStorage storage = FirebaseStorage.getInstance();
-
         StorageReference storageRef = storage.getReference();
-
         storageRef.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() +"_profileImage.jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-
                 String profileImg = uri.toString();
                 setProfileImg(profileImg);
             }

@@ -91,15 +91,40 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
     @Override
     public void onBindViewHolder(@NonNull final CustomViewHolder holder, final int position) {
-        if (arrayList.get(position).getImageUrl1() == null) {
-            ImageView imageView = holder.itemView.findViewById(R.id.main_image);
-            Glide.with(context).load(R.drawable.ic_launcher_foreground).centerCrop().override(1000).into(imageView);
-        }
 
-        viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
-        viewPageAdapter = new ViewPageAdapter(arrayList.get(position), arrayList.get(position).getImageUrl1(), arrayList.get(position).getImageUrl2(),
-                arrayList.get(position).getImageUrl3(), arrayList.get(position).getImageUrl4(), arrayList.get(position).getImageUrl5(), context);
-        viewPager.setAdapter(viewPageAdapter);
+        if (arrayList.get(position).getImageUrl1().equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=eb832feb-bb39-48a0-9f46-81ffea724871")) {
+            viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
+            viewPageAdapter = new ViewPageAdapter(arrayList.get(position), arrayList.get(position).getImageUrl1(), arrayList.get(position).getImageUrl2(),
+                    arrayList.get(position).getImageUrl3(), arrayList.get(position).getImageUrl4(), arrayList.get(position).getImageUrl5(), context);
+            viewPager.setAdapter(viewPageAdapter);
+            viewPager.setVisibility(View.GONE);
+            wormDotsIndicator = (WormDotsIndicator) holder.itemView.findViewById(R.id.worm_dots_indicator);
+            wormDotsIndicator.setViewPager(viewPager);
+            wormDotsIndicator.setVisibility(View.INVISIBLE);
+
+
+            View first_border = (View) holder.itemView.findViewById(R.id.first_Square);
+            View second_border = (View) holder.itemView.findViewById(R.id.second_Square);
+            View hidden_border = (View) holder.itemView.findViewById(R.id.hidden_Square);
+
+            first_border.setVisibility(View.GONE);
+            second_border.setVisibility(View.GONE);
+            hidden_border.setVisibility(View.VISIBLE);
+
+            //  RelativeLayout.LayoutParams buttonLayoutParams = new RelativeLayout.LayoutParams
+            //     (ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            // buttonLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+            //  buttonLayoutParams.addRule(RelativeLayout.ABOVE, view3.getId());
+            // view1.setLayoutParams(buttonLayoutParams);
+        }
+        else {
+
+            viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
+            viewPageAdapter = new ViewPageAdapter(arrayList.get(position), arrayList.get(position).getImageUrl1(), arrayList.get(position).getImageUrl2(),
+                    arrayList.get(position).getImageUrl3(), arrayList.get(position).getImageUrl4(), arrayList.get(position).getImageUrl5(), context);
+            viewPager.setAdapter(viewPageAdapter);
+
+        }
         holder.content.setText(arrayList.get(position).getContent());
         holder.nickName.setText(arrayList.get(position).getNickName());
 
@@ -114,85 +139,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             holder.Like_button.setChecked(false);
         }
 
-//        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        firebaseDatabase = FirebaseDatabase.getInstance();
-//
-//        bookmark_button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                BookmarkInfo bookmarkInfo = new BookmarkInfo();
-//                if (b) {
-//                    bookmarkInfo.setPostID(arrayList.get(position).getPostID());
-//                    db.collection("user-checked/"+user.getUid()+"/bookmark").document(arrayList.get(position).getPostID()).set(bookmarkInfo)
-//                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                @Override
-//                                public void onSuccess(Void aVoid) {
-//                                }
-//                            })
-//                            .addOnFailureListener(new OnFailureListener() {
-//                                @Override
-//                                public void onFailure(@NonNull Exception e) {
-//                                }
-//                            });
-//                } else {
-//                    db.collection("user-checked/"+user.getUid()+"/bookmark").document(arrayList.get(position).getPostID())
-//                            .delete()
-//                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                @Override
-//                                public void onSuccess(Void aVoid) {
-//                                    Log.d("CustomAdapter", "DocumentSnapshot successfully deleted!");
-//                                }
-//                            })
-//                            .addOnFailureListener(new OnFailureListener() {
-//                                @Override
-//                                public void onFailure(@NonNull Exception e) {
-//                                    Log.w("CustomAdapter", "Error deleting document", e);
-//                                }
-//                            });
-//                }
-//            }
-//        });
-//        Like_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                PostLikeInfo postLikeInfo = new PostLikeInfo();
-//                if (b) {
-//                    postLikeInfo.setPostID(arrayList.get(position).getPostID());
-//                    db.collection("user-checked/"+user.getUid()+"/like").document(arrayList.get(position).getPostID()).set(postLikeInfo)
-//                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                @Override
-//                                public void onSuccess(Void aVoid) {
-//                                }
-//                            })
-//                            .addOnFailureListener(new OnFailureListener() {
-//                                @Override
-//                                public void onFailure(@NonNull Exception e) {
-//                                }
-//                            });
-//                } else {
-//                    db.collection("user-checked/"+user.getUid()+"/like").document(arrayList.get(position).getPostID())
-//                            .delete()
-//                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                @Override
-//                                public void onSuccess(Void aVoid) {
-//                                    Log.d("CustomAdapter", "DocumentSnapshot successfully deleted!");
-//                                }
-//                            })
-//                            .addOnFailureListener(new OnFailureListener() {
-//                                @Override
-//                                public void onFailure(@NonNull Exception e) {
-//                                    Log.w("CustomAdapter", "Error deleting document", e);
-//                                }
-//                            });
-//                }
-//            }
-//        });
-
         Comment_btn = (Button) holder.itemView.findViewById(R.id.Comment_btn);
         Comment_btn.findViewById(R.id.Comment_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                Intent intent = new Intent(context, Comment2.class);
+                Intent intent = new Intent(context, Comment.class);
 
                 intent.putExtra("postID", arrayList.get(position).getPostID());
                 intent.putExtra("nickName", arrayList.get(position).getNickName());
@@ -475,4 +426,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             });
         }
     }
+
+    
 }

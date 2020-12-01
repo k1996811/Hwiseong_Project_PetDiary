@@ -117,7 +117,7 @@ public class Kon_MypageAdapter extends RecyclerView.Adapter<Kon_MypageAdapter.My
     }
 
     private void goPost(Data arrayList){
-        Intent intent = new Intent(context, Expand_ImageView.class);
+        Intent intent = new Intent(context, Expand_ImageView2.class);
 
         intent.putExtra("postLike","unchecked");
         intent.putExtra("bookmark", "unchecked");
