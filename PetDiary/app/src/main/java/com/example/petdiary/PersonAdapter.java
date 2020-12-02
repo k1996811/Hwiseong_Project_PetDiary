@@ -36,6 +36,8 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
     String stMyEmail;
     FirebaseDatabase database;
 
+    private DatabaseReference mDatabase;
+
     ArrayList<Person> items = new ArrayList<Person>();
     private OnItemClickListener mListener = null;
     private Context mContext;
@@ -174,6 +176,8 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
 
     @Override
     public void onRightClick(int position, RecyclerView.ViewHolder viewHolder) {
+        mDatabase = FirebaseDatabase.getInstance().getReference("friend/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+items.get(position).getUid());
+        mDatabase.removeValue();
         items.remove(position);
         notifyItemRemoved(position);
     }

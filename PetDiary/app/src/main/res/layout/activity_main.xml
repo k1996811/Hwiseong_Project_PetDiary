@@ -35,7 +35,8 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-
-    <include layout="@layout/activity_hambuger" />
+    <include layout="@layout/activity_splash"
+        android:id="@+id/splish"/>
+    <include layout="@layout/activity_hambuger"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

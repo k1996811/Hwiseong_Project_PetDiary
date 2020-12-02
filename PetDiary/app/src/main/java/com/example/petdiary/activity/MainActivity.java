@@ -11,6 +11,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
@@ -60,21 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FragmentManager fragmentManager;
 
-    private void getAppKeyHash() {
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md;
-                md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                String something = new String(Base64.encode(md.digest(), 0));
-                Log.e("Hash key", something);
-            }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            Log.e("name not found", e.toString());
-        }
-    }
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     private DrawerLayout drawerLayout;
     private View drawerView;
@@ -85,8 +73,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //getAppKeyHash();
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        //mAuth = FirebaseAuth.getInstance();
+        getSupportActionBar().hide();
+        new Handler().postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                findViewById(R.id.splish).setVisibility(View.GONE);
+                getSupportActionBar().show();
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu);
+            }
+        }, 3500);
 
         Intent intent = getIntent();
         if(intent != null) {
@@ -95,9 +93,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("FCM_PetDiary", notificationData);
             Log.d("FCM_PetDiary", FirebaseMessaging.getInstance().toString());
         }
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerView = (View) findViewById(R.id.drawerView);
@@ -195,11 +190,9 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
 
         fragmentMain = new FragmentMain();
-
         fragmentManager.beginTransaction().replace(R.id.main_layout, fragmentMain).commit();
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -421,6 +414,22 @@ public class MainActivity extends AppCompatActivity {
                 System.exit(1);
                 toast.cancel();
             }
+        }
+    }
+
+    private void getAppKeyHash() {
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md;
+                md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                String something = new String(Base64.encode(md.digest(), 0));
+                Log.e("Hash key", something);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            Log.e("name not found", e.toString());
         }
     }
 }

@@ -146,7 +146,7 @@ public class FragmentSub extends Fragment {
 
     private void setInfo(){
         arrayList.clear();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
         final ArrayList<String> block = new ArrayList<>();
         db.collection("blockFriends/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/friends")
                 .get()
@@ -156,58 +156,57 @@ public class FragmentSub extends Fragment {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 block.add(document.getData().get("friendUid").toString());
-                                Log.e("###", block.get(block.size()-1));
                             }
+                            db.collection("post")
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                                    int chk = 0;
+                                                    for(int i=0; i<block.size(); i++){
+                                                        if(block.get(i).equals(document.getData().get("uid").toString())){
+                                                            chk++;
+                                                            break;
+                                                        }
+                                                    }
+                                                    if(chk == 0){
+                                                        Data dataList = new Data();
+                                                        dataList.setPostID(document.getId());
+                                                        dataList.setUid(document.getData().get("uid").toString());
+                                                        dataList.setContent(document.getData().get("content").toString());
+                                                        dataList.setImageUrl1(document.getData().get("imageUrl1").toString());
+                                                        dataList.setImageUrl2(document.getData().get("imageUrl2").toString());
+                                                        dataList.setImageUrl3(document.getData().get("imageUrl3").toString());
+                                                        dataList.setImageUrl4(document.getData().get("imageUrl4").toString());
+                                                        dataList.setImageUrl5(document.getData().get("imageUrl5").toString());
+                                                        dataList.setNickName(document.getData().get("nickName").toString());
+                                                        dataList.setDate(document.getData().get("date").toString());
+                                                        dataList.setCategory(document.getData().get("category").toString());
+                                                        dataList.setEmail(document.getData().get("email").toString());
+                                                        dataList.setFavoriteCount(Integer.parseInt(document.getData().get("favoriteCount").toString()));
+                                                        arrayList.add(0, dataList);
+                                                    }
+                                                }
+                                                adapter.notifyDataSetChanged();
+                                            } else {
+                                                Log.d("###", "Error getting documents: ", task.getException());
+                                            }
+                                        }
+                                    });
+                            adapter = new CustomAdapterSub(arrayList, getContext());
+                            recyclerView.setAdapter(adapter); // 리사이클러뷰에 어댑터 연결
                         } else {
                             Log.d("###", "Error getting documents: ", task.getException());
                         }
                     }
                 });
-        db.collection("post")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                int chk = 0;
-                                for(int i=0; i<block.size(); i++){
-                                    if(block.get(i).equals(document.getData().get("uid").toString())){
-                                        chk++;
-                                        break;
-                                    }
-                                }
-                                if(chk == 0){
-                                    Data dataList = new Data();
-                                    dataList.setPostID(document.getId());
-                                    dataList.setUid(document.getData().get("uid").toString());
-                                    dataList.setContent(document.getData().get("content").toString());
-                                    dataList.setImageUrl1(document.getData().get("imageUrl1").toString());
-                                    dataList.setImageUrl2(document.getData().get("imageUrl2").toString());
-                                    dataList.setImageUrl3(document.getData().get("imageUrl3").toString());
-                                    dataList.setImageUrl4(document.getData().get("imageUrl4").toString());
-                                    dataList.setImageUrl5(document.getData().get("imageUrl5").toString());
-                                    dataList.setNickName(document.getData().get("nickName").toString());
-                                    dataList.setDate(document.getData().get("date").toString());
-                                    dataList.setCategory(document.getData().get("category").toString());
-                                    dataList.setEmail(document.getData().get("email").toString());
-                                    dataList.setFavoriteCount(Integer.parseInt(document.getData().get("favoriteCount").toString()));
-                                    arrayList.add(0, dataList);
-                                }
-                            }
-                            adapter.notifyDataSetChanged();
-                        } else {
-                            Log.d("###", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-        adapter = new CustomAdapterSub(arrayList, getContext());
-        recyclerView.setAdapter(adapter); // 리사이클러뷰에 어댑터 연결
     }
 
     private void setInfo(final String s){
         arrayList.clear();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
         final ArrayList<String> block = new ArrayList<>();
         block.clear();
         db.collection("blockFriends/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/friends")
@@ -219,56 +218,57 @@ public class FragmentSub extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 block.add(document.getData().get("friendUid").toString());
                             }
-                        } else {
-                            Log.d("###", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-        db.collection("post")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                int chk = 0;
-                                for(int i=0; i<block.size(); i++){
-                                    if(block.get(i).equals(document.getData().get("uid").toString())){
-                                        chk++;
-                                        break;
-                                    }
-                                }
-                                if(chk == 0){
-                                    String temp = document.getData().get("hashTag").toString();
-                                    if(temp.length() > 0){
-                                        if(temp.contains(s)){
-                                            Data dataList = new Data();
-                                            dataList.setPostID(document.getId());
-                                            dataList.setUid(document.getData().get("uid").toString());
-                                            dataList.setContent(document.getData().get("content").toString());
-                                            dataList.setImageUrl1(document.getData().get("imageUrl1").toString());
-                                            dataList.setImageUrl2(document.getData().get("imageUrl2").toString());
-                                            dataList.setImageUrl3(document.getData().get("imageUrl3").toString());
-                                            dataList.setImageUrl4(document.getData().get("imageUrl4").toString());
-                                            dataList.setImageUrl5(document.getData().get("imageUrl5").toString());
-                                            dataList.setNickName(document.getData().get("nickName").toString());
-                                            dataList.setDate(document.getData().get("date").toString());
-                                            dataList.setCategory(document.getData().get("category").toString());
-                                            dataList.setEmail(document.getData().get("email").toString());
-                                            dataList.setFavoriteCount(Integer.parseInt(document.getData().get("favoriteCount").toString()));
-                                            arrayList.add(0, dataList);
+                            db.collection("post")
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                                    int chk = 0;
+                                                    for(int i=0; i<block.size(); i++){
+                                                        if(block.get(i).equals(document.getData().get("uid").toString())){
+                                                            chk++;
+                                                            break;
+                                                        }
+                                                    }
+                                                    if(chk == 0){
+                                                        String temp = document.getData().get("hashTag").toString();
+                                                        if(temp.length() > 0){
+                                                            if(temp.contains(s)){
+                                                                Data dataList = new Data();
+                                                                dataList.setPostID(document.getId());
+                                                                dataList.setUid(document.getData().get("uid").toString());
+                                                                dataList.setContent(document.getData().get("content").toString());
+                                                                dataList.setImageUrl1(document.getData().get("imageUrl1").toString());
+                                                                dataList.setImageUrl2(document.getData().get("imageUrl2").toString());
+                                                                dataList.setImageUrl3(document.getData().get("imageUrl3").toString());
+                                                                dataList.setImageUrl4(document.getData().get("imageUrl4").toString());
+                                                                dataList.setImageUrl5(document.getData().get("imageUrl5").toString());
+                                                                dataList.setNickName(document.getData().get("nickName").toString());
+                                                                dataList.setDate(document.getData().get("date").toString());
+                                                                dataList.setCategory(document.getData().get("category").toString());
+                                                                dataList.setEmail(document.getData().get("email").toString());
+                                                                dataList.setFavoriteCount(Integer.parseInt(document.getData().get("favoriteCount").toString()));
+                                                                arrayList.add(0, dataList);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                adapter.notifyDataSetChanged();
+                                            } else {
+                                                Log.d("###", "Error getting documents: ", task.getException());
+                                            }
                                         }
-                                    }
-                                }
-                            }
-                            adapter.notifyDataSetChanged();
+                                    });
+                            adapter = new CustomAdapterSub(arrayList, getContext());
+                            recyclerView.setAdapter(adapter); // 리사이클러뷰에 어댑터 연결
                         } else {
                             Log.d("###", "Error getting documents: ", task.getException());
                         }
                     }
                 });
-        adapter = new CustomAdapterSub(arrayList, getContext());
-        recyclerView.setAdapter(adapter); // 리사이클러뷰에 어댑터 연결
+
     }
 
     private void setSearch(final String s){

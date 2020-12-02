@@ -86,8 +86,7 @@ public class FriendsListFragment extends Fragment {
 
                                             Person person = dataSnapshot.getValue(Person.class);
                                             personArrayList.add(person);
-
-                                            adapter.addItem(new Person(document.get("nickName").toString()));
+                                            adapter.addItem(new Person(document.get("nickName").toString(), document.getId()));
                                             adapter.notifyDataSetChanged();
                                         }
                                     }
@@ -126,7 +125,7 @@ public class FriendsListFragment extends Fragment {
             public void onClick(View v) {
 
                 cb.setBackgroundResource(R.drawable.button_on);
-                fb.setBackgroundResource(R.drawable.button);
+                fb.setBackgroundResource(R.drawable.button_off);
                 NavHostFragment.findNavController(FriendsListFragment.this).navigate(R.id.friends_to_chat);
             }
         });

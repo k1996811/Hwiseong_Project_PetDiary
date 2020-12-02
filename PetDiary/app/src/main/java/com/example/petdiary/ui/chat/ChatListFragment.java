@@ -73,7 +73,7 @@ public class ChatListFragment extends Fragment {
             public void onClick(View v) {
 
                 fb.setBackgroundResource(R.drawable.button_on);
-                cb.setBackgroundResource(R.drawable.button);
+                cb.setBackgroundResource(R.drawable.button_off);
                 NavHostFragment.findNavController(ChatListFragment.this).navigate(R.id.chat_to_friends);
 
 
