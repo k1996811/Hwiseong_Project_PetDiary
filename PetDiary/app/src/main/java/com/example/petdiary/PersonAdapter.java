@@ -95,7 +95,6 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
                 public void onClick(View v) {
                     Intent intent = new Intent(itemView.getContext(), ChatActivity.class);
                     //intent.putExtra("email",stMyEmail );
-                    System.out.println(nick.getText() + "ssaa");
                     intent.putExtra("nickName",nick.getText());
                     intent.putExtra("my",nn[0]);
                     mContext.startActivity(intent);

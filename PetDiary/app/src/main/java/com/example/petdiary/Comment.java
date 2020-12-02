@@ -186,7 +186,7 @@ public class Comment extends AppCompatActivity {
                     etText.getText().clear();
                     database = FirebaseDatabase.getInstance();
                     Calendar c = Calendar.getInstance();
-                    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
+                    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
                     String datetime = dateformat.format(c.getTime());
                     DatabaseReference myRef = database.getReference("comment/"+postID).child(datetime);
                     Hashtable<String, String> numbers

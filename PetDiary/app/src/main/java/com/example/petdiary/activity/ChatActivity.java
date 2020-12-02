@@ -72,6 +72,7 @@ public class ChatActivity extends AppCompatActivity {
     String nn[];
     ArrayList<Chat> chatArrayList;
     MyAdapter mAdapter;
+    TextView topNick;
     private RecyclerView.LayoutManager layoutManager;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -84,6 +85,8 @@ public class ChatActivity extends AppCompatActivity {
         Intent intent = getIntent();
         nickName = intent.getStringExtra("nickName");
         my = intent.getStringExtra("my");
+        topNick = findViewById(R.id.guest);
+        topNick.setText(nickName);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         ActionBar actionBar = getSupportActionBar();
@@ -106,9 +109,11 @@ public class ChatActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new MyAdapter(chatArrayList, stEmail);
+        mAdapter = new MyAdapter(chatArrayList, stEmail, nickName);
         recyclerView.setAdapter(mAdapter);
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
 
         db.collection("users")
                 .get()
@@ -146,7 +151,7 @@ public class ChatActivity extends AppCompatActivity {
                                     nn[0] = user.getUid();
                                     nn[1] = document.getId();
                                     Arrays.sort(nn);
-                                    
+
 //                                    DatabaseReference ref = database.getReference("friend").child(user.getUid()).child(document.getId()).child("message");
 //                                    ref.addChildEventListener(childEventListener);
                                     DatabaseReference ref = database.getReference("chat").child(nn[0] + "&" + nn[1]).child("message");
@@ -184,7 +189,7 @@ public class ChatActivity extends AppCompatActivity {
                                             if(document.get("nickName").toString().equals(nickName)) {
 
                                                 Calendar c = Calendar.getInstance();
-                                                SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
+                                                SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
                                                 String datetime = dateformat.format(c.getTime());
 
                                                 nn[0] = user.getUid();
@@ -207,9 +212,6 @@ public class ChatActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-
-                    // Write a message to the database
-
 
 //                    Calendar c = Calendar.getInstance();
 //                    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss");
@@ -252,6 +254,8 @@ public class ChatActivity extends AppCompatActivity {
     String ca;
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         super.onActivityResult(requestCode, resultCode, data);
         sImg = new String[9];
         uri = new String[9];
@@ -260,24 +264,65 @@ public class ChatActivity extends AppCompatActivity {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
 
-                for (int i = 0; i < 9; i++) {
+                for (
+                        int i = 0; i < 9; i++) {
                     sImg[i] = data.getStringExtra("postImgPath" + i + "");
                     uri[i] = data.getStringExtra("uri" + i + "");
 
+
                     if (uri[i] != null) {
-
+                        final int j = i;
                         database = FirebaseDatabase.getInstance();
-                        Calendar c = Calendar.getInstance();
-                        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd k:mm:ss" + "_" + i);
-                        String datetime = dateformat.format(c.getTime());
 
-                        DatabaseReference myRef = database.getReference("message").child(datetime);
+                        db.collection("users")
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                                if(document.get("nickName").toString().equals(nickName)) {
 
-                        Hashtable<String, String> numbers
-                                = new Hashtable<String, String>();
-                        numbers.put("email", stEmail);
-                        numbers.put("image", sImg[i] + "");
-                        myRef.setValue(numbers);
+                                                    Calendar c = Calendar.getInstance();
+                                                    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+                                                    String datetime = dateformat.format(c.getTime());
+
+                                                    nn[0] = user.getUid();
+                                                    nn[1] = document.getId();
+                                                    Arrays.sort(nn);
+
+                                                    //DatabaseReference myRef = database.getReference("friend").child(user.getUid()).child(document.getId()).child("message").child(datetime);
+                                                    DatabaseReference myRef = database.getReference("chat").child(nn[0] + "&" + nn[1]).child("message").child(datetime);
+
+                                                    Hashtable<String, String> numbers
+                                                            = new Hashtable<String, String>();
+                                                    numbers.put("email", stEmail);
+                                                    numbers.put("image", sImg[j] + "");
+                                                    myRef.setValue(numbers);
+
+
+                                                }
+                                            }
+                                        } else {
+                                            Log.w(TAG, "Error getting documents.", task.getException());
+                                        }
+                                    }
+                                });
+
+
+//                        database = FirebaseDatabase.getInstance();
+//                        Calendar c = Calendar.getInstance();
+//                        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss" + "_" + i);
+//                        String datetime = dateformat.format(c.getTime());
+//
+//                        DatabaseReference myRef = database.getReference("message").child(datetime);
+//
+//                        Hashtable<String, String> numbers
+//                                = new Hashtable<String, String>();
+//                        numbers.put("email", stEmail);
+//                        numbers.put("image", sImg[i] + "");
+//                        myRef.setValue(numbers);
 
                         recyclerView.post(new Runnable() {
                             @Override

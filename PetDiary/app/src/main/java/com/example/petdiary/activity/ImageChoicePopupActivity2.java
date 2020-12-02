@@ -105,8 +105,7 @@ public class ImageChoicePopupActivity2 extends Activity {
         ca = new String();
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_MULTIPLE) {
-            System.out.println(data.getData()+"wwqq");
+        if (requestCode == PICK_IMAGE_MULTIPLE && data != null) {
 
             clipData = data.getClipData();
             if (data.getClipData() == null) {
@@ -121,12 +120,10 @@ public class ImageChoicePopupActivity2 extends Activity {
                     for (int i = 0; i < clipData.getItemCount(); i++) {
                         name = new String[clipData.getItemCount()];
                         name[i] = getImageNameToUri(clipData.getItemAt(i).getUri());
-                        System.out.println(clipData.getItemAt(i).getUri()+"qqww");
 
                         Uri file = Uri.fromFile(new File(getPath(clipData.getItemAt(i).getUri())));
 
                         //sImg[i] = clipData.getItemAt(i).getUri().toString();
-                        System.out.println(file+"nnnn");
                         sImg[i] = sendPicture(clipData.getItemAt(i).getUri());
                         Log.d("vcxz", name[i]);
                         Log.d("zxcv", sImg[i]);
@@ -135,21 +132,20 @@ public class ImageChoicePopupActivity2 extends Activity {
 
                         StorageReference riversRef = storageRef.child("chatImage/" + file.getLastPathSegment());
 
-                        System.out.println(file.getLastPathSegment() + "qwer");
+
                         UploadTask uploadTask = riversRef.putFile(file);
                         uploadTask.addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception exception) {
-                                System.out.println("tlfvo");
+
                                 Log.e("### ImageChoice2", exception.toString());
-                                // Handle unsuccessful uploads
+
                             }
                         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                System.out.println("tjdrhd");
-                                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                                // ...
+
+
                             }
                         });
 
@@ -158,7 +154,7 @@ public class ImageChoicePopupActivity2 extends Activity {
             }
             setResult(Activity.RESULT_OK, resultIntent2);
             finish();
-        } else if (requestCode == 2) {
+        } else if (requestCode == 2 && data != null) {
 
             ca = data.getStringExtra("name");
             System.out.println(ca+"nulll");
