@@ -17,6 +17,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //getAppKeyHash();
+
+        findViewById(R.id.splish).animate().scaleX(1.2f).scaleY(1.2f).setDuration(3500).start();
 
         getSupportActionBar().hide();
         new Handler().postDelayed(new Runnable()
