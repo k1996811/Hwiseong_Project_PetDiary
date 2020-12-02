@@ -40,6 +40,11 @@ public class Kon_MypageAdapter extends RecyclerView.Adapter<Kon_MypageAdapter.My
         this.columnNum = columnNum;
     }
 
+    public void setArray(ArrayList<Data> arrayList)
+    {
+        this.arrayList = arrayList;
+    }
+
     @NonNull
     @Override
     public MypageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

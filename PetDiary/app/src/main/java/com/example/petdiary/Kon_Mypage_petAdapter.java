@@ -135,6 +135,7 @@ public class Kon_Mypage_petAdapter extends RecyclerView.Adapter<Kon_Mypage_petAd
 
                     if (selectedItems.get(position)) {
                         selectedItems.delete(position);// 펼쳐진 Item을 클릭 시
+                        stringCallback.callback("");
                     } else {
                         selectedItems.delete(prePosition); // 직전의 클릭됐던 Item의 클릭상태를 지움
                         selectedItems.put(position, true); // 클릭한 Item의 position을 저장

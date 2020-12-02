@@ -71,6 +71,7 @@ public class FragmentMy extends Fragment {
     Map<String, String> userInfo = new HashMap<>();   // 이거 여기서 선언할게 아니라 받아와야함
     //Map<String, String> petInfo = new HashMap<>();
     ArrayList<Data> postList = new ArrayList<Data>();
+    ArrayList<Data> selectedPostList = new ArrayList<Data>();
     ArrayList<PetData> petList = new ArrayList<PetData>();
     int listCount = 0;
 
@@ -151,16 +152,16 @@ public class FragmentMy extends Fragment {
         });
 
         //////////////////////////////////// 모두 보기 버튼
-        TextView allBtn = viewGroup.findViewById(R.id.profile_allBtn);
-        allBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 펫 리사이클러뷰 데이터 변경 해주는 코드 넣기
-            }
-        });
+        //TextView allBtn = viewGroup.findViewById(R.id.profile_allBtn);
+//        allBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // 펫 리사이클러뷰 데이터 변경 해주는 코드 넣기
+//            }
+//        });
 
 
-        // 펫 추가 버튼 (미구현)
+        // 펫 추가 버튼
         petAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -201,6 +202,11 @@ public class FragmentMy extends Fragment {
                 } else {
                 }
                 break;
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    getPetInfo();
+                }
+                break;
         }
     }
 
@@ -233,9 +239,8 @@ public class FragmentMy extends Fragment {
     }
 
 
-    //////////////////////////////////// 펫 정보 가져오기
+    //////////////////////////////////// 펫 정보 로드
     private void getPetInfo() {
-        Log.d("로그로그로그~~~~~", "getPetInfo: 안에 들어왔다 ");
         //  유저
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
@@ -249,8 +254,9 @@ public class FragmentMy extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
                         if (task.isSuccessful()) {
+                            petList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("로그로그로그~~~~", document.getId() + " => " + document.getData());
+                                Log.d("로그로그로그~~~~", "펫 정보 로드 :" + document.getId() + " => " + document.getData());
 
                                 Map<String, Object> data = document.getData();
                                 // 이름 이미지 메모
@@ -263,7 +269,6 @@ public class FragmentMy extends Fragment {
 
                             }
                         } else {
-                            Log.d("로그로그로그~~~~~", "addOnCompleteListener 안에 들어왔다 : 실패");
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
 
@@ -273,75 +278,6 @@ public class FragmentMy extends Fragment {
 
     }
 
-    //////////////////////////////////// 특정 펫 정보 가져오기
-    private void getPetInfo(String petId){
-        Log.d("로그로그로그~~~~~", "getPetInfo: 안에 들어왔다 ");
-        //  유저
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String uid = user.getUid();
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-
-        db.collection("pets")
-                .whereEqualTo("petsId", petId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-
-                                petList.clear();
-                                Map<String, Object> data = document.getData();
-                                // 이름 이미지 메모
-                                PetData pet = new PetData(
-                                        document.getId(),
-                                        data.get("petName").toString(),
-                                        data.get("profileImg").toString(),
-                                        data.get("petMemo").toString());
-                                petList.add(pet);
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-        petAdapter.notifyDataSetChanged();
-
-
-/*
-        db.collection("pets").document(uid).collection("pets")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("로그로그로그~~~~", document.getId() + " => " + document.getData());
-
-                                Map<String, Object> data = document.getData();
-                                // 이름 이미지 메모
-                                PetData pet = new PetData(
-                                        document.getId(),
-                                        data.get("petName").toString(),
-                                        data.get("profileImg").toString(),
-                                        data.get("petMemo").toString());
-                                petList.add(pet);
-
-                            }
-                        } else {
-                            Log.d("로그로그로그~~~~~", "addOnCompleteListener 안에 들어왔다 : 실패");
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-
-                        petAdapter.notifyDataSetChanged();
-                    }
-                });
-*/
-    }
 
     //////////////////////////////////// 개인 게시물 로드. 체크하게 되면 이전 게시물 개수와 비교후 업데이트,
     //////////////////////////////////// 체크 안하면 그냥 업데이트
@@ -350,6 +286,7 @@ public class FragmentMy extends Fragment {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        postList.clear();
 
         Query query = db.collection("post").whereEqualTo("uid", uid);
         //query.get
@@ -376,6 +313,47 @@ public class FragmentMy extends Fragment {
                     }
                     adapter.notifyDataSetChanged();
                     listCount = resultCount;
+
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
+
+    }
+
+
+    ////////////////////////////////////  특정 펫 게시물 로드
+    private void loadSelectedPosts(String petId) {
+        //  유저
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Query query = db.collection("post").whereEqualTo("petsID", petId);
+        //query.get
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    int resultCount = task.getResult().size();
+                    postList.clear();
+                    Log.d("로그로그로그~~~~", "loadSelectedPosts: " + resultCount);
+
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Data dataList = new Data();
+                        dataList.setUid(document.getData().get("uid").toString());
+                        dataList.setContent(document.getData().get("content").toString());
+                        dataList.setImageUrl1(document.getData().get("imageUrl1").toString());
+                        dataList.setImageUrl2(document.getData().get("imageUrl2").toString());
+                        dataList.setImageUrl3(document.getData().get("imageUrl3").toString());
+                        dataList.setImageUrl4(document.getData().get("imageUrl4").toString());
+                        dataList.setImageUrl5(document.getData().get("imageUrl5").toString());
+                        dataList.setNickName(document.getData().get("nickName").toString());
+                        postList.add(0, dataList);
+                    }
+                    adapter.notifyDataSetChanged();
+                    //listCount = resultCount;
 
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
@@ -432,7 +410,10 @@ public class FragmentMy extends Fragment {
             @Override
             public void callback(String choice) {
                 choicePetId = choice;
-                getPetInfo(choicePetId);
+                if (choice.equals(""))
+                    loadPostsAfterCheck(false);
+                else
+                    loadSelectedPosts(choicePetId);
             }
         });
         petRecyclerView.setAdapter(petAdapter); // 리사이클러뷰에 어댑터 연결

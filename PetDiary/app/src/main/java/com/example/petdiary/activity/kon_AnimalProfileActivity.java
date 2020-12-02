@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,6 +38,8 @@ import java.util.Map;
 
 public class kon_AnimalProfileActivity extends AppCompatActivity {
 
+    RelativeLayout loaderLayout;
+
     ImageView editBtn;
     ImageView petImg;
     EditText petName;
@@ -61,6 +64,8 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
+
+        loaderLayout = findViewById(R.id.loaderLayout);
 
         //데이터 수신
         Intent intent = getIntent();
@@ -102,12 +107,17 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                         startGalleryActivity();
                     break;
                 case R.id.animalPage_save:
+                    isPressedSaveBtn = true;
+                    isEditMode = false;
+
+                    Log.d("로그로그로그~~~~", "저장버튼을 눌렀다고 한다  ");
+
+                    loaderLayout.setVisibility(View.VISIBLE);
                     if(isAddMode) {
+
                         addDataToFirebase();
                     }
                     else {
-                        isPressedSaveBtn = true;
-                        isEditMode = false;
 
 
                         setProfileImg(postImgPath);
@@ -172,7 +182,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
          //   intent.putExtra("aniName", aniName.getText().toString());
             //intent.putExtra("memo", userMemo.getText().toString());
 
-          //  setResult(Activity.RESULT_OK, intent);
+            setResult(RESULT_OK, intent);
             finish();
         }
         super.onBackPressed();
@@ -250,6 +260,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         petData.put("petMemo", petMemo.getText().toString());
         petData.put("master", uid);
 
+        Log.d("로그로그로그~~~~", "텍스트 저장전이라고 한다 ");
         ///////////////////////////////////// 텍스트 추가
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 //        db.collection("pets").document(petId)
@@ -268,6 +279,8 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                     }
                 });
 
+
+        Log.d("로그로그로그~~~~", "이미지 저장전이라고 한다 ");
         ///////////////////////////////////// 이미지 추가
         final String[] profileImg = new String[1];
 
@@ -322,16 +335,20 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
+                                            loaderLayout.setVisibility(View.INVISIBLE);
                                             Log.d("ProfileEditActivity", "DocumentSnapshot successfully updated!");
+                                            setEditIcon(true);
+                                            setEditMode(false);
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
+
                                             Log.w("ProfileEditActivity", "Error updating document", e);
                                         }
                                     });
-                            setProfileImg(postImgPath);
+                            //setProfileImg(postImgPath);
                         } else {
                         }
                     }
