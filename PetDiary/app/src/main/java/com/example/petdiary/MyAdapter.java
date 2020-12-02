@@ -32,6 +32,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     StorageReference pathReference;
+    String nick;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -40,14 +41,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         // each data item is just a string in this case
         public TextView textView;
         public ImageView imageView;
+        public TextView nickView;
+
         public MyViewHolder(View v) {
             super(v);
             textView = v.findViewById(R.id.tvChat);
             imageView = v.findViewById(R.id.ivChat);
+            nickView = v.findViewById(R.id.nickChat);
+
         }
-
     }
-
 
     @Override
     public int getItemViewType(int position) {
@@ -68,9 +71,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(ArrayList<Chat> myDataset, String stEmail) {
+    public MyAdapter(ArrayList<Chat> myDataset, String stEmail, String nick) {
         mDataset = myDataset;
         this.stMyEmail = stEmail;
+        this.nick = nick;
     }
 
     // Create new views (invoked by the layout manager)
@@ -101,14 +105,19 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
-
 
         if (mDataset.get(position).getImage() == null) {
+
+            if(holder.nickView != null){
+                holder.nickView.setText(nick);
+            }
             holder.textView.setText(mDataset.get(position).getText());
-            //holder.textView.setBackgroundDrawable(ContextCompat.getDrawable(holder.textView.getContext(),R.drawable.chat_bubble));
+
+
         } else if (mDataset.get(position).getText() == null) {
+            if(holder.nickView != null){
+                holder.nickView.setText(nick);
+            }
             Uri i = Uri.parse(mDataset.get(position).getImage() + "");
             pathReference = storageRef.child("chatImage/" + mDataset.get(position).getImage()+"");
             //holder.imageView.setImageURI(i);
@@ -125,23 +134,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                     .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            // Successfully downloaded data to local file
-                            //holder.imageView.setImageURI(Uri.fromFile(finalLocalFile));
+
                             Glide.with(holder.imageView.getContext()).load(Uri.fromFile(finalLocalFile)).into(holder.imageView);
-                            // ...
+
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    Log.e("zzz","fail");
 
-                    // Handle failed download
-                    // ...
                 }
             });
-//            Uri i = Uri.parse(mDataset.get(position).getImage()+"");
-//            System.out.println(mDataset.get(position).getImage()+"qqqq");
-//            holder.imageView.setImageURI(i);
+
 
         }
     }

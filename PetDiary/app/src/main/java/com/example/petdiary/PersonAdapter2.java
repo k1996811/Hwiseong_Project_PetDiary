@@ -2,6 +2,7 @@ package com.example.petdiary;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +12,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.petdiary.activity.ChatActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
 public class PersonAdapter2 extends RecyclerView.Adapter<PersonAdapter2.ViewHolder> implements ItemTouchHelperListener {
 
     ArrayList<Person> items = new ArrayList<Person>();
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private OnItemClickListener mListener = null ;
 
     private Context mContext;
@@ -44,12 +53,32 @@ public class PersonAdapter2 extends RecyclerView.Adapter<PersonAdapter2.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView textView;
+        TextView nick;
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         public ViewHolder(final View itemView){
             super(itemView);
 
-            textView = itemView.findViewById(R.id.textView);
+            nick = itemView.findViewById(R.id.textView);
+
+            final String[] nn = new String[1];
+            db.collection("users")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Log.d("asdf", document.getId() + " => " + document.getData());
+                                    if(document.get("email").toString().equals(user.getEmail())){
+                                        nn[0] = document.get("nickName").toString();
+                                    }
+                                }
+                            } else {
+                            }
+                        }
+                    });
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -62,14 +91,15 @@ public class PersonAdapter2 extends RecyclerView.Adapter<PersonAdapter2.ViewHold
                         }
                     }
                     Intent intent = new Intent(itemView.getContext(), ChatActivity.class);
-                    //intent.putExtra("email",stMyEmail );
+                    intent.putExtra("nickName",nick.getText());
+                    intent.putExtra("my",nn[0]);
                     mContext.startActivity(intent);
                 }
             });
-            textView = itemView.findViewById(R.id.textView);
+            nick = itemView.findViewById(R.id.textView);
         }
         public void setItem(Person item){
-            textView.setText(item.getNickname());
+            nick.setText(item.getNickname());
         }
     }
 
