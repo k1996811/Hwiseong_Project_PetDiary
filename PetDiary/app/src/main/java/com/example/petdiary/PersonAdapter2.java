@@ -12,11 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.petdiary.activity.ChatActivity;
-<<<<<<< HEAD
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-=======
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,7 +22,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
->>>>>>> 89370bafe96a75337cf2c320e042f572c6c5ff13
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -129,16 +126,12 @@ public class PersonAdapter2 extends RecyclerView.Adapter<PersonAdapter2.ViewHold
     @Override
     public void onRightClick(int position, RecyclerView.ViewHolder viewHolder) {
         String nn[] = new String[2];
-        nn[0] = "";
-        nn[1] = "";
         nn[0] = FirebaseAuth.getInstance().getCurrentUser().getUid();
         nn[1] = items.get(position).getUid();
-        Log.e("###", nn[0] + " /// " + nn[1]);
-        //Arrays.sort(nn);
+        Arrays.sort(nn);
 
         mDatabase = FirebaseDatabase.getInstance().getReference("chat/"+ nn[0] + "&" + nn[1]);
-        Log.e("PersonAdapter2", mDatabase.toString());
-        //mDatabase.removeValue();
+        mDatabase.removeValue();
         items.remove(position);
         notifyItemRemoved(position);
     }

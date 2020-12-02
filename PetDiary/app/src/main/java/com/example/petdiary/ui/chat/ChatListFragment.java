@@ -87,7 +87,7 @@ public class ChatListFragment extends Fragment {
                                                 Person person = dataSnapshot.getValue(Person.class);
                                                 personArrayList.add(person);
 
-                                                adapter.addItem(new Person(document.get("nickName").toString()));
+                                                adapter.addItem(new Person(document.get("nickName").toString(), document.getId()));
                                                 adapter.notifyDataSetChanged();
                                             }
                                         }
