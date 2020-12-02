@@ -43,6 +43,7 @@ public class ViewPageAdapterSub extends PagerAdapter {
     private Data arrayList;
 
     private DatabaseReference mReference;
+    private DatabaseReference mDatabase;
     private FirebaseDatabase firebaseDatabase;
 
     public ViewPageAdapterSub(Data arrayList, String uri1, Context context) {
@@ -87,40 +88,48 @@ public class ViewPageAdapterSub extends PagerAdapter {
         final Intent intent = new Intent(context, Expand_ImageView.class);
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        db.collection("user-checked/"+uid+"/bookmark")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            intent.putExtra("bookmark", "unchecked");
-                            for (final QueryDocumentSnapshot document : task.getResult()) {
-                                if(arrayList.getPostID().equals(document.getData().get("postID").toString())){
-                                    intent.putExtra("bookmark", "checked");
-                                    break;
-                                }
-                            }
-                            db.collection("user-checked/"+uid+"/like")
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                intent.putExtra("postLike", "unchecked");
-                                                for (final QueryDocumentSnapshot document : task.getResult()) {
-                                                    if(arrayList.getPostID().equals(document.getData().get("postID").toString())){
-                                                        intent.putExtra("postLike", "checked");
-                                                        break;
-                                                    }
-                                                }
-                                                mReference = firebaseDatabase.getReference("friend/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                                mReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                    @Override
-                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+        final ArrayList<String> mainSource = new ArrayList<>();
+
+        mainSource.clear();
+
+        mDatabase = FirebaseDatabase.getInstance().getReference("friend/"+uid);
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                    mainSource.add(postSnapshot.getKey());
+                }
+                db.collection("user-checked/"+uid+"/bookmark")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    intent.putExtra("bookmark", "unchecked");
+                                    for (final QueryDocumentSnapshot document : task.getResult()) {
+                                        if(arrayList.getPostID().equals(document.getData().get("postID").toString())){
+                                            intent.putExtra("bookmark", "checked");
+                                            break;
+                                        }
+                                    }
+                                    db.collection("user-checked/"+uid+"/like")
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        intent.putExtra("postLike", "unchecked");
+                                                        for (final QueryDocumentSnapshot document : task.getResult()) {
+                                                            if(arrayList.getPostID().equals(document.getData().get("postID").toString())){
+                                                                intent.putExtra("postLike", "checked");
+                                                                break;
+                                                            }
+                                                        }
                                                         boolean chkFriend = false;
-                                                        for (DataSnapshot messageData : dataSnapshot.getChildren()) {
-                                                            FriendInfo friend = messageData.getValue(FriendInfo.class);
-                                                            if (arrayList.getUid().equals(friend.getFriendUid())) {
+                                                        for (int i=0; i<mainSource.size(); i++) {
+                                                            Log.e("###ViewPageSub", arrayList.getUid() + " /// " + mainSource.get(i));
+                                                            if (arrayList.getUid().equals(mainSource.get(i))) {
                                                                 chkFriend = true;
                                                                 break;
                                                             }
@@ -145,22 +154,22 @@ public class ViewPageAdapterSub extends PagerAdapter {
                                                         intent.putExtra("category", arrayList.getCategory());
                                                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                                         context.startActivity(intent);
+                                                    } else {
+                                                        Log.d("###", "Error getting documents: ", task.getException());
                                                     }
+                                                }
+                                            });
+                                } else {
+                                    Log.d("###", "Error getting documents: ", task.getException());
+                                }
+                            }
+                        });
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                                                    @Override
-                                                    public void onCancelled(DatabaseError databaseError) {
-                                                    }
-                                                });
-                                            } else {
-                                                Log.d("###", "Error getting documents: ", task.getException());
-                                            }
-                                        }
-                                    });
-                        } else {
-                            Log.d("###", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
+            }
+        });
     }
 
     @Override

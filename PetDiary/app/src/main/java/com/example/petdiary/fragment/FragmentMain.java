@@ -121,7 +121,7 @@ public class FragmentMain extends Fragment {
         mainSource.clear();
         mainSource.add(uid);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference("friend/"+uid+"/");
+        mDatabase = FirebaseDatabase.getInstance().getReference("friend/"+uid);
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

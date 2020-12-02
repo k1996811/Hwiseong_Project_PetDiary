@@ -87,6 +87,7 @@ public class Expand_ImageView extends AppCompatActivity {
 
         Intent intent = getIntent();
         friendChecked = intent.getStringExtra("friend");
+        Log.e("ExpandImageView", friendChecked);
         likeChecked = intent.getStringExtra("postLike");
         bookmarkChecked = intent.getStringExtra("bookmark");
         postID = intent.getStringExtra("postID");
