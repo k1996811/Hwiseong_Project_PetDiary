@@ -2,6 +2,7 @@ package com.example.petdiary.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -71,7 +72,7 @@ public class ViewPageAdapterDetail extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(final ViewGroup container, final int position) {
         inflater = (LayoutInflater)context.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.slider, container, false);
@@ -80,7 +81,8 @@ public class ViewPageAdapterDetail extends PagerAdapter {
             Glide.with(context).load(images.get(position)).centerCrop().override(1000).into(imageView);
             v.setOnClickListener(new OnSingleClickListener(){
                 public void onSingleClick(View v){
-                    goPost(url1,url2,url3,url4,url5);
+                    Log.e("###", position+"");
+                    goPost(position, url1,url2,url3,url4,url5);
                 }
             });
         } else {
@@ -91,9 +93,10 @@ public class ViewPageAdapterDetail extends PagerAdapter {
         return v;
     }
 
-    private void goPost(String url1, String url2, String url3, String url4, String url5){
+    private void goPost(int currentItem, String url1, String url2, String url3, String url4, String url5){
         final Intent intent = new Intent(context, Main_Expand_ImageView.class);
 
+        intent.putExtra("currentItem", currentItem);
         intent.putExtra("imageUrl1", url1);
         intent.putExtra("imageUrl2", url2);
         intent.putExtra("imageUrl3", url3);

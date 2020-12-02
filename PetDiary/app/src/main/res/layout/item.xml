@@ -33,7 +33,6 @@
         android:layout_marginRight="2dp"
         android:layout_below="@+id/first_Square"
         android:layout_above="@+id/third_Square"
-        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/button"/>
@@ -43,7 +42,6 @@
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:layout_below="@+id/main_textView"
-        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="75dp"
         android:background="@drawable/button"/>

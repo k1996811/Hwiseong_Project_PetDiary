@@ -192,11 +192,12 @@ public class ContentEditActivity extends AppCompatActivity {
         }
 
         String postImgPath[] = {imageUrl1,imageUrl2,imageUrl3,imageUrl4,imageUrl5};
-        if(!imageUrl1.equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=eb832feb-bb39-48a0-9f46-81ffea724871")) {
-            Log.d("@@##", "onCreate: 이미지url"+ imageUrl1);
-            postImgCheck[0] = 0;
-            choiceNum = 0;
-            setPostImg(postImgPath[0]);
+        if(!imageUrl1.equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=eb832feb-bb39-48a0-9f46-81ffea724871") &&
+                !imageUrl1.equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=c41b1cc0-d610-4964-b00c-2638d4bfd8bd")) {
+                    Log.d("@@##", "onCreate: 이미지url"+ imageUrl1);
+                    postImgCheck[0] = 0;
+                    choiceNum = 0;
+                    setPostImg(postImgPath[0]);
         }
         if(!imageUrl2.equals("")) {
             postImgCheck[1] = 0;

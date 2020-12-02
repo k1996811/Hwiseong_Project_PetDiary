@@ -71,7 +71,7 @@ public class ViewPageAdapterSub extends PagerAdapter {
                 (Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.slider_sub, container, false);
         ImageView imageView = (ImageView) v.findViewById(R.id.imageView);
-        Glide.with(context).load(images.get(position)).centerCrop().override(1000).into(imageView);
+        Glide.with(context).load(images.get(position)).centerCrop().override(500).into(imageView);
 
         imageView.setOnClickListener(new OnSingleClickListener() {
             @Override
@@ -101,6 +101,7 @@ public class ViewPageAdapterSub extends PagerAdapter {
                     mainSource.add(postSnapshot.getKey());
                 }
                 db.collection("user-checked/"+uid+"/bookmark")
+                        .whereEqualTo("postID", arrayList.getPostID())
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
@@ -114,6 +115,7 @@ public class ViewPageAdapterSub extends PagerAdapter {
                                         }
                                     }
                                     db.collection("user-checked/"+uid+"/like")
+                                            .whereEqualTo("postID", arrayList.getPostID())
                                             .get()
                                             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                                 @Override
@@ -128,7 +130,6 @@ public class ViewPageAdapterSub extends PagerAdapter {
                                                         }
                                                         boolean chkFriend = false;
                                                         for (int i=0; i<mainSource.size(); i++) {
-                                                            Log.e("###ViewPageSub", arrayList.getUid() + " /// " + mainSource.get(i));
                                                             if (arrayList.getUid().equals(mainSource.get(i))) {
                                                                 chkFriend = true;
                                                                 break;

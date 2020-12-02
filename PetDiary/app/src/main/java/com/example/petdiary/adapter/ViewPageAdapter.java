@@ -60,7 +60,7 @@ public class ViewPageAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(ViewGroup container, final int position) {
         inflater = (LayoutInflater) context.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.slider, container, false);
@@ -69,7 +69,7 @@ public class ViewPageAdapter extends PagerAdapter {
 
         v.setOnClickListener(new OnSingleClickListener() {
             public void onSingleClick(View v) {
-                goPost(arrayList);
+                goPost(position, arrayList);
             }
         });
 
@@ -77,9 +77,10 @@ public class ViewPageAdapter extends PagerAdapter {
         return v;
     }
 
-    private void goPost(final Data arrayList) {
+    private void goPost(int position, final Data arrayList) {
         final Intent intent = new Intent(context, Main_Expand_ImageView.class);
 
+        intent.putExtra("currentItem", position);
         intent.putExtra("imageUrl1", arrayList.getImageUrl1());
         intent.putExtra("imageUrl2", arrayList.getImageUrl2());
         intent.putExtra("imageUrl3", arrayList.getImageUrl3());

@@ -153,7 +153,7 @@ public class Expand_ImageView2 extends AppCompatActivity {
         });
 
         viewPager = (ViewPager) findViewById(R.id.main_image);
-        viewPageAdapter = new ViewPageAdapterDetail(true,imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5, getApplicationContext());
+        viewPageAdapter = new ViewPageAdapterDetail(true, imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5, getApplicationContext());
         viewPager.setAdapter(viewPageAdapter);
 
         wormDotsIndicator  = (WormDotsIndicator) findViewById(R.id.worm_dots_indicator);

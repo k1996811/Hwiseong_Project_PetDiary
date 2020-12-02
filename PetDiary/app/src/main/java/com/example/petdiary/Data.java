@@ -24,6 +24,20 @@ public class Data {
 
 
     public Data() { }
+    public Data(String postID, String imageUrl1, String imageUrl2, String imageUrl3, String imageUrl4, String imageUrl5, String content, String nickName, String uid, String category, String date, String email) {
+        this.postID = postID;
+        this.imageUrl1 = imageUrl1;
+        this.imageUrl2 = imageUrl2;
+        this.imageUrl3 = imageUrl3;
+        this.imageUrl4 = imageUrl4;
+        this.imageUrl5 = imageUrl5;
+        this.content = content;
+        this.nickName = nickName;
+        this.uid = uid;
+        this.category = category;
+        this.date = date;
+        this.email = email;
+    }
 
     public Boolean getBookmark() { return bookmark; }
     public void setBookmark(boolean bookmark) { this.bookmark = bookmark; }

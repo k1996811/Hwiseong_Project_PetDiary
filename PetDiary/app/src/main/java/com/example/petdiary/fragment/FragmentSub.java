@@ -182,7 +182,7 @@ public class FragmentSub extends Fragment {
                                                         dataList.setImageUrl4(document.getData().get("imageUrl4").toString());
                                                         dataList.setImageUrl5(document.getData().get("imageUrl5").toString());
                                                         dataList.setNickName(document.getData().get("nickName").toString());
-                                                        dataList.setDate(document.getData().get("date").toString());
+                                                        //dataList.setDate(document.getData().get("date").toString());
                                                         dataList.setCategory(document.getData().get("category").toString());
                                                         dataList.setEmail(document.getData().get("email").toString());
                                                         dataList.setFavoriteCount(Integer.parseInt(document.getData().get("favoriteCount").toString()));

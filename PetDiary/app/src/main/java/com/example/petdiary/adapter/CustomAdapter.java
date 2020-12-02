@@ -38,6 +38,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
@@ -81,7 +83,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     @Override
     public void onBindViewHolder(@NonNull final CustomViewHolder holder, final int position) {
 
-        if (arrayList.get(position).getImageUrl1().equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=eb832feb-bb39-48a0-9f46-81ffea724871")) {
+        if (arrayList.get(position).getImageUrl1().equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=eb832feb-bb39-48a0-9f46-81ffea724871") ||
+                arrayList.get(position).getImageUrl1().equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=c41b1cc0-d610-4964-b00c-2638d4bfd8bd")) {
             viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
             viewPageAdapter = new ViewPageAdapter(arrayList.get(position), arrayList.get(position).getImageUrl1(), arrayList.get(position).getImageUrl2(),
                     arrayList.get(position).getImageUrl3(), arrayList.get(position).getImageUrl4(), arrayList.get(position).getImageUrl5(), context);
@@ -116,6 +119,31 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         }
         holder.content.setText(arrayList.get(position).getContent());
         holder.nickName.setText(arrayList.get(position).getNickName());
+
+        final String[] profileImg = new String[1];
+        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(arrayList.get(position).getUid());
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        if (document.exists()) {
+                            profileImg[0] = document.getData().get("profileImg").toString();
+                            if(profileImg[0].length() > 0){
+                                Glide.with(context).load(profileImg[0]).centerCrop().override(500).into(holder.profileImage);
+                            } else {
+                                holder.profileImage.setImageResource(R.drawable.icon_person);
+                            }
+                        } else {
+                            //Log.d("###", "No such document");
+                        }
+                    }
+                } else {
+                    //Log.d("###", "get failed with ", task.getException());
+                }
+            }
+        });
 
         if(arrayList.get(position).getBookmark()){
             holder.bookmark_button.setChecked(true);
@@ -279,30 +307,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                 }
             }
 
-        });
-
-        final String[] profileImg = new String[1];
-        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(arrayList.get(position).getUid());
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null) {
-                        if (document.exists()) {
-                            profileImg[0] = document.getData().get("profileImg").toString();
-                            if (profileImg[0].length() > 0) {
-                                ImageView profileImage = (ImageView) holder.itemView.findViewById(R.id.Profile_image);
-                                Glide.with(context).load(profileImg[0]).centerCrop().override(500).into(profileImage);
-                            }
-                        } else {
-                            //Log.d("###", "No such document");
-                        }
-                    }
-                } else {
-                    //Log.d("###", "get failed with ", task.getException());
-                }
-            }
         });
 
         wormDotsIndicator = (WormDotsIndicator) holder.itemView.findViewById(R.id.worm_dots_indicator);

@@ -20,6 +20,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.example.petdiary.activity.ContentEditActivity;
+import com.example.petdiary.adapter.ViewPageAdapter;
 import com.example.petdiary.adapter.ViewPageAdapterDetail;
 import com.example.petdiary.info.BlockFriendInfo;
 import com.example.petdiary.info.BookmarkInfo;
@@ -145,12 +146,19 @@ public class Expand_ImageView extends AppCompatActivity {
             }
         });
 
-        viewPager = (ViewPager) findViewById(R.id.main_image);
-        viewPageAdapter = new ViewPageAdapterDetail(true, imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5, getApplicationContext());
-        viewPager.setAdapter(viewPageAdapter);
+        wormDotsIndicator = (WormDotsIndicator) findViewById(R.id.worm_dots_indicator);
+        wormDotsIndicator.setVisibility(View.INVISIBLE);
+        if(!imageUrl1.equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=eb832feb-bb39-48a0-9f46-81ffea724871") &&
+                !imageUrl1.equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=c41b1cc0-d610-4964-b00c-2638d4bfd8bd")) {
+                    viewPager = (ViewPager) findViewById(R.id.main_image);
+                    Log.e("###111", viewPager.getCurrentItem() + " ");
+                    viewPageAdapter = new ViewPageAdapterDetail(true, imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5, getApplicationContext());
+                    viewPager.setAdapter(viewPageAdapter);
 
-        wormDotsIndicator  = (WormDotsIndicator) findViewById(R.id.worm_dots_indicator);
-        wormDotsIndicator .setViewPager(viewPager);
+                    wormDotsIndicator.setViewPager(viewPager);
+                    wormDotsIndicator.setVisibility(View.VISIBLE);
+
+        }
 
         post_nickName = findViewById(R.id.Profile_Name);
         post_content = findViewById(R.id.main_textView);
@@ -161,10 +169,7 @@ public class Expand_ImageView extends AppCompatActivity {
             post_content.setVisibility(View.INVISIBLE);
         }
 
-
-
         findViewById(R.id.onPopupButton).setOnClickListener(new View.OnClickListener(){
-
             //내 uid
             String myuid = myuid_server;
             //게시글 uid
