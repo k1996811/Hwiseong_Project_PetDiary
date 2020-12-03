@@ -130,7 +130,7 @@ public class Comment extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        cAdapter = new CommentAdapter(commentArrayList, stEmail, getApplicationContext());
+        cAdapter = new CommentAdapter(commentArrayList, stEmail,postID, getApplicationContext());
         recyclerView.setAdapter(cAdapter);
 
         ChildEventListener childEventListener = new ChildEventListener() {
