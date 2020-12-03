@@ -198,6 +198,8 @@ public class FragmentMy extends Fragment {
                     setProfileImg(data.getStringExtra("profileImg"));
                     profileName.setText(data.getStringExtra("nickName"));
                     profileMemo.setText(data.getStringExtra("memo"));
+                    ImageView hambugerProfileImg = getActivity().findViewById(R.id.genter_icon);
+                    Glide.with(this).load(data.getStringExtra("profileImg")).centerCrop().override(500).into(hambugerProfileImg);
 
                 } else {
                 }
