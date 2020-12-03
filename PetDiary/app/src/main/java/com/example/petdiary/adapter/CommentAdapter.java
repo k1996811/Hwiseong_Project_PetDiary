@@ -72,6 +72,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
+        Log.e("###CommentAdapter", mDataset.get(position).getDate().toString());
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").whereEqualTo("email",mDataset.get(position).getEmail())
                 .get()

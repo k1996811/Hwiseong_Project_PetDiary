@@ -4,6 +4,7 @@ public class Chat {
     String email;
     String text;
     String image;
+    String date;
 
     public String getImage() { return image; }
 
@@ -22,4 +23,8 @@ public class Chat {
     public void setText(String text) {
         this.text = text;
     }
+
+    public String getDate() { return date; }
+
+    public void setDate(String date) { this.date = date; }
 }

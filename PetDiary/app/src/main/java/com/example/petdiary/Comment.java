@@ -195,6 +195,7 @@ public class Comment extends AppCompatActivity {
                             = new Hashtable<String, String>();
                     numbers.put("email", stEmail);
                     numbers.put("text", stText);
+                    numbers.put("date", datetime);
                     myRef.setValue(numbers);
 
                     recyclerView.post(new Runnable() {
