@@ -12,8 +12,10 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -111,6 +113,22 @@ public class ChatActivity extends AppCompatActivity {
 
         mAdapter = new MyAdapter(chatArrayList, stEmail, nickName);
         recyclerView.setAdapter(mAdapter);
+
+        etText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                switch (actionId) {
+                    case EditorInfo.IME_ACTION_SEND:
+                        // 검색 동작
+                        break;
+                    default:
+                        // 기본 엔터키 동작
+                        return false;
+                }
+                return true;
+            }
+        });
+
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
@@ -154,7 +172,7 @@ public class ChatActivity extends AppCompatActivity {
 
 //                                    DatabaseReference ref = database.getReference("friend").child(user.getUid()).child(document.getId()).child("message");
 //                                    ref.addChildEventListener(childEventListener);
-                                    DatabaseReference ref = database.getReference("chat").child(nn[0] + "&" + nn[1]).child("message");
+                                    DatabaseReference ref = database.getReference("chat").child(user.getUid() + "&" + document.getId()).child("message");
                                     ref.addChildEventListener(childEventListener);
 
                                 }
@@ -171,6 +189,9 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+
+
+                출처: https://tiann.tistory.com/10 [티앤의 IT월드]
                 if (etText.getText().toString().length() > 0) {
                     final String stText = etText.getText().toString();
 
@@ -197,12 +218,14 @@ public class ChatActivity extends AppCompatActivity {
                                                 Arrays.sort(nn);
 
                                                 //DatabaseReference myRef = database.getReference("friend").child(user.getUid()).child(document.getId()).child("message").child(datetime);
-                                                DatabaseReference myRef = database.getReference("chat").child(nn[0] + "&" + nn[1]).child("message").child(datetime);
+                                                DatabaseReference myRef = database.getReference("chat").child(user.getUid() + "&" + document.getId()).child("message").child(datetime);
+                                                DatabaseReference dr = database.getReference("chat").child(document.getId() + "&" + user.getUid()).child("message").child(datetime);
                                                 Hashtable<String, String> numbers
                                                         = new Hashtable<String, String>();
                                                 numbers.put("email", stEmail);
                                                 numbers.put("text", stText);
                                                 myRef.setValue(numbers);
+                                                dr.setValue(numbers);
 
 
                                             }
@@ -269,7 +292,6 @@ public class ChatActivity extends AppCompatActivity {
                     sImg[i] = data.getStringExtra("postImgPath" + i + "");
                     uri[i] = data.getStringExtra("uri" + i + "");
 
-
                     if (uri[i] != null) {
                         final int j = i;
                         database = FirebaseDatabase.getInstance();
@@ -293,8 +315,8 @@ public class ChatActivity extends AppCompatActivity {
                                                     Arrays.sort(nn);
 
                                                     //DatabaseReference myRef = database.getReference("friend").child(user.getUid()).child(document.getId()).child("message").child(datetime);
-                                                    DatabaseReference myRef = database.getReference("chat").child(nn[0] + "&" + nn[1]).child("message").child(datetime);
-
+                                                    DatabaseReference myRef = database.getReference("chat").child(user.getUid() + "&" + document.getId()).child("message").child(datetime);
+                                                    DatabaseReference dr = database.getReference("chat").child(document.getId() + "&" + user.getUid()).child("message").child(datetime);
                                                     Hashtable<String, String> numbers
                                                             = new Hashtable<String, String>();
                                                     numbers.put("email", stEmail);

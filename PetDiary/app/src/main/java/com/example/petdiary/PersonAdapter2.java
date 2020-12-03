@@ -6,11 +6,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.petdiary.activity.ChatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -60,12 +62,14 @@ public class PersonAdapter2 extends RecyclerView.Adapter<PersonAdapter2.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView nick;
+        ImageView profile;
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         public ViewHolder(final View itemView){
             super(itemView);
 
             nick = itemView.findViewById(R.id.textView);
+            profile = itemView.findViewById(R.id.imageView);
 
             final String[] nn = new String[1];
             db.collection("users")
@@ -104,8 +108,31 @@ public class PersonAdapter2 extends RecyclerView.Adapter<PersonAdapter2.ViewHold
             });
             nick = itemView.findViewById(R.id.textView);
         }
-        public void setItem(Person item){
+        public void setItem(final Person item){
+
             nick.setText(item.getNickname());
+            db.collection("users")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String s = document.get("profileImg").toString();
+                                    String ss = document.get("nickName").toString();
+                                    if(ss.equals(item.getNickname())) {
+                                        if (s.length() > 0) {
+                                            ImageView profileImage = (ImageView) itemView.findViewById(R.id.imageView);
+                                            Glide.with(itemView.getContext()).load(s).centerCrop().into(profileImage);
+                                            //Glide.with(holder.profile.getContext()).load(s).centerCrop().into(profileImage);
+                                        }
+                                    }
+                                }
+                            } else {
+
+                            }
+                        }
+                    });
         }
     }
 
@@ -128,7 +155,6 @@ public class PersonAdapter2 extends RecyclerView.Adapter<PersonAdapter2.ViewHold
         String nn[] = new String[2];
         nn[0] = FirebaseAuth.getInstance().getCurrentUser().getUid();
         nn[1] = items.get(position).getUid();
-        Arrays.sort(nn);
 
         mDatabase = FirebaseDatabase.getInstance().getReference("chat/"+ nn[0] + "&" + nn[1]);
         mDatabase.removeValue();

@@ -15,8 +15,17 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -34,6 +43,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     StorageReference pathReference;
     String nick;
 
+
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -42,13 +52,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         public TextView textView;
         public ImageView imageView;
         public TextView nickView;
+        public ImageView profile;
 
         public MyViewHolder(View v) {
             super(v);
             textView = v.findViewById(R.id.tvChat);
             imageView = v.findViewById(R.id.ivChat);
             nickView = v.findViewById(R.id.nickChat);
-
+            profile = v.findViewById(R.id.chatProfile);
         }
     }
 
@@ -104,12 +115,39 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         if (mDataset.get(position).getImage() == null) {
 
             if(holder.nickView != null){
                 holder.nickView.setText(nick);
+
+                db.collection("users")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        String s = document.get("profileImg").toString();
+                                        String ss = document.get("email").toString();
+                                        if(ss.equals(mDataset.get(position).getEmail())) {
+                                            if (s.length() > 0) {
+                                                ImageView profileImage = (ImageView) holder.profile.findViewById(R.id.chatProfile);
+                                                Glide.with(holder.profile.getContext()).load(s).centerCrop().override(500).into(profileImage);
+                                                //Glide.with(holder.profile.getContext()).load(s).centerCrop().into(profileImage);
+                                            }
+                                        }
+                                    }
+                                } else {
+
+                                }
+                            }
+                        });
+
+
             }
             holder.textView.setText(mDataset.get(position).getText());
 
@@ -117,11 +155,33 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         } else if (mDataset.get(position).getText() == null) {
             if(holder.nickView != null){
                 holder.nickView.setText(nick);
+                db.collection("users")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        String s = document.get("profileImg").toString();
+                                        String ss = document.get("email").toString();
+                                        if(ss.equals(mDataset.get(position).getEmail())) {
+                                            if (s.length() > 0) {
+                                                ImageView profileImage = (ImageView) holder.profile.findViewById(R.id.chatProfile);
+                                                Glide.with(holder.profile.getContext()).load(s).centerCrop().override(500).into(profileImage);
+                                                //Glide.with(holder.profile.getContext()).load(s).centerCrop().into(profileImage);
+                                            }
+                                        }
+                                    }
+                                } else {
+
+                                }
+                            }
+                        });
+
             }
             Uri i = Uri.parse(mDataset.get(position).getImage() + "");
             pathReference = storageRef.child("chatImage/" + mDataset.get(position).getImage()+"");
             //holder.imageView.setImageURI(i);
-
 
             File localFile = null;
             try {

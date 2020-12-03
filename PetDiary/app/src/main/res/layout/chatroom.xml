@@ -55,6 +55,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/picture"
             app:layout_constraintEnd_toStartOf="@id/btn_send"
+            android:imeOptions="actionSend"
             android:id="@+id/chat"
             />
         <Button

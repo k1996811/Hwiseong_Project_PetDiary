@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.petdiary.activity.ChatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -62,6 +63,7 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
         TextView textView;
         Button chat;
         TextView nick;
+        ImageView profile;
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         public ViewHolder(final View itemView){
@@ -113,8 +115,30 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
                 }
             });
         }
-        public void setItem(Person item){
+        public void setItem(final Person item){
             nick.setText(item.getNickname());
+            db.collection("users")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String s = document.get("profileImg").toString();
+                                    String ss = document.get("nickName").toString();
+                                    if(ss.equals(item.getNickname())) {
+                                        if (s.length() > 0) {
+                                            ImageView profileImage = (ImageView) itemView.findViewById(R.id.imageView);
+                                            Glide.with(itemView.getContext()).load(s).centerCrop().into(profileImage);
+                                            //Glide.with(holder.profile.getContext()).load(s).centerCrop().into(profileImage);
+                                        }
+                                    }
+                                }
+                            } else {
+
+                            }
+                        }
+                    });
         }
     }
 

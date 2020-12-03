@@ -114,7 +114,7 @@ public class ImageChoicePopupActivity2 extends Activity {
                 if (clipData.getItemCount() > 9) {
                     Toast.makeText(this, "사진은 9장까지만 선택 가능합니다", Toast.LENGTH_LONG).show();
                 } else {
-                    System.out.println(clipData+"aj");
+
                     postImgPath = data.getStringExtra("postImgPath");
                     sImg = new String[clipData.getItemCount()];
                     for (int i = 0; i < clipData.getItemCount(); i++) {
@@ -131,7 +131,6 @@ public class ImageChoicePopupActivity2 extends Activity {
                         resultIntent2.putExtra("uri" + i + "", sImg[i]);
 
                         StorageReference riversRef = storageRef.child("chatImage/" + file.getLastPathSegment());
-
 
                         UploadTask uploadTask = riversRef.putFile(file);
                         uploadTask.addOnFailureListener(new OnFailureListener() {

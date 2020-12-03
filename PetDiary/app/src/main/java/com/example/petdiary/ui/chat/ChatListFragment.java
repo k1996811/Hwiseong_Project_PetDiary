@@ -68,9 +68,8 @@ public class ChatListFragment extends Fragment {
                 Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
                 String s = dataSnapshot.getKey();
 
-                    if(s.indexOf(user.getUid()) != -1) {
-                        String u = s.replace("&","");
-                        final String uid = u.replace(user.getUid(),"");
+                    if(s.indexOf(user.getUid()+"&") != -1) {
+                        final String uid = s.replace(user.getUid()+"&","");
                         System.out.println(uid);
 
                     db.collection("users")
