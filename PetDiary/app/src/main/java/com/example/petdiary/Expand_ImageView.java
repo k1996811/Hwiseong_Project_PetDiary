@@ -38,6 +38,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
@@ -229,6 +231,50 @@ public class Expand_ImageView extends AppCompatActivity {
                                     break;
                                 case 1:
                                     // 로그아웃
+
+                                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                                    final StorageReference storageRef = storage.getReference();
+// Create a reference to the file to delete
+
+
+
+                                    String[] splitText =  postID.split("_");
+
+                                    Log.d("splitText", "onClick: splitText의값은"+splitText[0]+"_"+splitText[1]);
+
+
+                                    String image[] = new String[5];
+
+                                    image[0] = imageUrl1;
+                                    image[1] = imageUrl1;
+                                    image[2] = imageUrl1;
+                                    image[3] = imageUrl1;
+                                    image[4] = imageUrl1;
+
+                                    for(int i=0; i<5; i++) {
+
+                                        if (image[i]!=null) {
+                                            StorageReference desertRef = storageRef.child("images/" + splitText[0] + "_" + splitText[1] + "_postImg_"+i);
+
+// Delete the file
+                                            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    // File deleted successfully
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception exception) {
+                                                    // Uh-oh, an error occurred!
+                                                }
+                                            });
+
+                                        }
+                                    }
+
+
+
+
                                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                                     db.collection("post").document(postID)
                                             .delete()
