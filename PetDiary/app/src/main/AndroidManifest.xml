@@ -48,7 +48,8 @@
             android:name=".activity.FindPasswordActivity"
             android:parentActivityName=".activity.LoginActivity" />
         <activity android:name=".activity.SetPasswordActivity" />
-        <activity android:name=".activity.ChatActivity" />
+        <activity android:name=".activity.ChatActivity"
+            android:parentActivityName=".activity.ChatActivity"/>
         <activity
             android:name=".activity.ImageChoicePopupActivity"
             android:theme="@android:style/Theme.Dialog" />
@@ -83,6 +84,7 @@
         <activity
             android:name=".activity.LogoutPopupActivity"
             android:theme="@android:style/Theme.Dialog" />
+
         <activity android:name=".Expand_ImageView" />
         <activity android:name=".Expand_ImageView2" />
         <activity android:name=".Comment" />
