@@ -114,6 +114,9 @@ public class MainActivity extends AppCompatActivity {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 햄버거메뉴
+    public void blank(View view) {
+
+    }
 
     public void bookMarkOnClick(View view){
         myStartActivity2(SettingBookMarkActivity.class);
