@@ -19,6 +19,8 @@ import com.example.petdiary.activity.kon_AnimalProfileActivity;
 import com.example.petdiary.adapter.ViewPageAdapterSub;
 import com.example.petdiary.fragment.FragmentMy;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -161,11 +163,19 @@ public class Kon_Mypage_petAdapter extends RecyclerView.Adapter<Kon_Mypage_petAd
                 @Override
                 public boolean onLongClick(View v) {
                     int position = getAdapterPosition();
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    String uid = user.getUid();
+
                     Intent intent = new Intent(context, kon_AnimalProfileActivity.class);
                     intent.putExtra("isAddMode", false);
-                    intent.putExtra("isEditMode", true);
+                    intent.putExtra("isEditMode", false);
                     intent.putExtra("petId", arrayList.get(position).getPetId());
-                    activity.startActivityForResult(intent, 1);
+                    intent.putExtra("petMaster", arrayList.get(position).getPetMaster());
+
+                    intent.putExtra("userId",uid);
+
+                    context.startActivity(intent);//, 1);
                     //context.startActivity(intent);
                     return false;
                 }

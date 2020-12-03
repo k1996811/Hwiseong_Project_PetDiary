@@ -165,10 +165,14 @@ public class FragmentMy extends Fragment {
         petAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("로그로그로그~~~", "onClick: 들어왔따");
                 Intent intent = new Intent(getContext(), kon_AnimalProfileActivity.class);
                 intent.putExtra("isAddMode", true);
-                intent.putExtra("isEditMode", true);
+                intent.putExtra("isEditMode", false);
                 intent.putExtra("petId","");
+                intent.putExtra("petMaster","");
+                intent.putExtra("userId","");
+                Log.d("로그로그로그~~~", "onClick: 들어왔따");
                 //startActivity(intent);
                 startActivityForResult(intent, 1);
             }
@@ -270,7 +274,8 @@ public class FragmentMy extends Fragment {
                                         document.getId(),
                                         data.get("petName").toString(),
                                         data.get("profileImg").toString(),
-                                        data.get("petMemo").toString());
+                                        data.get("petMemo").toString(),
+                                        data.get("master").toString());
                                 petList.add(pet);
 
                             }
