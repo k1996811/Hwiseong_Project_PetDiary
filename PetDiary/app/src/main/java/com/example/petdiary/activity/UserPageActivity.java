@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,11 +29,17 @@ import com.example.petdiary.PetData;
 import com.example.petdiary.R;
 import com.example.petdiary.RecyclerDecoration;
 import com.example.petdiary.fragment.FragmentMy;
+import com.example.petdiary.info.FriendInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -41,6 +48,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
@@ -52,10 +60,14 @@ public class UserPageActivity extends AppCompatActivity {
 
     private TextView profileName;
     private TextView profileMemo;
-    private  String profileImgName;
+    private String profileImgName;
     private ImageView profileEditImg;
+    private Button addFriend;
 
     private String uid;
+    private boolean checkFriend = false;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference mDatabase;
 
     Map<String, String> userInfo = new HashMap<>();   // 이거 여기서 선언할게 아니라 받아와야함
     //Map<String, String> petInfo = new HashMap<>();
@@ -99,6 +111,49 @@ public class UserPageActivity extends AppCompatActivity {
         profileEditImg = findViewById(R.id.profile_image);
         profileName = findViewById(R.id.profile_name);
         profileMemo = findViewById(R.id.profile_memo);
+        addFriend = findViewById(R.id.addFriend);
+
+        if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(uid)){
+            addFriend.setVisibility(View.GONE);
+        } else {
+            mDatabase = FirebaseDatabase.getInstance().getReference("friend/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                        if(uid.equals(postSnapshot.getKey())){
+                            checkFriend = true;
+                            addFriend.setText("친구 삭제");
+                            break;
+                        }
+                    }
+                    addFriend.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            firebaseDatabase = FirebaseDatabase.getInstance();
+                            if(checkFriend){
+                                DatabaseReference friend = firebaseDatabase.getReference("friend").child(FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+uid);
+                                FriendInfo friendInfo = new FriendInfo();
+                                friend.setValue(friendInfo);
+                                checkFriend = false;
+                                addFriend.setText("친구 추가");
+                            } else {
+                                DatabaseReference friend = firebaseDatabase.getReference("friend").child(FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+uid);
+                                Hashtable<String, String> numbers = new Hashtable<String, String>();
+                                numbers.put("message","없음");
+                                friend.setValue(numbers);
+                                checkFriend = true;
+                                addFriend.setText("친구 삭제");
+                            }
+                        }
+                    });
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+        }
+
 
         final ImageView profileImage = findViewById(R.id.profile_image);
 

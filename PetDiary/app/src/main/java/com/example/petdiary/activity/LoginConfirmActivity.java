@@ -37,6 +37,7 @@ public class LoginConfirmActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String email;
     private String password;
+    private boolean check = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,12 @@ public class LoginConfirmActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login_confirm);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Intent intent = getIntent();
+        String setting = intent.getStringExtra("setting");
+        if(setting.equals("out")){
+            check = true;
+        }
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -98,7 +105,11 @@ public class LoginConfirmActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             startToast("확인되었습니다.");
                             Log.d(TAG, "User re-authenticated.");
-                            myStartActivity2(SettingResetPasswordActivity.class);
+                            if(check){
+                                myStartActivity2(SettingLeaveActivity.class, email);
+                            } else {
+                                myStartActivity2(SettingResetPasswordActivity.class, email);
+                            }
                             finish();
                         }
                     });
@@ -107,8 +118,9 @@ public class LoginConfirmActivity extends AppCompatActivity {
         }
     }
 
-    private void myStartActivity2(Class c) {
+    private void myStartActivity2(Class c, String s) {
         Intent intent = new Intent(this, c);
+        intent.putExtra("email", s);
         startActivity(intent);
     }
 

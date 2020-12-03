@@ -1,5 +1,6 @@
 package com.example.petdiary.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -51,6 +52,9 @@ public class SettingResetPasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting_password);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Intent intent = getIntent();
+        email = intent.getStringExtra("email");
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
