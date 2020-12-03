@@ -130,7 +130,7 @@ public class Comment extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        cAdapter = new CommentAdapter(commentArrayList, stEmail, getApplicationContext());
+        cAdapter = new CommentAdapter(commentArrayList, stEmail,postID, getApplicationContext());
         recyclerView.setAdapter(cAdapter);
 
         ChildEventListener childEventListener = new ChildEventListener() {
@@ -195,6 +195,7 @@ public class Comment extends AppCompatActivity {
                             = new Hashtable<String, String>();
                     numbers.put("email", stEmail);
                     numbers.put("text", stText);
+                    numbers.put("date", datetime);
                     myRef.setValue(numbers);
 
                     recyclerView.post(new Runnable() {
