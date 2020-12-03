@@ -49,7 +49,7 @@
             android:parentActivityName=".activity.LoginActivity" />
         <activity android:name=".activity.SetPasswordActivity" />
         <activity android:name=".activity.ChatActivity"
-            android:parentActivityName=".activity.ChatActivity"/>
+            android:parentActivityName=".activity.ChatActivity" />
         <activity
             android:name=".activity.ImageChoicePopupActivity"
             android:theme="@android:style/Theme.Dialog" />

@@ -136,7 +136,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                                         if(ss.equals(mDataset.get(position).getEmail())) {
                                             if (s.length() > 0) {
                                                 ImageView profileImage = (ImageView) holder.profile.findViewById(R.id.chatProfile);
-                                                Glide.with(holder.profile.getContext()).load(s).centerCrop().into(profileImage);
+                                                Glide.with(holder.profile.getContext()).load(s).centerCrop().override(500).into(profileImage);
                                                 //Glide.with(holder.profile.getContext()).load(s).centerCrop().into(profileImage);
                                             }
                                         }
