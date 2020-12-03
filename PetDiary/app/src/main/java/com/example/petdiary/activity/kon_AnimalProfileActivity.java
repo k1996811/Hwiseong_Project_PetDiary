@@ -34,6 +34,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -133,13 +134,11 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                                 String selectedText = items[pos].toString();
                                 switch (pos) {
                                     case 0:   // Edit
-                                        Toast.makeText(getApplicationContext(), "수정을 눌렀다", Toast.LENGTH_SHORT).show();
                                         isEditMode = true;
                                         setEditIcon(false);
                                         setEditMode(true);
                                         break;
                                     case 1:    // Delete
-                                        Toast.makeText(getApplicationContext(), "삭제를 눌렀다", Toast.LENGTH_SHORT).show();
                                         deleteData();
                                         break;
                                 }
@@ -163,7 +162,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                     if (isAddMode) {
                         // 추가 모드
                         Log.d("로그로그로그~~~~", "추가모드 버튼을 눌렀다고 한다  ");
-                        //  addDataToFirebase();
+                         addDataToFirebase();
                     } else {
                         // isEdit = true ,  수정 모드
                         Log.d("로그로그로그~~~~", "수정모드 버튼을 눌렀다고 한다  ");
@@ -314,7 +313,6 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         petData.put("petMemo", petMemo.getText().toString());
         petData.put("master", uid);
 
-        Log.d("로그로그로그~~~~", "텍스트 저장전이라고 한다 ");
         ///////////////////////////////////// 텍스트 추가
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 //        db.collection("pets").document(petId)
@@ -343,8 +341,14 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         final StorageReference storageRef = storage.getReference();
         final UploadTask[] uploadTask = new UploadTask[1];
 
+        final Uri file;
         // 로컬 파일에서 업로드(스토리지)
-        final Uri file = Uri.fromFile(new File(postImgPath));
+        if(postImgPath.equals("")) {
+            file =  Uri.parse("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/pets%2Ficon_dog_running.png?alt=media&token=68e04147-faa1-4443-918e-f01f0cffecd2");
+        }
+        else
+            file = Uri.fromFile(new File(postImgPath));
+
         StorageReference riversRef = storageRef.child("pets/" + petId + "_profileImage.jpg");
         uploadTask[0] = riversRef.putFile(file);
 
