@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryLight"
+    android:background="#D9F1F1"
     android:orientation="vertical">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -30,7 +30,7 @@
                     android:layout_height="100dp"
                     android:layout_marginHorizontal="30dp"
                     android:layout_marginTop="20dp"
-                    app:cardCornerRadius="100dp"
+                    app:cardCornerRadius="200dp"
 
                     app:cardElevation="0dp">
 
@@ -45,15 +45,23 @@
                 <!-- ========================================== profile name -->
                 <TextView
                     android:id="@+id/profile_name"
-                    android:layout_width="match_parent"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="30dp"
-                    android:layout_marginRight="30dp"
+                    android:layout_marginRight="50dp"
                     android:layout_toRightOf="@+id/profile_imageView"
-
-
-                    android:text="코주부"
+                    android:text="닉네임"
                     android:textColor="#000000" />
+
+                <Button
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="친구 추가"
+                    android:layout_marginVertical="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@+id/profile_name"
+                    android:background="@drawable/button2"
+                    android:id="@+id/addFriend"/>
 
                 <!-- ========================================== profile memo -->
                 <TextView
@@ -65,7 +73,7 @@
                     android:layout_toRightOf="@id/profile_imageView"
 
                     android:inputType="none"
-                    android:text="코댕이 아빠 코주부"
+                    android:text="메모"
                     android:textColor="#000000"
                     android:textSize="8sp"
 
@@ -84,21 +92,6 @@
                 android:paddingBottom="5dp"
                 android:clipToPadding="false">
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginHorizontal="2dp"
-                    android:backgroundTint="@color/cardview_dark_background"
-                    app:cardCornerRadius="100dp"
-                    app:cardElevation="0dp">
-                    <ImageView
-                        android:id="@+id/profile_petAddBtn"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@android:drawable/ic_input_add" />
-                </androidx.cardview.widget.CardView>
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/pet_recyclerView"
                     android:layout_width="match_parent"
@@ -108,8 +101,7 @@
                     android:orientation="horizontal"
                     android:overScrollMode="never"
                     android:scrollbars="none"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/kon_mypage_pet_item">
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
 
                 </androidx.recyclerview.widget.RecyclerView>
 
@@ -134,8 +126,9 @@
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="20dp"
                 android:gravity="center"
-                android:scrollbars="vertical"
-                tools:listitem="@layout/kon_mypage_item"></androidx.recyclerview.widget.RecyclerView>
+                android:scrollbars="vertical">
+
+            </androidx.recyclerview.widget.RecyclerView>
         </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
