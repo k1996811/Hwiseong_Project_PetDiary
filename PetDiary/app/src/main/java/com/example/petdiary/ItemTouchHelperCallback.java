@@ -98,7 +98,7 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
     }
     //버튼의 텍스트 그려주기
     private void drawText(String text, Canvas c, RectF button, Paint p){
-        float textSize = 50; p.setColor(Color.WHITE); p.setAntiAlias(true);
+        float textSize = 40; p.setColor(Color.WHITE); p.setAntiAlias(true);
         p.setTextSize(textSize);
         float textWidth = p.measureText(text);
         c.drawText(text, button.centerX() - (textWidth/2), button.centerY() + (textSize/2), p);

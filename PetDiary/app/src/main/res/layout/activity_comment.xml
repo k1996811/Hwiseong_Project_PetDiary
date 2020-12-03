@@ -41,7 +41,7 @@
         android:autoSizeTextType="uniform"
         android:layout_below="@id/cardView_profile"
         android:textColor="#000000"
-        android:text="강아지와 산책을 했습니다 너무너무 즐거운 산책 내일또 하고시어용 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다 #강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다#강아지 #귀여워잉 #하루 한번 산책 또 놀고싶다"
+        android:text="내용"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:readMoreColor="@android:color/darker_gray"
@@ -113,6 +113,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
+        android:background="@drawable/button"
         android:text="입력" />
 
 

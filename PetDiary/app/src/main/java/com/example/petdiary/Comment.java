@@ -85,10 +85,12 @@ public class Comment extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document != null) {
                         if (document.exists()) {
+                            ImageView profileImage = (ImageView) findViewById(R.id.Profile_image);
                             profileImg[0] = document.getData().get("profileImg").toString();
                             if(profileImg[0].length() > 0){
-                                ImageView profileImage = (ImageView) findViewById(R.id.Profile_image);
-                                Glide.with(getApplicationContext()).load(profileImg[0]).centerCrop().override(500).into(profileImage);
+                                Glide.with(getApplicationContext()).load(document.getData().get("profileImg").toString()).centerCrop().override(500).into(profileImage);
+                            } else {
+                                profileImage.setImageResource(R.drawable.icon_person);
                             }
                         } else {
                             //Log.d("###", "No such document");

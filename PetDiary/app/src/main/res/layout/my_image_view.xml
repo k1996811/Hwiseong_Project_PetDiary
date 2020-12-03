@@ -4,15 +4,27 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <ImageView
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView_profile"
+        app:cardCornerRadius="100dp"
+        android:layout_gravity="center_vertical"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@mipmap/ic_launcher"
-        android:background="@android:color/transparent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="5dp"
-        android:id="@+id/chatProfile"/>
+        android:layout_margin="5dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/icon_person"
+            android:background="@android:color/transparent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="5dp"
+            android:id="@+id/chatProfile"/>
+    </androidx.cardview.widget.CardView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/chatlayout"
@@ -20,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/chatProfile"
+        app:layout_constraintStart_toEndOf="@+id/cardView_profile"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView

@@ -73,7 +73,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users").whereEqualTo("email",stMyEmail)
+        db.collection("users").whereEqualTo("email",mDataset.get(position).getEmail())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -81,7 +81,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                         if (task.isSuccessful()) {
                             for (final QueryDocumentSnapshot document : task.getResult()) {
                                 holder.nickChat.setText(document.getData().get("nickName").toString());
-                                Glide.with(context).load(document.getData().get("profileImg").toString()).centerCrop().override(500).into(holder.chatProfile);
+                                if(document.getData().get("profileImg").toString().length() > 0){
+                                    Glide.with(context).load(document.getData().get("profileImg").toString()).centerCrop().override(500).into(holder.chatProfile);
+                                } else {
+                                    holder.chatProfile.setImageResource(R.drawable.icon_person);
+                                }
+
                                 break;
                             }
                         } else {

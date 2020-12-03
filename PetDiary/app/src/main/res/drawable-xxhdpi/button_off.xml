@@ -8,8 +8,11 @@
         android:width="1px"
         android:color="@android:color/black"
         />
-    <padding android:left="7dp" android:top="7dp"
-        android:right="7dp" android:bottom="7dp" />
+    <padding
+        android:left="7dp"
+        android:top="7dp"
+        android:right="7dp"
+        android:bottom="7dp" />
 
 
 </shape>
