@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.example.petdiary.Main_Expand_ImageView;
+import com.example.petdiary.activity.UserPageActivity;
 import com.example.petdiary.info.BlockFriendInfo;
 import com.example.petdiary.info.BookmarkInfo;
 import com.example.petdiary.Comment;
@@ -119,7 +121,24 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         }
         holder.content.setText(arrayList.get(position).getContent());
         holder.nickName.setText(arrayList.get(position).getNickName());
-
+        holder.nickName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, UserPageActivity.class);
+                intent.putExtra("userID", arrayList.get(position).getUid().toString());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        });
+        holder.profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, UserPageActivity.class);
+                intent.putExtra("userID", arrayList.get(position).getUid().toString());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        });
         final String[] profileImg = new String[1];
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(arrayList.get(position).getUid());
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

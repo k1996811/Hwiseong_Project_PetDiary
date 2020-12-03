@@ -35,6 +35,8 @@
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
 
+        <activity android:name=".activity.UserPageActivity"
+            android:parentActivityName=".activity.MainActivity" />
         <activity android:name=".activity.ContentEditActivity"></activity>
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.KakaoSignUpActivity" />

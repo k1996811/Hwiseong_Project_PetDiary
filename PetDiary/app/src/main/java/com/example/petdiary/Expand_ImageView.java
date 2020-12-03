@@ -20,6 +20,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.example.petdiary.activity.ContentEditActivity;
+import com.example.petdiary.activity.UserPageActivity;
 import com.example.petdiary.adapter.ViewPageAdapter;
 import com.example.petdiary.adapter.ViewPageAdapterDetail;
 import com.example.petdiary.info.BlockFriendInfo;
@@ -120,7 +121,7 @@ public class Expand_ImageView extends AppCompatActivity {
                 
             }
         });
-
+        final ImageView profileImage = (ImageView) findViewById(R.id.Profile_image);
         final String[] profileImg = new String[1];
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(uid);
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -132,7 +133,6 @@ public class Expand_ImageView extends AppCompatActivity {
                         if (document.exists()) {
                             profileImg[0] = document.getData().get("profileImg").toString();
                             if(profileImg[0].length() > 0){
-                                ImageView profileImage = (ImageView) findViewById(R.id.Profile_image);
                                 Glide.with(getApplicationContext()).load(profileImg[0]).centerCrop().override(500).into(profileImage);
                             }
                         } else {
@@ -161,6 +161,25 @@ public class Expand_ImageView extends AppCompatActivity {
 
         post_nickName = findViewById(R.id.Profile_Name);
         post_content = findViewById(R.id.main_textView);
+
+        post_nickName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), UserPageActivity.class);
+                intent.putExtra("userID", uid);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), UserPageActivity.class);
+                intent.putExtra("userID", uid);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
 
         post_nickName.setText(nickName);
         post_content.setText(content);
