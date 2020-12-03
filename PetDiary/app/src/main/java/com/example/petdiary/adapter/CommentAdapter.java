@@ -1,12 +1,17 @@
 package com.example.petdiary.adapter;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.service.autofill.Dataset;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +33,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHolder> {
 
@@ -40,6 +48,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     private FirebaseAuth mAuth;
     private String stEmail;
     private String comment_email;
+
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -70,6 +79,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         this.stMyEmail = stEmail;
         this.context = context;
         this.postID = postID;
+        notifyDataSetChanged();
+
     }
 
     @Override
@@ -114,7 +125,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         FirebaseUser user = mAuth.getCurrentUser();
         stEmail = user.getEmail();
         comment_email = mDataset.get(position).getEmail();
-        
+
         textView = (TextView) holder.itemView.findViewById(R.id.tvChat);
         textView.setOnLongClickListener(new View.OnLongClickListener() {
 
@@ -123,6 +134,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
             public boolean onLongClick(final View view) {
                 if (stEmail.equals(comment_email)) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
 
                 CharSequence info[] = new CharSequence[]{"수정", "삭제"};
                 builder.setTitle("");
@@ -133,9 +145,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                         switch (which) {
                             case 0:
                                 // 내정보
-                                Log.d("dsd", "onClick: stEmail" + stEmail);
-                                Log.d("dsd", "onClick: stEmail" + mDataset.get(position).getEmail());
-
+                               String Date =mDataset.get(position).getDate();
+                               String text =mDataset.get(position).getText();
+                                Edit(view,text,Date);
+                                notifyDataSetChanged();
                                 Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
                                 break;
                             case 1:
@@ -158,10 +171,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                 builder.show();
             }
                     return false;
-
                 }
-
         });
+
 
 
         holder.textView.setText(mDataset.get(position).getText());
@@ -169,5 +181,49 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     @Override
     public int getItemCount() {
         return mDataset.size();
+    }
+
+
+    public void Edit(final View view, final String text, final String Date){
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
+        final EditText input = new EditText(view.getContext());
+        input.setText(text);
+        builder.setTitle("댓글을 수정해주세요");
+        builder.setView(input);
+        builder.setPositiveButton(context.getResources().getString(R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String stText = input.getText().toString();
+//                                    Log.d("input", "onClick: 인풋값"+input.getText().toString());
+                        database = FirebaseDatabase.getInstance();
+
+                        DatabaseReference myRef = database.getReference("comment/"+postID).child(Date);
+                        Hashtable<String, Object> numbers
+                                = new Hashtable<String, Object>();
+                        numbers.put("text", stText);
+                        myRef.updateChildren(numbers);
+
+//                        textView = (TextView) view.findViewById(R.id.tvChat);
+//                        textView.setText(stText);
+//
+                        //    DatabaseReference myRef = database.getReference("comment/"+postID).child(mDataset.get(position).getDate());
+
+                        //   database.getReference("comment/"+postID).child(mDataset.get(position).getDate()).child("text").setValue(stText);
+
+
+
+                    }
+                });
+        builder.setNegativeButton(context.getResources().getString(R.string.cancel),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+
+
     }
 }
