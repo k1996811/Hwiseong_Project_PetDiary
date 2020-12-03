@@ -92,7 +92,6 @@ public class ChatActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_dehaze_24);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         mAuth = FirebaseAuth.getInstance();
@@ -189,9 +188,6 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
-
-                출처: https://tiann.tistory.com/10 [티앤의 IT월드]
                 if (etText.getText().toString().length() > 0) {
                     final String stText = etText.getText().toString();
 

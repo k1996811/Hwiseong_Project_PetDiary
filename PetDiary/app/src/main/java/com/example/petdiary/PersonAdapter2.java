@@ -15,6 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.petdiary.activity.ChatActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -63,11 +66,13 @@ public class PersonAdapter2 extends RecyclerView.Adapter<PersonAdapter2.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView nick;
         ImageView profile;
+        TextView preview;
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         public ViewHolder(final View itemView){
             super(itemView);
 
+            preview = itemView.findViewById(R.id.preview);
             nick = itemView.findViewById(R.id.textView);
             profile = itemView.findViewById(R.id.imageView);
 
@@ -110,6 +115,7 @@ public class PersonAdapter2 extends RecyclerView.Adapter<PersonAdapter2.ViewHold
         }
         public void setItem(final Person item){
 
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
             nick.setText(item.getNickname());
             db.collection("users")
                     .get()
@@ -118,14 +124,31 @@ public class PersonAdapter2 extends RecyclerView.Adapter<PersonAdapter2.ViewHold
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
+
                                     String s = document.get("profileImg").toString();
                                     String ss = document.get("nickName").toString();
+
                                     if(ss.equals(item.getNickname())) {
                                         if (s.length() > 0) {
+
                                             ImageView profileImage = (ImageView) itemView.findViewById(R.id.imageView);
                                             Glide.with(itemView.getContext()).load(s).centerCrop().into(profileImage);
                                             //Glide.with(holder.profile.getContext()).load(s).centerCrop().into(profileImage);
                                         }
+                                        ChildEventListener childEventListener = new ChildEventListener() {
+                                            @Override
+                                            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+                                                Chat chat = dataSnapshot.getValue(Chat.class);
+                                                    preview.setText(chat.getText());
+                                            }
+                                            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) { }
+                                            public void onChildRemoved(DataSnapshot dataSnapshot) { }
+                                            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {}
+                                            public void onCancelled(DatabaseError databaseError) {}
+                                        };
+                                        DatabaseReference ref = database.getReference("chat").child(user.getUid() + "&" + document.getId()).child("message");
+                                        ref.limitToLast(1).addChildEventListener(childEventListener);
+
                                     }
                                 }
                             } else {
