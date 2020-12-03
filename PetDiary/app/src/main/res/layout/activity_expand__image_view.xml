@@ -29,13 +29,13 @@
 
         <Button
             android:id="@+id/onPopupButton"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="10dp"
-            android:layout_alignParentRight="true"
+            android:layout_width="21dp"
+            android:layout_height="22dp"
             android:layout_alignParentTop="true"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/more"/>
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/more" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/Profile_image"

@@ -1,5 +1,7 @@
 package com.example.petdiary.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +35,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,10 +44,11 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
 
     RelativeLayout loaderLayout;
 
-    ImageView editBtn;
+    ImageView moreBtn;
     ImageView petImg;
     EditText petName;
     EditText petMemo;
+    String petId;
     Button saveBtn;
     Button cancelBtn;
 
@@ -71,15 +76,16 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         Intent intent = getIntent();
         isAddMode = getIntent().getBooleanExtra("isAddMode", false);
         isEditMode = getIntent().getBooleanExtra("isEditMode",false);
+        petId = getIntent().getStringExtra("petId");
 
-        editBtn = findViewById(R.id.animalPage_edit);
+        moreBtn = findViewById(R.id.animalPage_more);
         petImg = findViewById(R.id.animalPage_Image);
         petName = findViewById(R.id.animalPage_name);
         petMemo = findViewById(R.id.animalPage_memo);
         saveBtn = findViewById(R.id.animalPage_save);
         cancelBtn = findViewById(R.id.animalPage_cancel);
 
-        editBtn.setOnClickListener(onClickListener);
+        moreBtn.setOnClickListener(onClickListener);
         petImg.setOnClickListener(onClickListener);
         saveBtn.setOnClickListener(onClickListener);
         cancelBtn.setOnClickListener(onClickListener);
@@ -97,9 +103,30 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch(v.getId())
             {
-                case R.id.animalPage_edit:
-                    if (editBtn.isClickable()) {
-                        isEditMode = true;
+                case R.id.animalPage_more:
+                    if (moreBtn.isClickable()) {
+                        final CharSequence[] items =  new CharSequence[]{"Edit", "Delete"};
+
+                       AlertDialog.Builder builder = new AlertDialog.Builder(kon_AnimalProfileActivity.this);
+                        builder.setTitle("");
+
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int pos) {
+                                String selectedText = items[pos].toString();
+                                switch(pos)
+                                {
+                                    case 0:   // Edit
+                                        isEditMode = true;
+                                        break;
+                                    case 1:    // Delete
+                                        deleteData();
+                                        break;
+                                }
+
+                               // Toast.makeText(MainActivity.this, selectedText, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        builder.show();
                     }
                     break;
                 case R.id.animalPage_Image:
@@ -161,6 +188,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                     setProfileImg(postImgPath);
                 }
                 break;
+
         }
     }
 
@@ -192,11 +220,11 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
     // 편집버튼 상태 변경 on/off
     private void setEditIcon(boolean isShown) {
         if (isShown)
-            editBtn.setVisibility(View.VISIBLE);
+            moreBtn.setVisibility(View.VISIBLE);
         else
-            editBtn.setVisibility(View.INVISIBLE);
+            moreBtn.setVisibility(View.INVISIBLE);
 
-        editBtn.setClickable(isShown);
+        moreBtn.setClickable(isShown);
     }
 
 
@@ -359,6 +387,12 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
 
 
     }
+
+    private void deleteData()
+    {
+        Toast.makeText(getApplicationContext(), "딜리트를 눌렀습니다", Toast.LENGTH_SHORT).show();
+    }
+
 
     // 데이터 수정 시 불리는 함수
     private void saveDataToFirebase() {

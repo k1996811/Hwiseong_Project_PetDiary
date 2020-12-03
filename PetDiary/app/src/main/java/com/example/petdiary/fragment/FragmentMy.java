@@ -168,6 +168,7 @@ public class FragmentMy extends Fragment {
                 Intent intent = new Intent(getContext(), kon_AnimalProfileActivity.class);
                 intent.putExtra("isAddMode", true);
                 intent.putExtra("isEditMode", true);
+                intent.putExtra("petId","");
                 //startActivity(intent);
                 startActivityForResult(intent, 1);
             }
@@ -193,7 +194,7 @@ public class FragmentMy extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case 0:   // ProfileEditActivity에서 받아온 값
+            case 0:  //프로필 수정 // ProfileEditActivity에서 받아온 값
                 if (resultCode == RESULT_OK) {
                     setProfileImg(data.getStringExtra("profileImg"));
                     profileName.setText(data.getStringExtra("nickName"));
@@ -204,11 +205,12 @@ public class FragmentMy extends Fragment {
                 } else {
                 }
                 break;
-            case 1:
+            case 1: // 펫 추가, 수정
                 if (resultCode == RESULT_OK) {
                     getPetInfo();
                 }
                 break;
+
         }
     }
 
@@ -408,7 +410,7 @@ public class FragmentMy extends Fragment {
         petRecyclerView.setHasFixedSize(true); // 리사이클러뷰 기존성능 강화
 
         int columnNum = 3;
-        petAdapter = new Kon_Mypage_petAdapter(petList, getContext(), new StringCallback() {
+        petAdapter = new Kon_Mypage_petAdapter(petList, getContext(), getActivity(), new StringCallback() {
             @Override
             public void callback(String choice) {
                 choicePetId = choice;
