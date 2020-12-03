@@ -145,10 +145,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                         switch (which) {
                             case 0:
                                 // 내정보
-                               String Date =mDataset.get(position).getDate();
-                               String text =mDataset.get(position).getText();
-                                Edit(view,text,Date);
+
+                                Edit(view,position,mDataset.get(position).getText(),mDataset.get(position).getDate());
+                                notifyItemRangeChanged(position, getItemCount());
                                 notifyDataSetChanged();
+
                                 Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
                                 break;
                             case 1:
@@ -184,12 +185,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     }
 
 
-    public void Edit(final View view, final String text, final String Date){
+    public void Edit(final View view, final int position, final String text, final String Date){
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
         final EditText input = new EditText(view.getContext());
-        input.setText(text);
+        input.setText(mDataset.get(position).getText());
         builder.setTitle("댓글을 수정해주세요");
         builder.setView(input);
         builder.setPositiveButton(context.getResources().getString(R.string.ok),
@@ -199,19 +200,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 //                                    Log.d("input", "onClick: 인풋값"+input.getText().toString());
                         database = FirebaseDatabase.getInstance();
 
-                        DatabaseReference myRef = database.getReference("comment/"+postID).child(Date);
+                        DatabaseReference myRef = database.getReference("comment/"+postID).child(mDataset.get(position).getDate());
                         Hashtable<String, Object> numbers
                                 = new Hashtable<String, Object>();
                         numbers.put("text", stText);
                         myRef.updateChildren(numbers);
 
-//                        textView = (TextView) view.findViewById(R.id.tvChat);
-//                        textView.setText(stText);
-//
-                        //    DatabaseReference myRef = database.getReference("comment/"+postID).child(mDataset.get(position).getDate());
 
-                        //   database.getReference("comment/"+postID).child(mDataset.get(position).getDate()).child("text").setValue(stText);
-
+                        textView = (TextView) view.findViewById(R.id.tvChat);
+                        textView.setText(stText);
+                        mDataset.get(position).setText(stText);
 
 
                     }
