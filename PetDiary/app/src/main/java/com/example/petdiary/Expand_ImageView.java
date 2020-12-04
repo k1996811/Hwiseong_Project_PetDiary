@@ -229,83 +229,8 @@ public class Expand_ImageView extends AppCompatActivity {
                                     Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 1:
+                                    EXpandPostDelete(view);
                                     // 로그아웃
-
-                                    FirebaseStorage storage = FirebaseStorage.getInstance();
-                                    final StorageReference storageRef = storage.getReference();
-// Create a reference to the file to delete
-
-
-
-                                    String[] splitText =  postID.split("_");
-
-                                    Log.d("splitText", "onClick: splitText의값은"+splitText[0]+"_"+splitText[1]);
-
-
-                                    String image[] = new String[5];
-
-                                    image[0] = imageUrl1;
-                                    image[1] = imageUrl1;
-                                    image[2] = imageUrl1;
-                                    image[3] = imageUrl1;
-                                    image[4] = imageUrl1;
-
-                                    for(int i=0; i<5; i++) {
-
-                                        if (image[i]!=null) {
-                                            StorageReference desertRef = storageRef.child("images/" + splitText[0] + "_" + splitText[1] + "_postImg_"+i);
-
-// Delete the file
-                                            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    // File deleted successfully
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception exception) {
-                                                    // Uh-oh, an error occurred!
-                                                }
-                                            });
-
-                                        }
-                                    }
-
-
-
-
-                                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                    db.collection("post").document(postID)
-                                            .delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-
-                                                    onBackPressed();
-                                                    Log.d("@@@", "오류가나는이유가뭐야?!");
-
-                                                }
-//                                                    finish();
-//                                                    overridePendingTransition(0, 0);
-//                                                    startActivity(getIntent());
-//                                                    overridePendingTransition(0, 0);
-
-//                                                arrayList.remove(position);
-//                                                notifyItemRemoved(position);
-//                                                //this line below gives you the animation and also updates the
-//                                                //list items after the deleted item
-//                                                notifyItemRangeChanged(position, getItemCount());
-                                               // }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.w("@@@", "Error deleting document", e);
-                                                }
-                                            });
-
-                                    Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 2:
                                     Intent msg = new Intent(Intent.ACTION_SEND);
@@ -336,13 +261,7 @@ public class Expand_ImageView extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-                                        Toast.makeText(view.getContext(), "deleteFriend", Toast.LENGTH_SHORT).show();
-                                        friendChecked = "unchecked";
-                                        firebaseDatabase = FirebaseDatabase.getInstance();
-                                        DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid()+"/"+uid);
-                                        FriendInfo friendInfo = new FriendInfo();
-                                        friend.setValue(friendInfo);
-                                        Toast.makeText(getApplicationContext(), "친구를 삭제하였습니다.", Toast.LENGTH_SHORT).show();
+                                        ExpandFriendsDelete(view);
                                         break;
                                     case 1:
                                         // 내정보
@@ -545,6 +464,135 @@ public class Expand_ImageView extends AppCompatActivity {
                 }
                 break;
         }
+    }
+
+
+//친구삭제
+    public void ExpandFriendsDelete(final View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
+
+        builder.setTitle("정말 삭제하시겠습니까?")
+                .setCancelable(false)
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        //Toast.makeText(view.getContext(), "deleteFriend", Toast.LENGTH_SHORT).show();
+                        friendChecked = "unchecked";
+                        firebaseDatabase = FirebaseDatabase.getInstance();
+                        DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid()+"/"+uid);
+                        FriendInfo friendInfo = new FriendInfo();
+                        friend.setValue(friendInfo);
+                        Toast.makeText(getApplicationContext(), "친구를 삭제하였습니다.", Toast.LENGTH_SHORT).show();
+
+                    }
+                })
+                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+
+    //게시글 삭제
+    public void EXpandPostDelete(final View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
+
+        builder.setTitle("정말 삭제하시겠습니까?")
+                .setCancelable(false)
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        FirebaseStorage storage = FirebaseStorage.getInstance();
+                        final StorageReference storageRef = storage.getReference();
+// Create a reference to the file to delete
+
+
+
+                        String[] splitText =  postID.split("_");
+
+                        Log.d("splitText", "onClick: splitText의값은"+splitText[0]+"_"+splitText[1]);
+
+
+                        String image[] = new String[5];
+
+                        image[0] = imageUrl1;
+                        image[1] = imageUrl1;
+                        image[2] = imageUrl1;
+                        image[3] = imageUrl1;
+                        image[4] = imageUrl1;
+
+                        for(int i=0; i<5; i++) {
+
+                            if (image[i]!=null) {
+                                StorageReference desertRef = storageRef.child("images/" + splitText[0] + "_" + splitText[1] + "_postImg_"+i);
+
+// Delete the file
+                                desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // File deleted successfully
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        // Uh-oh, an error occurred!
+                                    }
+                                });
+
+                            }
+                        }
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        db.collection("post").document(postID)
+                                .delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+
+                                        onBackPressed();
+                                        Log.d("@@@", "오류가나는이유가뭐야?!");
+
+                                    }
+//                                                    finish();
+//                                                    overridePendingTransition(0, 0);
+//                                                    startActivity(getIntent());
+//                                                    overridePendingTransition(0, 0);
+
+//                                                arrayList.remove(position);
+//                                                notifyItemRemoved(position);
+//                                                //this line below gives you the animation and also updates the
+//                                                //list items after the deleted item
+//                                                notifyItemRangeChanged(position, getItemCount());
+                                    // }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("@@@", "Error deleting document", e);
+                                    }
+                                });
+
+                    }
+                })
+                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }
