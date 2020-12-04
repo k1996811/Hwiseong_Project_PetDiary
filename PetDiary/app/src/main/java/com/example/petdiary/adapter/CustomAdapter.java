@@ -49,6 +49,7 @@ import com.google.firebase.storage.StorageReference;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -67,6 +68,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     private FirebaseDatabase firebaseDatabase;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
+
+    private boolean checkFriend = true;
 
     //어댑터에서 액티비티 액션을 가져올 때 context가 필요한데 어댑터에는 context가 없다.
     //선택한 액티비티에 대한 context를 가져올 때 필요하다.
@@ -326,20 +329,34 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
                 } else {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-
-                    CharSequence info[] = new CharSequence[]{"친구삭제", "신고하기", "사용자 차단", "게시물 숨기기"};
+                    firebaseDatabase = FirebaseDatabase.getInstance();
+                    final CharSequence[][] info = new CharSequence[1][1];
+                    if(checkFriend){
+                        info[0] = new CharSequence[]{"친구삭제", "신고하기", "사용자 차단", "게시물 숨기기"};
+                    } else {
+                        info[0] = new CharSequence[]{"친구추가", "신고하기", "사용자 차단", "게시물 숨기기"};
+                    }
                     builder.setTitle("");
-                    builder.setItems(info, new DialogInterface.OnClickListener() {
+                    builder.setItems(info[0], new DialogInterface.OnClickListener() {
                         @Override
 
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                                 case 0:
-                                    Toast.makeText(view.getContext(), "deleteFriend", Toast.LENGTH_SHORT).show();
-                                    DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid() + "/" + uid);
-                                    FriendInfo friendInfo = new FriendInfo();
-                                    friend.setValue(friendInfo);
-                                    Toast.makeText(context, "친구를 삭제하였습니다.", Toast.LENGTH_SHORT).show();
+                                    if(checkFriend){
+                                        DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid() + "/" + arrayList.get(position).getUid());
+                                        FriendInfo friendInfo = new FriendInfo();
+                                        friend.setValue(friendInfo);
+                                        checkFriend = false;
+                                        Toast.makeText(context, "친구를 삭제하였습니다.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid() + "/" + arrayList.get(position).getUid());
+                                        Hashtable<String, String> numbers = new Hashtable<String, String>();
+                                        numbers.put("message","없음");
+                                        friend.setValue(numbers);
+                                        checkFriend = true;
+                                        Toast.makeText(context, "친구를 추가하였습니다.", Toast.LENGTH_SHORT).show();
+                                    }
                                     break;
                                 case 1:
                                     Toast.makeText(view.getContext(), "신고하기", Toast.LENGTH_SHORT).show();
