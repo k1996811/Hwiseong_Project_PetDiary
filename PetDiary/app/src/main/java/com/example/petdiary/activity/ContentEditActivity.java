@@ -192,8 +192,7 @@ public class ContentEditActivity extends AppCompatActivity {
         }
 
         String postImgPath[] = {imageUrl1,imageUrl2,imageUrl3,imageUrl4,imageUrl5};
-        if(!imageUrl1.equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=eb832feb-bb39-48a0-9f46-81ffea724871") &&
-                !imageUrl1.equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=c41b1cc0-d610-4964-b00c-2638d4bfd8bd")) {
+        if(!imageUrl1.equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=c41b1cc0-d610-4964-b00c-2638d4bfd8bd")) {
                     Log.d("@@##", "onCreate: 이미지url"+ imageUrl1);
                     postImgCheck[0] = 0;
                     choiceNum = 0;
@@ -568,7 +567,7 @@ public class ContentEditActivity extends AppCompatActivity {
         final UploadTask[] uploadTask = new UploadTask[1];
 
         if(postNumCheck == 0){
-            imgUri[0] = "https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=eb832feb-bb39-48a0-9f46-81ffea724871";
+            imgUri[0] = "https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=c41b1cc0-d610-4964-b00c-2638d4bfd8bd";
             postData();
         } else {
             for(int i=0; i<5; i++){

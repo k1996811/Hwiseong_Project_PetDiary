@@ -92,8 +92,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     @Override
     public void onBindViewHolder(@NonNull final CustomViewHolder holder, final int position) {
 
-        if (arrayList.get(position).getImageUrl1().equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=eb832feb-bb39-48a0-9f46-81ffea724871") ||
-                arrayList.get(position).getImageUrl1().equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=c41b1cc0-d610-4964-b00c-2638d4bfd8bd")) {
+        if (arrayList.get(position).getImageUrl1().equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=c41b1cc0-d610-4964-b00c-2638d4bfd8bd")) {
             viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
             viewPageAdapter = new ViewPageAdapter(arrayList.get(position), arrayList.get(position).getImageUrl1(), arrayList.get(position).getImageUrl2(),
                     arrayList.get(position).getImageUrl3(), arrayList.get(position).getImageUrl4(), arrayList.get(position).getImageUrl5(), context);
@@ -267,7 +266,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                                             Log.d("날짜정보", "onClick: 날짜 정보" + arrayList.get(position).getDate());
                                             Log.d("날짜정보", "onClick: 날짜 정보" + arrayList.get(position).getDate() + "_postImg_0");
 
-// Delete the file
+                                            // Delete the file
                                             desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {

@@ -137,6 +137,14 @@
         android:layout_height="50dp"
         android:background="@drawable/heart_check"/>
 
+<!--    <TextView-->
+<!--        android:id="@+id/countLike"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="0"-->
+<!--        android:layout_alignBaseline="@+id/Like_button"-->
+<!--        android:layout_marginLeft="60dp"/>-->
+
     <Button
         android:id="@+id/Comment_btn"
         android:layout_below="@+id/main_textView"

@@ -149,8 +149,7 @@ public class Expand_ImageView extends AppCompatActivity {
 
         wormDotsIndicator = (WormDotsIndicator) findViewById(R.id.worm_dots_indicator);
         wormDotsIndicator.setVisibility(View.INVISIBLE);
-        if(!imageUrl1.equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=eb832feb-bb39-48a0-9f46-81ffea724871") &&
-                !imageUrl1.equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=c41b1cc0-d610-4964-b00c-2638d4bfd8bd")) {
+        if(!imageUrl1.equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=c41b1cc0-d610-4964-b00c-2638d4bfd8bd")) {
                     viewPager = (ViewPager) findViewById(R.id.main_image);
                     Log.e("###111", viewPager.getCurrentItem() + " ");
                     viewPageAdapter = new ViewPageAdapterDetail(true, imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5, getApplicationContext());
