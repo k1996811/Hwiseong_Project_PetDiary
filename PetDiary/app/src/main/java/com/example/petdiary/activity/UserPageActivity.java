@@ -242,7 +242,8 @@ public class UserPageActivity extends AppCompatActivity {
                                         document.getId(),
                                         data.get("petName").toString(),
                                         data.get("profileImg").toString(),
-                                        data.get("petMemo").toString());
+                                        data.get("petMemo").toString(),
+                                        data.get("master").toString());
                                 petList.add(pet);
 
                             }

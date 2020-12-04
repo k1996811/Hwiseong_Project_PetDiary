@@ -34,8 +34,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,13 +49,19 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
     EditText petName;
     EditText petMemo;
     String petId;
+    String petMaster;
+
+    String userId; // 뷰에 접근하는 유저 아이디
+
     Button saveBtn;
     Button cancelBtn;
+
 
     String postImgPath;
     String preImage;    // 편집 전 이미지
     String preName;     // 편집 전 이름
     String preMemo;     // 편집 전 메모
+
 
     boolean isAddMode = false; // 펫 추가 버튼을 눌렀을시에만 true
     boolean isEditMode = false;
@@ -74,9 +80,12 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
 
         //데이터 수신
         Intent intent = getIntent();
-        isAddMode = getIntent().getBooleanExtra("isAddMode", false);
-        isEditMode = getIntent().getBooleanExtra("isEditMode",false);
-        petId = getIntent().getStringExtra("petId");
+        isAddMode = intent.getBooleanExtra("isAddMode", false);
+        isEditMode = intent.getBooleanExtra("isEditMode", false);
+        petId = intent.getStringExtra("petId");
+        petMaster = intent.getStringExtra("petMaster");
+        userId = intent.getStringExtra("userId");
+
 
         moreBtn = findViewById(R.id.animalPage_more);
         petImg = findViewById(R.id.animalPage_Image);
@@ -90,7 +99,18 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         saveBtn.setOnClickListener(onClickListener);
         cancelBtn.setOnClickListener(onClickListener);
 
-        if(isAddMode) {
+
+        if (isAddMode == false && isEditMode == false) {
+            // 보기 모드
+            setEditIcon(true);
+            setEditMode(false);
+
+        } else if (isAddMode == false && isEditMode == true) {
+            // 수정 모드
+            setEditIcon(false);
+            setEditMode(true);
+        } else if (isAddMode == true) {
+            // 추가 모드
             setEditIcon(false);
             setEditMode(true);
         }
@@ -101,29 +121,29 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch(v.getId())
-            {
+            switch (v.getId()) {
                 case R.id.animalPage_more:
                     if (moreBtn.isClickable()) {
-                        final CharSequence[] items =  new CharSequence[]{"Edit", "Delete"};
+                        final CharSequence[] items = new CharSequence[]{"Edit", "Delete"};
 
-                       AlertDialog.Builder builder = new AlertDialog.Builder(kon_AnimalProfileActivity.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(kon_AnimalProfileActivity.this);
                         builder.setTitle("");
 
                         builder.setItems(items, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int pos) {
                                 String selectedText = items[pos].toString();
-                                switch(pos)
-                                {
+                                switch (pos) {
                                     case 0:   // Edit
                                         isEditMode = true;
+                                        setEditIcon(false);
+                                        setEditMode(true);
                                         break;
                                     case 1:    // Delete
                                         deleteData();
                                         break;
                                 }
 
-                               // Toast.makeText(MainActivity.this, selectedText, Toast.LENGTH_SHORT).show();
+                                // Toast.makeText(MainActivity.this, selectedText, Toast.LENGTH_SHORT).show();
                             }
                         });
                         builder.show();
@@ -137,18 +157,17 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                     isPressedSaveBtn = true;
                     isEditMode = false;
 
-                    Log.d("로그로그로그~~~~", "저장버튼을 눌렀다고 한다  ");
-
-                    loaderLayout.setVisibility(View.VISIBLE);
-                    if(isAddMode) {
-
-                        addDataToFirebase();
-                    }
-                    else {
-
-
+                    // 임시로
+                     loaderLayout.setVisibility(View.VISIBLE);
+                    if (isAddMode) {
+                        // 추가 모드
+                        Log.d("로그로그로그~~~~", "추가모드 버튼을 눌렀다고 한다  ");
+                         addDataToFirebase();
+                    } else {
+                        // isEdit = true ,  수정 모드
+                        Log.d("로그로그로그~~~~", "수정모드 버튼을 눌렀다고 한다  ");
                         setProfileImg(postImgPath);
-                     //   saveDataToFirebase();
+                        //   saveDataToFirebase();
 
                         // 두개 합쳐도 될것같은데..?
                         setEditIcon(true);
@@ -163,14 +182,15 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                 case R.id.animalPage_cancel:
                     // isImageEdit = false;
                     isEditMode = false;
-                    postImgPath = null;
                     postImgPath = preImage;
                     setProfileImg(preImage);
                     petName.setText(preName);
                     petMemo.setText(preMemo);
                     setEditIcon(true);
                     setEditMode(false);
-                    onBackPressed();
+                    if(isAddMode) {
+                        onBackPressed();
+                    }
                     break;
 
 
@@ -206,8 +226,8 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (isPressedSaveBtn) {
             Intent intent = new Intent();
-          //  intent.putExtra("profileImg", postImgPath);
-         //   intent.putExtra("aniName", aniName.getText().toString());
+            //  intent.putExtra("profileImg", postImgPath);
+            //   intent.putExtra("aniName", aniName.getText().toString());
             //intent.putExtra("memo", userMemo.getText().toString());
 
             setResult(RESULT_OK, intent);
@@ -219,6 +239,12 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
 
     // 편집버튼 상태 변경 on/off
     private void setEditIcon(boolean isShown) {
+        if (!petMaster.equals(userId)) {
+            moreBtn.setVisibility(View.INVISIBLE);
+            moreBtn.setClickable(false);
+            return;
+        }
+
         if (isShown)
             moreBtn.setVisibility(View.VISIBLE);
         else
@@ -259,11 +285,10 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
     private void setProfileImg(String profileImg) {
         //Activity activity = ProfileEditActivity.this;
         //if (activity.isFinishing())
-            //return;
+        //return;
 
         Glide.with(this).load(profileImg).centerCrop().override(500).into(petImg);
     }
-
 
 
     // 갤러리 열기 위한 팝업생성 함수
@@ -273,7 +298,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
     }
 
     // 새 애완동물을 추가할때 사용하는 함수
-    private void addDataToFirebase(){
+    private void addDataToFirebase() {
         // pet id에 사용될 데이터 생성
         Date today = new Date();
         SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
@@ -284,11 +309,10 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
 
         // 추가할 애완동물 정보
         Map<String, Object> petData = new HashMap<>();
-        petData.put("petName",  petName.getText().toString());
+        petData.put("petName", petName.getText().toString());
         petData.put("petMemo", petMemo.getText().toString());
         petData.put("master", uid);
 
-        Log.d("로그로그로그~~~~", "텍스트 저장전이라고 한다 ");
         ///////////////////////////////////// 텍스트 추가
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 //        db.collection("pets").document(petId)
@@ -317,8 +341,14 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         final StorageReference storageRef = storage.getReference();
         final UploadTask[] uploadTask = new UploadTask[1];
 
+        final Uri file;
         // 로컬 파일에서 업로드(스토리지)
-        final Uri file = Uri.fromFile(new File(postImgPath));
+        if(postImgPath.equals("")) {
+            file =  Uri.parse("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/pets%2Ficon_dog_running.png?alt=media&token=68e04147-faa1-4443-918e-f01f0cffecd2");
+        }
+        else
+            file = Uri.fromFile(new File(postImgPath));
+
         StorageReference riversRef = storageRef.child("pets/" + petId + "_profileImage.jpg");
         uploadTask[0] = riversRef.putFile(file);
 
@@ -351,8 +381,8 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
 
                             postImgPath = profileImg[0];
 
-                           // FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                          //  String uid = user.getUid();
+                            // FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            //  String uid = user.getUid();
 
                             // 클라우드 파이어스토어의 users에 프로필 이미지 주소 저장
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -388,22 +418,74 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
 
     }
 
-    private void deleteData()
-    {
+    private void deleteData() {
+
         Toast.makeText(getApplicationContext(), "딜리트를 눌렀습니다", Toast.LENGTH_SHORT).show();
+
+        loaderLayout.setVisibility(View.VISIBLE);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String uid = user.getUid();
+
+        // Firestore 데이터 삭제
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("pets").document(uid).collection("pets").document(petId)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("로그로그로그~~~~ 파베 데이터 삭제 성공", "DocumentSnapshot successfully deleted!");
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("로그로그로그~~~~ 파베 데이터 삭제 성공", "Error deleting document", e);
+
+                    }
+                });
+
+
+        // 스토리지, 이미지 삭제
+        // Create a storage reference from our app
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        // Create a reference to the file to delete
+        StorageReference desertRef = storageRef.child("pets/" + petId + "_profileImage");
+
+        // Delete the file
+        desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("로그로그로그~~~~", "이미지 삭제 성공 : ");
+                loaderLayout.setVisibility(View.INVISIBLE);
+                // File deleted successfully
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.d("로그로그로그~~~~", "이미지 삭제 실패 : " + exception);
+                loaderLayout.setVisibility(View.INVISIBLE);
+                // Uh-oh, an error occurred!
+            }
+        });
+
     }
 
 
     // 데이터 수정 시 불리는 함수
     private void saveDataToFirebase() {
         // 이미지 변경시
-        if(postImgPath.compareTo(preImage) !=0)
+        if (postImgPath.compareTo(preImage) != 0)
             setProfileImageToFirebase();
 
         // 텍스트 변경시
-        if(!preMemo.equals(petMemo.getText().toString())|| !preName.equals(petName.getText().toString()))
+        if (!preMemo.equals(petMemo.getText().toString()) || !preName.equals(petName.getText().toString()))
             setProfileTextToFirebase();
     }
+
     private void setProfileImageToFirebase() {
         // String postImgPath = preImage;
         final String[] profileImg = new String[1];
@@ -490,7 +572,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 
 
-        DocumentReference documentUserReference = db.collection("pets").document(uid+formatDate);
+        DocumentReference documentUserReference = db.collection("pets").document(uid + formatDate);
 
         documentUserReference
                 .update(

@@ -2,6 +2,7 @@ package com.example.petdiary.adapter;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.service.autofill.Dataset;
@@ -17,11 +18,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.petdiary.Chat;
 import com.example.petdiary.R;
+import com.example.petdiary.activity.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -135,7 +138,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                 if (stEmail.equals(comment_email)) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
-
                 CharSequence info[] = new CharSequence[]{"수정", "삭제"};
                 builder.setTitle("");
                 builder.setItems(info, new DialogInterface.OnClickListener() {
@@ -146,23 +148,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                             case 0:
                                 // 내정보
 
-                                Edit(view,position,mDataset.get(position).getText(),mDataset.get(position).getDate());
+                                Edit(view,position);
                                 notifyItemRangeChanged(position, getItemCount());
                                 notifyDataSetChanged();
 
-                                Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
                                 break;
                             case 1:
                                 // 로그아웃
-                                database = FirebaseDatabase.getInstance();
+                                PoPUP(view,position);
 
-                                DatabaseReference myRef = database.getReference("comment/" + postID).child(mDataset.get(position).getDate());
-                                myRef.removeValue();
-
-                                mDataset.remove(position);
-                                notifyItemRemoved(position);
-                                notifyItemRangeChanged(position, getItemCount());
-                                Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
                                 break;
                         }
                         dialog.dismiss();
@@ -185,7 +179,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     }
 
 
-    public void Edit(final View view, final int position, final String text, final String Date){
+    public void Edit(final View view, final int position){
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
@@ -222,6 +216,42 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         AlertDialog alert = builder.create();
         alert.show();
 
-
     }
+
+
+    public void PoPUP(final View view, final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
+
+        builder.setTitle("정말 삭제하시겠습니까?")
+                .setCancelable(false)
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        database = FirebaseDatabase.getInstance();
+
+                        DatabaseReference myRef = database.getReference("comment/" + postID).child(mDataset.get(position).getDate());
+                        myRef.removeValue();
+
+                        mDataset.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, getItemCount());
+
+                    }
+                })
+                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+
+
 }

@@ -44,6 +44,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
@@ -57,7 +59,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     private Context context;
     private Button Comment_btn;
     private Button onPopupButton;
-
+    FirebaseStorage storage;
     ViewPageAdapter viewPageAdapter;
     ViewPager viewPager;
     WormDotsIndicator wormDotsIndicator;
@@ -237,6 +239,50 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                                     Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 1:
+
+                                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                                    final StorageReference storageRef = storage.getReference();
+// Create a reference to the file to delete
+
+
+
+                                    String[] splitText =  arrayList.get(position).getPostID().split("_");
+
+                                    Log.d("splitText", "onClick: splitText의값은"+splitText[0]+"_"+splitText[1]);
+
+
+                                    String image[] = new String[5];
+
+                                    image[0] = arrayList.get(position).getImageUrl1();
+                                    image[1] = arrayList.get(position).getImageUrl1();
+                                    image[2] = arrayList.get(position).getImageUrl1();
+                                    image[3] = arrayList.get(position).getImageUrl1();
+                                    image[4] = arrayList.get(position).getImageUrl1();
+
+                                    for(int i=0; i<5; i++) {
+
+                                        if (image[i]!=null) {
+                                            StorageReference desertRef = storageRef.child("images/" + splitText[0] + "_" + splitText[1] + "_postImg_"+i);
+
+                                            Log.d("날짜정보", "onClick: 날짜 정보" + arrayList.get(position).getDate());
+                                            Log.d("날짜정보", "onClick: 날짜 정보" + arrayList.get(position).getDate() + "_postImg_0");
+
+// Delete the file
+                                            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    // File deleted successfully
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception exception) {
+                                                    // Uh-oh, an error occurred!
+                                                }
+                                            });
+
+                                        }
+                                    }
+
                                     // 로그아웃
                                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                                     db.collection("post").document(arrayList.get(position).getPostID())
