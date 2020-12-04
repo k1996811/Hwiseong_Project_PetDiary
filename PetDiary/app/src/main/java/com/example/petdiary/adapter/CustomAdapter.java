@@ -95,41 +95,43 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     @Override
     public void onBindViewHolder(@NonNull final CustomViewHolder holder, final int position) {
 
-        if (arrayList.get(position).getImageUrl1().equals("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=c41b1cc0-d610-4964-b00c-2638d4bfd8bd")) {
-            viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
-            viewPageAdapter = new ViewPageAdapter(arrayList.get(position), arrayList.get(position).getImageUrl1(), arrayList.get(position).getImageUrl2(),
-                    arrayList.get(position).getImageUrl3(), arrayList.get(position).getImageUrl4(), arrayList.get(position).getImageUrl5(), context);
-            viewPager.setAdapter(viewPageAdapter);
+
+        String empty_Url="https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/images%2Fempty.png?alt=media&token=c41b1cc0-d610-4964-b00c-2638d4bfd8bd";
+        String first_imageData = arrayList.get(position).getImageUrl1();
+        View first_border = (View) holder.itemView.findViewById(R.id.first_Square);
+        View second_border = (View) holder.itemView.findViewById(R.id.second_Square);
+        View hidden_border = (View) holder.itemView.findViewById(R.id.hidden_Square);
+        wormDotsIndicator = (WormDotsIndicator) holder.itemView.findViewById(R.id.worm_dots_indicator);
+
+        viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
+        viewPageAdapter = new ViewPageAdapter(arrayList.get(position), arrayList.get(position).getImageUrl1(), arrayList.get(position).getImageUrl2(),
+                arrayList.get(position).getImageUrl3(), arrayList.get(position).getImageUrl4(), arrayList.get(position).getImageUrl5(), context);
+        viewPager.setAdapter(viewPageAdapter);
+        holder.content.setText(arrayList.get(position).getContent());
+        holder.nickName.setText(arrayList.get(position).getNickName());
+
+        if (first_imageData.equals(empty_Url)) {
             viewPager.setVisibility(View.GONE);
-            wormDotsIndicator = (WormDotsIndicator) holder.itemView.findViewById(R.id.worm_dots_indicator);
             wormDotsIndicator.setViewPager(viewPager);
             wormDotsIndicator.setVisibility(View.INVISIBLE);
-
-
-            View first_border = (View) holder.itemView.findViewById(R.id.first_Square);
-            View second_border = (View) holder.itemView.findViewById(R.id.second_Square);
-            View hidden_border = (View) holder.itemView.findViewById(R.id.hidden_Square);
 
             first_border.setVisibility(View.GONE);
             second_border.setVisibility(View.GONE);
             hidden_border.setVisibility(View.VISIBLE);
 
-            //  RelativeLayout.LayoutParams buttonLayoutParams = new RelativeLayout.LayoutParams
-            //     (ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-            // buttonLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-            //  buttonLayoutParams.addRule(RelativeLayout.ABOVE, view3.getId());
-            // view1.setLayoutParams(buttonLayoutParams);
         }
         else {
 
-            viewPager = (ViewPager) holder.itemView.findViewById(R.id.main_image);
-            viewPageAdapter = new ViewPageAdapter(arrayList.get(position), arrayList.get(position).getImageUrl1(), arrayList.get(position).getImageUrl2(),
-                    arrayList.get(position).getImageUrl3(), arrayList.get(position).getImageUrl4(), arrayList.get(position).getImageUrl5(), context);
-            viewPager.setAdapter(viewPageAdapter);
+            viewPager.setVisibility(View.VISIBLE);
+            wormDotsIndicator.setViewPager(viewPager);
+            wormDotsIndicator.setVisibility(View.VISIBLE);
+
+            first_border.setVisibility(View.VISIBLE);
+            second_border.setVisibility(View.VISIBLE);
+            hidden_border.setVisibility(View.GONE);
 
         }
-        holder.content.setText(arrayList.get(position).getContent());
-        holder.nickName.setText(arrayList.get(position).getNickName());
+
         holder.nickName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -241,74 +243,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                                     Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 1:
-
-                                    FirebaseStorage storage = FirebaseStorage.getInstance();
-                                    final StorageReference storageRef = storage.getReference();
-// Create a reference to the file to delete
-
-
-
-                                    String[] splitText =  arrayList.get(position).getPostID().split("_");
-
-                                    Log.d("splitText", "onClick: splitText의값은"+splitText[0]+"_"+splitText[1]);
-
-
-                                    String image[] = new String[5];
-
-                                    image[0] = arrayList.get(position).getImageUrl1();
-                                    image[1] = arrayList.get(position).getImageUrl1();
-                                    image[2] = arrayList.get(position).getImageUrl1();
-                                    image[3] = arrayList.get(position).getImageUrl1();
-                                    image[4] = arrayList.get(position).getImageUrl1();
-
-                                    for(int i=0; i<5; i++) {
-
-                                        if (image[i]!=null) {
-                                            StorageReference desertRef = storageRef.child("images/" + splitText[0] + "_" + splitText[1] + "_postImg_"+i);
-
-                                            Log.d("날짜정보", "onClick: 날짜 정보" + arrayList.get(position).getDate());
-                                            Log.d("날짜정보", "onClick: 날짜 정보" + arrayList.get(position).getDate() + "_postImg_0");
-
-                                            // Delete the file
-                                            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    // File deleted successfully
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception exception) {
-                                                    // Uh-oh, an error occurred!
-                                                }
-                                            });
-
-                                        }
-                                    }
-
-                                    // 로그아웃
-                                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                    db.collection("post").document(arrayList.get(position).getPostID())
-                                            .delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Log.d("@@@", "DocumentSnapshot successfully deleted!");
-
-                                                    arrayList.remove(position);
-                                                    notifyItemRemoved(position);
-                                                    //this line below gives you the animation and also updates the
-                                                    //list items after the deleted item
-                                                    notifyItemRangeChanged(position, getItemCount());
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.w("@@@", "Error deleting document", e);
-                                                }
-                                            });
-                                    Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
+                                    PostDelete(view,position);
                                     break;
                                 case 2:
                                     Intent msg = new Intent(Intent.ACTION_SEND);
@@ -344,11 +279,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                             switch (which) {
                                 case 0:
                                     if(checkFriend){
-                                        DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid() + "/" + arrayList.get(position).getUid());
-                                        FriendInfo friendInfo = new FriendInfo();
-                                        friend.setValue(friendInfo);
-                                        checkFriend = false;
-                                        Toast.makeText(context, "친구를 삭제하였습니다.", Toast.LENGTH_SHORT).show();
+                                        FriendsDelete(view,position);
                                     } else {
                                         DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid() + "/" + arrayList.get(position).getUid());
                                         Hashtable<String, String> numbers = new Hashtable<String, String>();
@@ -496,5 +427,128 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             });
         }
     }
+
+
+//친구 삭제
+    public void FriendsDelete(final View view, final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
+
+        builder.setTitle("정말 삭제하시겠습니까?")
+                .setCancelable(false)
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        DatabaseReference friend = firebaseDatabase.getReference("friend").child(user.getUid() + "/" + arrayList.get(position).getUid());
+                        FriendInfo friendInfo = new FriendInfo();
+                        friend.setValue(friendInfo);
+                        checkFriend = false;
+                        arrayList.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, getItemCount());
+                        Toast.makeText(context, "친구를 삭제하였습니다.", Toast.LENGTH_SHORT).show();
+
+                    }
+                })
+                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    //게시글 삭제
+    public void PostDelete(final View view, final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
+
+        builder.setTitle("정말 삭제하시겠습니까?")
+                .setCancelable(false)
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        FirebaseStorage storage = FirebaseStorage.getInstance();
+                        final StorageReference storageRef = storage.getReference();
+
+                        String[] splitText =  arrayList.get(position).getPostID().split("_");
+
+                        Log.d("splitText", "onClick: splitText의값은"+splitText[0]+"_"+splitText[1]);
+
+
+                        String image[] = new String[5];
+
+                        image[0] = arrayList.get(position).getImageUrl1();
+                        image[1] = arrayList.get(position).getImageUrl1();
+                        image[2] = arrayList.get(position).getImageUrl1();
+                        image[3] = arrayList.get(position).getImageUrl1();
+                        image[4] = arrayList.get(position).getImageUrl1();
+
+                        for(int i=0; i<5; i++) {
+
+                            if (image[i]!=null) {
+                                StorageReference desertRef = storageRef.child("images/" + splitText[0] + "_" + splitText[1] + "_postImg_"+i);
+
+                                Log.d("날짜정보", "onClick: 날짜 정보" + arrayList.get(position).getDate());
+                                Log.d("날짜정보", "onClick: 날짜 정보" + arrayList.get(position).getDate() + "_postImg_0");
+
+                                // Delete the file
+                                desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // File deleted successfully
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        // Uh-oh, an error occurred!
+                                    }
+                                });
+
+                            }
+                        }
+
+                        // 로그아웃
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        db.collection("post").document(arrayList.get(position).getPostID())
+                                .delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("@@@", "DocumentSnapshot successfully deleted!");
+
+                                        arrayList.remove(position);
+                                        notifyItemRemoved(position);
+                                        //this line below gives you the animation and also updates the
+                                        //list items after the deleted item
+                                        notifyItemRangeChanged(position, getItemCount());
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("@@@", "Error deleting document", e);
+                                    }
+                                });
+
+                    }
+                })
+                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 
 }
