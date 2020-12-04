@@ -365,7 +365,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                                     BlockFriendInfo blockFriendInfo = new BlockFriendInfo();
                                     blockFriendInfo.setFriendUid(arrayList.get(position).getUid());
                                     FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                    db.collection("blockFriends/"+user.getUid()+"/friends").document(uid).set(blockFriendInfo)
+                                    db.collection("blockFriends/"+user.getUid()+"/friends").document(arrayList.get(position).getUid()).set(blockFriendInfo)
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
