@@ -57,7 +57,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
     Button cancelBtn;
 
 
-    String postImgPath;
+    String postImgPath; // 보낼 이미지
     String preImage;    // 편집 전 이미지
     String preName;     // 편집 전 이름
     String preMemo;     // 편집 전 메모
@@ -86,6 +86,9 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         petMaster = intent.getStringExtra("petMaster");
         userId = intent.getStringExtra("userId");
 
+        preImage = intent.getStringExtra("petImage");
+        preName = intent.getStringExtra("name");
+        preMemo = intent.getStringExtra("memo");
 
         moreBtn = findViewById(R.id.animalPage_more);
         petImg = findViewById(R.id.animalPage_Image);
@@ -93,6 +96,13 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         petMemo = findViewById(R.id.animalPage_memo);
         saveBtn = findViewById(R.id.animalPage_save);
         cancelBtn = findViewById(R.id.animalPage_cancel);
+
+
+        setProfileImg(preImage);
+        petName.setText(preName);
+        petMemo.setText(preMemo);
+        postImgPath = preMemo;
+
 
         moreBtn.setOnClickListener(onClickListener);
         petImg.setOnClickListener(onClickListener);
@@ -157,19 +167,14 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                     isPressedSaveBtn = true;
                     isEditMode = false;
 
-                    // 임시로
-                     loaderLayout.setVisibility(View.VISIBLE);
+
                     if (isAddMode) {
+                        loaderLayout.setVisibility(View.VISIBLE);
                         // 추가 모드
-                        Log.d("로그로그로그~~~~", "추가모드 버튼을 눌렀다고 한다  ");
                          addDataToFirebase();
                     } else {
-                        // isEdit = true ,  수정 모드
-                        Log.d("로그로그로그~~~~", "수정모드 버튼을 눌렀다고 한다  ");
-                        setProfileImg(postImgPath);
-                        //   saveDataToFirebase();
+                        saveDataToFirebase();
 
-                        // 두개 합쳐도 될것같은데..?
                         setEditIcon(true);
                         setEditMode(false);
 
@@ -225,12 +230,12 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (isPressedSaveBtn) {
-            Intent intent = new Intent();
+            //Intent intent = new Intent();
             //  intent.putExtra("profileImg", postImgPath);
             //   intent.putExtra("aniName", aniName.getText().toString());
             //intent.putExtra("memo", userMemo.getText().toString());
 
-            setResult(RESULT_OK, intent);
+            //setResult(RESULT_OK, intent);
             finish();
         }
         super.onBackPressed();
@@ -283,10 +288,6 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
 
     // 프로필 이미지 변경 함수
     private void setProfileImg(String profileImg) {
-        //Activity activity = ProfileEditActivity.this;
-        //if (activity.isFinishing())
-        //return;
-
         Glide.with(this).load(profileImg).centerCrop().override(500).into(petImg);
     }
 
@@ -331,8 +332,6 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                     }
                 });
 
-
-        Log.d("로그로그로그~~~~", "이미지 저장전이라고 한다 ");
         ///////////////////////////////////// 이미지 추가
         final String[] profileImg = new String[1];
 
@@ -434,14 +433,12 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d("로그로그로그~~~~ 파베 데이터 삭제 성공", "DocumentSnapshot successfully deleted!");
-
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w("로그로그로그~~~~ 파베 데이터 삭제 성공", "Error deleting document", e);
+                        Log.w("파베 데이터 삭제 실패", "Error deleting document", e);
 
                     }
                 });
@@ -459,14 +456,12 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.d("로그로그로그~~~~", "이미지 삭제 성공 : ");
                 loaderLayout.setVisibility(View.INVISIBLE);
                 // File deleted successfully
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Log.d("로그로그로그~~~~", "이미지 삭제 실패 : " + exception);
                 loaderLayout.setVisibility(View.INVISIBLE);
                 // Uh-oh, an error occurred!
             }
@@ -477,13 +472,13 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
 
     // 데이터 수정 시 불리는 함수
     private void saveDataToFirebase() {
-        // 이미지 변경시
-        if (postImgPath.compareTo(preImage) != 0)
-            setProfileImageToFirebase();
-
         // 텍스트 변경시
         if (!preMemo.equals(petMemo.getText().toString()) || !preName.equals(petName.getText().toString()))
             setProfileTextToFirebase();
+
+        // 이미지 변경시
+        if (postImgPath.compareTo(preImage) != 0)
+            setProfileImageToFirebase();
     }
 
     private void setProfileImageToFirebase() {
@@ -497,7 +492,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
 
         // 로컬 파일에서 업로드(스토리지)
         final Uri file = Uri.fromFile(new File(postImgPath));
-        StorageReference riversRef = storageRef.child("pets/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg");
+        StorageReference riversRef = storageRef.child("pets/" + petId + "_profileImage.jpg");
         uploadTask[0] = riversRef.putFile(file);
 
         uploadTask[0].addOnFailureListener(new OnFailureListener() {
@@ -509,7 +504,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                 // 파이어베이스의 스토리지에 저장한 이미지의 다운로드 경로를 가져옴
-                final StorageReference ref = storageRef.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "_profileImage.jpg");
+                final StorageReference ref = storageRef.child("pets/" + petId + "_profileImage.jpg");
                 uploadTask[0] = ref.putFile(file);
 
                 Task<Uri> urlTask = uploadTask[0].continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -532,9 +527,9 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             String uid = user.getUid();
 
-                            // 클라우드 파이어스토어의 users에 프로필 이미지 주소 저장
+                            // 클라우드 파이어스토어에 프로필 이미지 주소 저장
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
-                            DocumentReference documentUserReference = db.collection("users").document(uid);
+                            DocumentReference documentUserReference = db.collection("pets").document(uid).collection("pets").document(petId);
 
                             documentUserReference
                                     .update("profileImg", profileImg[0])
@@ -566,17 +561,18 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
 
-        //  클라우드 파이어스토어의 users에 프로필 이미지 주소 저장
+        //  클라우드 파이어스토어
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Date date = new Date();
         SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 
 
-        DocumentReference documentUserReference = db.collection("pets").document(uid + formatDate);
+        DocumentReference documentUserReference = db.collection("pets").document(uid).collection("pets").document(petId);
 
         documentUserReference
                 .update(
-                        "aniName", petName.getText().toString()
+                        "petName", petName.getText().toString(),
+                        "petMemo", petMemo.getText().toString()
                 )
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

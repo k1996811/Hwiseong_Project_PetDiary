@@ -87,9 +87,6 @@ public class FragmentMy extends Fragment {
     RecyclerView.Adapter petAdapter;
     String choicePetId;
 
-    /*  choicePetId = choice;
-        Log.d("로그로그로그~~~~", "callback: " + choicePetId +" 이라구!");*/
-
 
     public interface StringCallback {
         void callback(String choice);
@@ -137,6 +134,7 @@ public class FragmentMy extends Fragment {
                 setProfileImg(profileImgName);
                 String userId = "IAmTarget";//"IAmUser"
                 String targetId = "IAmTarget";
+
                 Intent intent = new Intent(getContext(), ProfileEditActivity.class);
                 intent.putExtra("targetId", targetId);
                 intent.putExtra("userId", userId);
@@ -165,14 +163,12 @@ public class FragmentMy extends Fragment {
         petAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("로그로그로그~~~", "onClick: 들어왔따");
                 Intent intent = new Intent(getContext(), kon_AnimalProfileActivity.class);
                 intent.putExtra("isAddMode", true);
                 intent.putExtra("isEditMode", false);
                 intent.putExtra("petId","");
                 intent.putExtra("petMaster","");
                 intent.putExtra("userId","");
-                Log.d("로그로그로그~~~", "onClick: 들어왔따");
                 //startActivity(intent);
                 startActivityForResult(intent, 1);
             }
@@ -198,6 +194,7 @@ public class FragmentMy extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+
             case 0:  //프로필 수정 // ProfileEditActivity에서 받아온 값
                 if (resultCode == RESULT_OK) {
                     setProfileImg(data.getStringExtra("profileImg"));
@@ -251,6 +248,7 @@ public class FragmentMy extends Fragment {
 
     //////////////////////////////////// 펫 정보 로드
     private void getPetInfo() {
+        Log.d("로그로그로그~~~~", "펫 정보 로드 시작" );
         //  유저
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
@@ -266,7 +264,6 @@ public class FragmentMy extends Fragment {
                         if (task.isSuccessful()) {
                             petList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("로그로그로그~~~~", "펫 정보 로드 :" + document.getId() + " => " + document.getData());
 
                                 Map<String, Object> data = document.getData();
                                 // 이름 이미지 메모
@@ -349,7 +346,6 @@ public class FragmentMy extends Fragment {
                 if (task.isSuccessful()) {
                     int resultCount = task.getResult().size();
                     postList.clear();
-                    Log.d("로그로그로그~~~~", "loadSelectedPosts: " + resultCount);
 
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         Data dataList = new Data();
@@ -442,6 +438,8 @@ public class FragmentMy extends Fragment {
     public void onResume() {
         super.onResume();
         loadPostsAfterCheck(true);
+        getPetInfo();
+
     }
 
 

@@ -116,7 +116,8 @@ public class Kon_Mypage_petAdapter extends RecyclerView.Adapter<Kon_Mypage_petAd
 //        intent.putExtra("date", arrayList.getDate());
 //        intent.putExtra("content", arrayList.getContent());
 
-        context.startActivity(intent);
+
+       // context.startActivity(intent);
     }
 
 
@@ -158,24 +159,33 @@ public class Kon_Mypage_petAdapter extends RecyclerView.Adapter<Kon_Mypage_petAd
                 }
             });
 
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            final String uid = user.getUid();
 
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     int position = getAdapterPosition();
 
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    String uid = user.getUid();
+
 
                     Intent intent = new Intent(context, kon_AnimalProfileActivity.class);
+                    PetData pet = arrayList.get(position);
+
                     intent.putExtra("isAddMode", false);
                     intent.putExtra("isEditMode", false);
-                    intent.putExtra("petId", arrayList.get(position).getPetId());
-                    intent.putExtra("petMaster", arrayList.get(position).getPetMaster());
+                    intent.putExtra("petId", pet.getPetId());
+                    intent.putExtra("petMaster", pet.getPetMaster());
 
                     intent.putExtra("userId",uid);
 
-                    context.startActivity(intent);//, 1);
+                    intent.putExtra("petImage", pet.getImageUrl());
+                    intent.putExtra("name",pet.getName());
+                    intent.putExtra("memo", pet.getMemo());
+
+
+                    activity.startActivityForResult(intent,1);
+                   // context.startActivity(intent);//, 1);
                     //context.startActivity(intent);
                     return false;
                 }

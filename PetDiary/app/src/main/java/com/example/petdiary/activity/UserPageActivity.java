@@ -88,10 +88,6 @@ public class UserPageActivity extends AppCompatActivity {
     RecyclerView.Adapter petAdapter;
     String choicePetId;
 
-    /*  choicePetId = choice;
-        Log.d("로그로그로그~~~~", "callback: " + choicePetId +" 이라구!");*/
-
-
     public interface StringCallback {
         void callback(String choice);
 
@@ -234,7 +230,6 @@ public class UserPageActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             petList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("로그로그로그~~~~", "펫 정보 로드 :" + document.getId() + " => " + document.getData());
 
                                 Map<String, Object> data = document.getData();
                                 // 이름 이미지 메모
@@ -311,7 +306,6 @@ public class UserPageActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     int resultCount = task.getResult().size();
                     postList.clear();
-                    Log.d("로그로그로그~~~~", "loadSelectedPosts: " + resultCount);
 
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         Data dataList = new Data();
