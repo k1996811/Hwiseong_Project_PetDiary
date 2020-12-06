@@ -169,6 +169,8 @@ public class FragmentMy extends Fragment {
                 intent.putExtra("petId","");
                 intent.putExtra("petMaster","");
                 intent.putExtra("userId","");
+                intent.putExtra("petImage","");
+
                 //startActivity(intent);
                 startActivityForResult(intent, 1);
             }
@@ -280,7 +282,9 @@ public class FragmentMy extends Fragment {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
 
+                        Log.d("로그로그로그~~~~", "바뀌기전: ");
                         petAdapter.notifyDataSetChanged();
+                        Log.d("로그로그로그~~~~", "바뀐후: ");
                     }
                 });
 

@@ -69,13 +69,9 @@ public class Kon_Mypage_petAdapter extends RecyclerView.Adapter<Kon_Mypage_petAd
     @Override
     public void onBindViewHolder(@NonNull MypagePetViewHolder holder, int position) {
 
-        //  holder.itemView.getLayoutParams().width = squareSize;  // 아이템 뷰의 세로 길이를 구한 길이로 변경
-        // holder.itemView.getLayoutParams().height = squareSize;  // 아이템 뷰의 세로 길이를 구한 길이로 변경
-        // holder.itemView.requestLayout(); // 변경 사항 적용
-
-        // 필요한부분
         String url = arrayList.get(position).getImageUrl();
-        Glide.with(context).load(url).centerCrop().override(500).into(holder.postImage);
+        if(url != null && !url.equals(""))
+            Glide.with(context).load(url).centerCrop().override(500).into(holder.postImage);
 
         holder.changeFrameState(selectedItems.get(position));
     }

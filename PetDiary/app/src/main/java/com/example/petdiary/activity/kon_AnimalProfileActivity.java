@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -101,7 +102,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         setProfileImg(preImage);
         petName.setText(preName);
         petMemo.setText(preMemo);
-        postImgPath = preMemo;
+        postImgPath = preImage;
 
 
         moreBtn.setOnClickListener(onClickListener);
@@ -149,6 +150,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                                         setEditMode(true);
                                         break;
                                     case 1:    // Delete
+                                        loaderLayout.setVisibility(View.VISIBLE);
                                         deleteData();
                                         break;
                                 }
@@ -160,19 +162,20 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                     }
                     break;
                 case R.id.animalPage_Image:
-                    if (isEditMode)
+                    if (isEditMode || isAddMode)
                         startGalleryActivity();
                     break;
                 case R.id.animalPage_save:
                     isPressedSaveBtn = true;
                     isEditMode = false;
 
-
+                    loaderLayout.setVisibility(View.VISIBLE);
                     if (isAddMode) {
-                        loaderLayout.setVisibility(View.VISIBLE);
+
                         // 추가 모드
-                         addDataToFirebase();
+                        addDataToFirebase();
                     } else {
+
                         saveDataToFirebase();
 
                         setEditIcon(true);
@@ -193,7 +196,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                     petMemo.setText(preMemo);
                     setEditIcon(true);
                     setEditMode(false);
-                    if(isAddMode) {
+                    if (isAddMode) {
                         onBackPressed();
                     }
                     break;
@@ -210,6 +213,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
             case 0: // 갤러리에서 이미지 선택시
                 if (resultCode == RESULT_OK) {
                     postImgPath = data.getStringExtra("postImgPath");
+
                     setProfileImg(postImgPath);
                 }
                 break;
@@ -288,6 +292,8 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
 
     // 프로필 이미지 변경 함수
     private void setProfileImg(String profileImg) {
+        if (profileImg == null || profileImg.equals(""))
+            return;
         Glide.with(this).load(profileImg).centerCrop().override(500).into(petImg);
     }
 
@@ -313,6 +319,7 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         petData.put("petName", petName.getText().toString());
         petData.put("petMemo", petMemo.getText().toString());
         petData.put("master", uid);
+        petData.put("profileImg", postImgPath);
 
         ///////////////////////////////////// 텍스트 추가
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -323,6 +330,12 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("AnimalProfile Add", "DocumentSnapshot successfully written!");
+                        if(postImgPath == null || postImgPath.equals("")) {
+                            setEditIcon(true);
+                            setEditMode(false);
+                            loaderLayout.setVisibility(View.INVISIBLE);
+                        }
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -333,6 +346,8 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                 });
 
         ///////////////////////////////////// 이미지 추가
+        if (postImgPath == null || postImgPath.equals(""))
+            return;
         final String[] profileImg = new String[1];
 
         // 파이어베이스 스토리지에 이미지 저장
@@ -340,13 +355,14 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         final StorageReference storageRef = storage.getReference();
         final UploadTask[] uploadTask = new UploadTask[1];
 
-        final Uri file;
         // 로컬 파일에서 업로드(스토리지)
-        if(postImgPath.equals("")) {
-            file =  Uri.parse("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/pets%2Ficon_dog_running.png?alt=media&token=68e04147-faa1-4443-918e-f01f0cffecd2");
-        }
-        else
-            file = Uri.fromFile(new File(postImgPath));
+        Log.d("로그로그로그~~~~", "1번테스트 :" + postImgPath);
+
+        //  if(postImgPath == null||postImgPath.equals("")) {
+        //      file =  Uri.parse("https://firebasestorage.googleapis.com/v0/b/petdiary-794c6.appspot.com/o/pets%2Ficon_dog_running.png?alt=media&token=68e04147-faa1-4443-918e-f01f0cffecd2");
+
+        final Uri file = Uri.fromFile(new File(postImgPath));
+
 
         StorageReference riversRef = storageRef.child("pets/" + petId + "_profileImage.jpg");
         uploadTask[0] = riversRef.putFile(file);
@@ -392,10 +408,11 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            loaderLayout.setVisibility(View.INVISIBLE);
+
                                             Log.d("ProfileEditActivity", "DocumentSnapshot successfully updated!");
                                             setEditIcon(true);
                                             setEditMode(false);
+                                            loaderLayout.setVisibility(View.INVISIBLE);
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
@@ -403,8 +420,10 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                                         public void onFailure(@NonNull Exception e) {
 
                                             Log.w("ProfileEditActivity", "Error updating document", e);
+                                            loaderLayout.setVisibility(View.INVISIBLE);
                                         }
                                     });
+
                             //setProfileImg(postImgPath);
                         } else {
                         }
@@ -413,19 +432,18 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
 
             }
         });
-
+        // loaderLayout.setVisibility(View.INVISIBLE);
 
     }
 
     private void deleteData() {
 
-        Toast.makeText(getApplicationContext(), "딜리트를 눌렀습니다", Toast.LENGTH_SHORT).show();
-
+       // Toast.makeText(getApplicationContext(), "딜리트를 눌렀습니다", Toast.LENGTH_SHORT).show();
         loaderLayout.setVisibility(View.VISIBLE);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final String uid = user.getUid();
 
-        // Firestore 데이터 삭제
+        ///////////////////////////////////// Firestore 데이터 삭제
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("pets").document(uid).collection("pets").document(petId)
@@ -433,19 +451,32 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        if(postImgPath == null || postImgPath.equals(""))
+                        {
+                            loaderLayout.setVisibility(View.INVISIBLE);
+                            setEditIcon(false);
+                            setEditMode(false);
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w("파베 데이터 삭제 실패", "Error deleting document", e);
-
+                        loaderLayout.setVisibility(View.INVISIBLE);
+                        setEditIcon(true);
+                        setEditMode(false);
                     }
                 });
 
 
-        // 스토리지, 이미지 삭제
+
+
+        ///////////////////////////////////// 스토리지, 이미지 삭제
         // Create a storage reference from our app
+        if(postImgPath == null || postImgPath.equals(""))
+            return;
+
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
 
@@ -456,7 +487,10 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
         desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+
                 loaderLayout.setVisibility(View.INVISIBLE);
+                setEditIcon(false);
+                setEditMode(false);
                 // File deleted successfully
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -467,17 +501,21 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
             }
         });
 
+
+
+
     }
 
 
     // 데이터 수정 시 불리는 함수
     private void saveDataToFirebase() {
         // 텍스트 변경시
-        if (!preMemo.equals(petMemo.getText().toString()) || !preName.equals(petName.getText().toString()))
+        //if (!preMemo.equals(petMemo.getText().toString()) || !preName.equals(petName.getText().toString()))
             setProfileTextToFirebase();
 
         // 이미지 변경시
-        if (postImgPath.compareTo(preImage) != 0)
+       // if (postImgPath.compareTo(preImage) != 0)
+        if( !postImgPath.equals(""))
             setProfileImageToFirebase();
     }
 
@@ -537,12 +575,14 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             Log.d("ProfileEditActivity", "DocumentSnapshot successfully updated!");
+                                            loaderLayout.setVisibility(View.INVISIBLE);
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             Log.w("ProfileEditActivity", "Error updating document", e);
+                                            loaderLayout.setVisibility(View.INVISIBLE);
                                         }
                                     });
                             setProfileImg(postImgPath);
@@ -578,14 +618,20 @@ public class kon_AnimalProfileActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("AnimalProfileActivity", "DocumentSnapshot successfully updated!");
+                        if(postImgPath == null || postImgPath.equals(""))
+                            loaderLayout.setVisibility(View.INVISIBLE);
+
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w("AnimalProfileActivity", "Error updating document", e);
+                        loaderLayout.setVisibility(View.INVISIBLE);
                     }
                 });
     }
 
 }
+

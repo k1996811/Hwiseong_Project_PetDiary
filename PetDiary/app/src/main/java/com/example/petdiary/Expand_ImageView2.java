@@ -139,6 +139,7 @@ public class Expand_ImageView2 extends AppCompatActivity {
                         if (document.exists()) {
                             profileImg[0] = document.getData().get("profileImg").toString();
                             if(profileImg[0].length() > 0){
+                                document.getLong("favoriteCount");
                                 ImageView profileImage = (ImageView) findViewById(R.id.Profile_image);
                                 Glide.with(getApplicationContext()).load(profileImg[0]).centerCrop().override(500).into(profileImage);
                             }

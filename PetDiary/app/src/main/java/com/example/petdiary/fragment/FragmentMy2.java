@@ -48,15 +48,6 @@ public class FragmentMy2 extends Fragment {
 
 
     ImageView profileEditImg;
-    int[] imgs = {
-            R.drawable.cat1,
-            R.drawable.cat1,
-            R.drawable.cat1,
-            R.drawable.cat1,
-            R.drawable.cat1,
-            R.drawable.cat1,
-    };
-
 
     //    TextView emailTextView;
 //    TextView nickNameTextView;
