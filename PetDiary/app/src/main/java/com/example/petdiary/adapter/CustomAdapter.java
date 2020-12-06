@@ -109,6 +109,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         viewPager.setAdapter(viewPageAdapter);
         holder.content.setText(arrayList.get(position).getContent());
         holder.nickName.setText(arrayList.get(position).getNickName());
+        holder.LikeText.setText(String.valueOf(arrayList.get(position).getFavoriteCount()));
 
         if (first_imageData.equals(empty_Url)) {
             viewPager.setVisibility(View.GONE);
@@ -338,6 +339,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         TextView content;
         TextView nickName;
+        TextView LikeText;
         ImageView profileImage;
         CheckBox bookmark_button;
         CheckBox Like_button;
@@ -349,6 +351,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             this.profileImage = itemView.findViewById(R.id.Profile_image);
             this.bookmark_button = itemView.findViewById(R.id.bookmark_button);
             this.Like_button = itemView.findViewById(R.id.Like_button);
+            this.LikeText = itemView.findViewById(R.id.Like_button_text_Count);
+
 
             itemView.findViewById(R.id.bookmark_button).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -391,7 +395,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             itemView.findViewById(R.id.Like_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int pos = getAdapterPosition();
+                    final int pos = getAdapterPosition();
                     final FirebaseFirestore db = FirebaseFirestore.getInstance();
                     PostLikeInfo postLikeInfo = new PostLikeInfo();
                     if(((CheckBox)view).isChecked()){
@@ -400,6 +404,37 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
+
+                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                        DocumentReference washingtonRef = db.collection("post").document(arrayList.get(pos).getPostID());
+
+
+                                        int favoritePlus = arrayList.get(pos).getFavoriteCount();
+                                        Log.d("121", "onSuccess: 값좀알자!!!!"+"//"+ favoritePlus);
+
+                                        favoritePlus =favoritePlus+1;
+
+                                        arrayList.get(pos).setFavoriteCount(favoritePlus);
+
+
+                                        LikeText.setText(String.valueOf(favoritePlus));
+
+// Set the "isCapital" field of the city 'DC'
+                                        washingtonRef
+                                                .update("favoriteCount", favoritePlus)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Log.d("성공", "DocumentSnapshot successfully updated!");
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.w("실패", "Error updating document", e);
+                                                    }
+                                                });
+
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -413,7 +448,39 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
+
+                                //    if(arrayList.get(pos).getFavoriteCount()!=0) {
+                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                        DocumentReference washingtonRef = db.collection("post").document(arrayList.get(pos).getPostID());
+
+
+                                        int favoriteMinos = arrayList.get(pos).getFavoriteCount();
+
+                                        favoriteMinos = favoriteMinos - 1;
+
+
+// Set the "isCapital" field of the city 'DC'
+                                        arrayList.get(pos).setFavoriteCount(favoriteMinos);
+                                        LikeText.setText(String.valueOf(favoriteMinos));
+
+                                        washingtonRef
+                                                .update("favoriteCount", favoriteMinos)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Log.d("성공", "DocumentSnapshot successfully updated!");
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.w("실패", "Error updating document", e);
+                                                    }
+                                                });
+
+
                                         Log.d("CustomAdapter", "DocumentSnapshot successfully deleted!");
+                              //      }
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {

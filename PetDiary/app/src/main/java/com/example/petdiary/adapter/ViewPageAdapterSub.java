@@ -153,6 +153,7 @@ public class ViewPageAdapterSub extends PagerAdapter {
                                                         intent.putExtra("content", arrayList.getContent());
                                                         intent.putExtra("postID", arrayList.getPostID());
                                                         intent.putExtra("category", arrayList.getCategory());
+                                                        intent.putExtra("favoriteCount", arrayList.getFavoriteCount());
                                                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                                         context.startActivity(intent);
                                                     } else {

@@ -72,6 +72,8 @@ public class Expand_ImageView extends AppCompatActivity {
 
     TextView post_nickName;
     TextView post_content;
+    TextView LikeText;
+
     private Button Comment_btn;
     //파이어베이스에서 내 uid 가져오기
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -162,6 +164,7 @@ public class Expand_ImageView extends AppCompatActivity {
 
         post_nickName = findViewById(R.id.Profile_Name);
         post_content = findViewById(R.id.main_textView);
+        LikeText = findViewById(R.id.Like_button_text_Count);
 
         post_nickName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,6 +187,7 @@ public class Expand_ImageView extends AppCompatActivity {
 
         post_nickName.setText(nickName);
         post_content.setText(content);
+        LikeText.setText(String.valueOf(favoriteCount));
         if(content.length() == 0){
             post_content.setVisibility(View.INVISIBLE);
         }
@@ -398,6 +402,35 @@ public class Expand_ImageView extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+
+                                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                    DocumentReference washingtonRef = db.collection("post").document(postID);
+
+
+                                    int favoritePlus = favoriteCount;
+                                    Log.d("ddsdsds", "onSuccess: favoriteCount"+favoriteCount);
+                                    Log.d("121", "onSuccess: 값좀알자!!!!"+"//"+ favoritePlus);
+
+                                    favoritePlus =favoritePlus+1;
+                                    favoriteCount=favoritePlus;
+                                    LikeText.setText(String.valueOf(favoriteCount));
+
+// Set the "isCapital" field of the city 'DC'
+                                    washingtonRef
+                                            .update("favoriteCount", favoriteCount)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("성공", "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("실패", "Error updating document", e);
+                                                }
+                                            });
+
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -411,6 +444,33 @@ public class Expand_ImageView extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+
+                                   // if(favoriteCount!=0) {
+                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                        DocumentReference washingtonRef = db.collection("post").document(postID);
+
+                                        int favoriteMinus = favoriteCount;
+
+                                        favoriteMinus = favoriteMinus - 1;
+                                        favoriteCount = favoriteMinus;
+                                        LikeText.setText(String.valueOf(favoriteCount));
+
+// Set the "isCapital" field of the city 'DC'
+                                        washingtonRef
+                                                .update("favoriteCount", favoriteCount)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Log.d("성공", "DocumentSnapshot successfully updated!");
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.w("실패", "Error updating document", e);
+                                                    }
+                                                });
+                                //    }
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {

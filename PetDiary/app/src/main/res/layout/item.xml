@@ -131,11 +131,35 @@
         android:button="@android:color/transparent"
         android:id="@+id/Like_button"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="8dp"
         android:layout_below="@id/main_textView"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/heart_check"/>
+
+    <TextView
+        android:layout_marginBottom="8dp"
+        android:id="@+id/Like_button_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:textSize="10dp"
+        android:text="좋아요"
+        android:layout_below="@+id/Like_button"
+        />
+
+    <TextView
+        android:id="@+id/Like_button_text_Count"
+        android:textColor="@color/colorPrimary"
+        android:textSize="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/Like_button_text"
+        android:layout_below="@+id/Like_button"
+        android:text="0"/>
+
+
 
 <!--    <TextView-->
 <!--        android:id="@+id/countLike"-->
@@ -148,7 +172,7 @@
     <Button
         android:id="@+id/Comment_btn"
         android:layout_below="@+id/main_textView"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/Like_button"
         android:layout_width="50dp"
@@ -157,7 +181,7 @@
 
     <CheckBox
         android:layout_marginRight="0dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:button="@android:color/transparent"
         android:id="@+id/bookmark_button"
         android:layout_below="@+id/main_textView"

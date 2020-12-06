@@ -183,6 +183,7 @@ public class FragmentMain extends Fragment {
                                                                                         dataList.setNickName(document.getData().get("nickName").toString());
                                                                                         dataList.setCategory(document.getData().get("category").toString());
                                                                                         dataList.setDate(document.getData().get("date").toString());
+                                                                                        dataList.setFavoriteCount(Integer.parseInt(document.getData().get("favoriteCount").toString()));
                                                                                         arrayList.add(0, dataList);
                                                                                     }
                                                                                 }

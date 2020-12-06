@@ -57,11 +57,18 @@
         </androidx.cardview.widget.CardView>
 
     </RelativeLayout>
+    <ScrollView
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:background="@drawable/button"
+        android:layout_width="match_parent"
+        android:layout_height="405dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/button"
         android:layout_marginRight="7dp"
         android:layout_marginLeft="7dp">
 
@@ -99,7 +106,6 @@
             android:layout_marginRight="7dp"
             android:layout_marginLeft="7dp"
             android:layout_marginTop="10dp"
-            android:autoSizeTextType="uniform"
             android:textColor="#000000"
             android:text="내용"
             android:layout_below="@id/worm_dots_indicator"
@@ -109,11 +115,14 @@
             app:readMoreMaxLine="2"
             app:readMoreText="...더보기"/>
 
+
     </RelativeLayout>
+    </ScrollView>
 
     <RelativeLayout
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="90dp"
         android:layout_marginRight="7dp"
         android:layout_marginLeft="7dp"
         android:background="@drawable/button">
@@ -126,6 +135,26 @@
             android:layout_height="50dp"
             android:layout_centerVertical="true"
             android:background="@drawable/heart_check"/>
+
+        <TextView
+            android:id="@+id/Like_button_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:textSize="10dp"
+            android:text="좋아요"
+            android:layout_below="@+id/Like_button" />
+
+        <TextView
+            android:id="@+id/Like_button_text_Count"
+            android:textColor="@color/colorPrimary"
+            android:textSize="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/Like_button_text"
+            android:layout_below="@+id/Like_button"
+            android:text="0"/>
 
         <Button
             android:id="@+id/Comment_btn"
