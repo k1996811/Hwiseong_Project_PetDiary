@@ -1,22 +1,30 @@
 package com.example.petdiary.adapter;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.service.autofill.Dataset;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.petdiary.Chat;
 import com.example.petdiary.R;
+import com.example.petdiary.activity.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +36,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHolder> {
 
@@ -40,6 +51,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     private FirebaseAuth mAuth;
     private String stEmail;
     private String comment_email;
+
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -70,6 +82,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         this.stMyEmail = stEmail;
         this.context = context;
         this.postID = postID;
+        notifyDataSetChanged();
+
     }
 
     @Override
@@ -114,7 +128,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         FirebaseUser user = mAuth.getCurrentUser();
         stEmail = user.getEmail();
         comment_email = mDataset.get(position).getEmail();
-        
+
         textView = (TextView) holder.itemView.findViewById(R.id.tvChat);
         textView.setOnLongClickListener(new View.OnLongClickListener() {
 
@@ -133,22 +147,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                         switch (which) {
                             case 0:
                                 // 내정보
-                                Log.d("dsd", "onClick: stEmail" + stEmail);
-                                Log.d("dsd", "onClick: stEmail" + mDataset.get(position).getEmail());
 
-                                Toast.makeText(view.getContext(), "Edit", Toast.LENGTH_SHORT).show();
+                                Edit(view,position);
+                                notifyItemRangeChanged(position, getItemCount());
+                                notifyDataSetChanged();
+
                                 break;
                             case 1:
                                 // 로그아웃
-                                database = FirebaseDatabase.getInstance();
+                                PoPUP(view,position);
 
-                                DatabaseReference myRef = database.getReference("comment/" + postID).child(mDataset.get(position).getDate());
-                                myRef.removeValue();
-
-                                mDataset.remove(position);
-                                notifyItemRemoved(position);
-                                notifyItemRangeChanged(position, getItemCount());
-                                Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
                                 break;
                         }
                         dialog.dismiss();
@@ -158,10 +166,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                 builder.show();
             }
                     return false;
-
                 }
-
         });
+
 
 
         holder.textView.setText(mDataset.get(position).getText());
@@ -170,4 +177,81 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     public int getItemCount() {
         return mDataset.size();
     }
+
+
+    public void Edit(final View view, final int position){
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
+        final EditText input = new EditText(view.getContext());
+        input.setText(mDataset.get(position).getText());
+        builder.setTitle("댓글을 수정해주세요");
+        builder.setView(input);
+        builder.setPositiveButton(context.getResources().getString(R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String stText = input.getText().toString();
+//                                    Log.d("input", "onClick: 인풋값"+input.getText().toString());
+                        database = FirebaseDatabase.getInstance();
+
+                        DatabaseReference myRef = database.getReference("comment/"+postID).child(mDataset.get(position).getDate());
+                        Hashtable<String, Object> numbers
+                                = new Hashtable<String, Object>();
+                        numbers.put("text", stText);
+                        myRef.updateChildren(numbers);
+
+
+                        textView = (TextView) view.findViewById(R.id.tvChat);
+                        textView.setText(stText);
+                        mDataset.get(position).setText(stText);
+
+
+                    }
+                });
+        builder.setNegativeButton(context.getResources().getString(R.string.cancel),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+
+    }
+
+
+    public void PoPUP(final View view, final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
+
+        builder.setTitle("정말 삭제하시겠습니까?")
+                .setCancelable(false)
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        database = FirebaseDatabase.getInstance();
+
+                        DatabaseReference myRef = database.getReference("comment/" + postID).child(mDataset.get(position).getDate());
+                        myRef.removeValue();
+
+                        mDataset.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, getItemCount());
+
+                    }
+                })
+                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+
+
 }

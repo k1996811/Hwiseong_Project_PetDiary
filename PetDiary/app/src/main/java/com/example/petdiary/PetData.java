@@ -5,6 +5,17 @@ public class PetData {
     private String imageUrl;
     private String memo;
     private String petId;
+    private String petMaster;
+
+
+    public String getPetMaster() {
+        return petMaster;
+    }
+
+    public void setPetMaster(String petMaster) {
+        this.petMaster = petMaster;
+    }
+
 
     public String getPetId() {
         return petId;
@@ -14,11 +25,12 @@ public class PetData {
         this.petId = petId;
     }
 
-    public PetData(String petId, String name, String imageUrl, String memo) {
+    public PetData(String petId, String name, String imageUrl, String memo, String master) {
         this.petId = petId;
         this.name = name;
         this.imageUrl = imageUrl;
         this.memo = memo;
+        this.petMaster = master;
     }
 
     public String getName() {

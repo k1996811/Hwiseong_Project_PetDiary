@@ -1,5 +1,6 @@
 package com.example.petdiary;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -14,9 +15,12 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.petdiary.activity.kon_AnimalProfileActivity;
 import com.example.petdiary.adapter.ViewPageAdapterSub;
 import com.example.petdiary.fragment.FragmentMy;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -26,6 +30,7 @@ import javax.security.auth.callback.Callback;
 public class Kon_Mypage_petAdapter extends RecyclerView.Adapter<Kon_Mypage_petAdapter.MypagePetViewHolder> {
 
     private ArrayList<PetData> arrayList;
+    Activity activity;
     private Context context;
 
     private int squareSize;
@@ -36,9 +41,10 @@ public class Kon_Mypage_petAdapter extends RecyclerView.Adapter<Kon_Mypage_petAd
 
     private SparseBooleanArray selectedItems = new SparseBooleanArray();
 
-    public Kon_Mypage_petAdapter(ArrayList<PetData> arrayList, Context context, FragmentMy.StringCallback callback) {
+    public Kon_Mypage_petAdapter(ArrayList<PetData> arrayList, Context context, Activity activity, FragmentMy.StringCallback callback) {
         this.arrayList = arrayList;
         this.context = context;
+        this.activity= activity;
         this.stringCallback = callback;
         //this.columnNum = columnNum;
 
@@ -110,7 +116,8 @@ public class Kon_Mypage_petAdapter extends RecyclerView.Adapter<Kon_Mypage_petAd
 //        intent.putExtra("date", arrayList.getDate());
 //        intent.putExtra("content", arrayList.getContent());
 
-        context.startActivity(intent);
+
+       // context.startActivity(intent);
     }
 
 
@@ -151,10 +158,38 @@ public class Kon_Mypage_petAdapter extends RecyclerView.Adapter<Kon_Mypage_petAd
 
                 }
             });
-        }
 
-        void onBind(){
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            final String uid = user.getUid();
 
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int position = getAdapterPosition();
+
+
+
+                    Intent intent = new Intent(context, kon_AnimalProfileActivity.class);
+                    PetData pet = arrayList.get(position);
+
+                    intent.putExtra("isAddMode", false);
+                    intent.putExtra("isEditMode", false);
+                    intent.putExtra("petId", pet.getPetId());
+                    intent.putExtra("petMaster", pet.getPetMaster());
+
+                    intent.putExtra("userId",uid);
+
+                    intent.putExtra("petImage", pet.getImageUrl());
+                    intent.putExtra("name",pet.getName());
+                    intent.putExtra("memo", pet.getMemo());
+
+
+                    activity.startActivityForResult(intent,1);
+                   // context.startActivity(intent);//, 1);
+                    //context.startActivity(intent);
+                    return false;
+                }
+            });
         }
 
         private void changeFrameState(final boolean isOpen) {
@@ -165,7 +200,5 @@ public class Kon_Mypage_petAdapter extends RecyclerView.Adapter<Kon_Mypage_petAd
                 frame.setStrokeColor(ContextCompat.getColor(context, R.color.colorPrimaryLight));
             }
         }
-
     }
-
 }

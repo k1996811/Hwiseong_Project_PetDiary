@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void passwordSetOnClick(View view){
-        myStartActivity2(LoginConfirmActivity.class);
+        myStartActivity2(LoginConfirmActivity.class, "setPassword");
     }
 
     public void customerCenterOnClick(View view){
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void unRegisterOnClick(View view){
-        myStartActivity2(SettingLeaveActivity.class);
+        myStartActivity2(LoginConfirmActivity.class, "out");
         //startToast("회원탈퇴");
     }
 
@@ -349,6 +349,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void myStartActivity2(Class c) {
         Intent intent = new Intent(this, c);
+        startActivity(intent);
+    }
+    private void myStartActivity2(Class c, String s) {
+        Intent intent = new Intent(this, c);
+        intent.putExtra("setting", s);
         startActivity(intent);
     }
 

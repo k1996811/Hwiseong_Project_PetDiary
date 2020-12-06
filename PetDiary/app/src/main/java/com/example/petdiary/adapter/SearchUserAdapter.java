@@ -1,6 +1,7 @@
 package com.example.petdiary.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.petdiary.activity.UserPageActivity;
 import com.example.petdiary.info.BlockFriendInfo;
 import com.example.petdiary.ItemTouchHelperListener;
 import com.example.petdiary.R;
@@ -111,7 +113,10 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.Vi
         btn_choice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mContext, item.getFriendUid() + " // 해당 유저 클릭", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(mContext, UserPageActivity.class);
+                intent.putExtra("userID", items.get(position).getFriendUid());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
             }
         });
 
