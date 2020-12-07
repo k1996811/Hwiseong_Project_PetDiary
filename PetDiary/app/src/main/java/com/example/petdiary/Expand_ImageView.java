@@ -187,7 +187,7 @@ public class Expand_ImageView extends AppCompatActivity {
 
         post_nickName.setText(nickName);
         post_content.setText(content);
-        LikeText.setText(String.valueOf(favoriteCount));
+        LikeText.setText(Integer.toString(favoriteCount));
         if(content.length() == 0){
             post_content.setVisibility(View.INVISIBLE);
         }

@@ -268,9 +268,9 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                     firebaseDatabase = FirebaseDatabase.getInstance();
                     final CharSequence[][] info = new CharSequence[1][1];
                     if(checkFriend){
-                        info[0] = new CharSequence[]{"친구삭제", "신고하기", "사용자 차단", "게시물 숨기기"};
+                        info[0] = new CharSequence[]{"친구삭제", "신고하기", "사용자 차단", "공유"};
                     } else {
-                        info[0] = new CharSequence[]{"친구추가", "신고하기", "사용자 차단", "게시물 숨기기"};
+                        info[0] = new CharSequence[]{"친구추가", "신고하기", "사용자 차단", "공유"};
                     }
                     builder.setTitle("");
                     builder.setItems(info[0], new DialogInterface.OnClickListener() {
@@ -291,7 +291,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                                     }
                                     break;
                                 case 1:
-                                    Toast.makeText(view.getContext(), "신고하기", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(view.getContext(), "신고하기", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 2:
                                     BlockFriendInfo blockFriendInfo = new BlockFriendInfo();
@@ -308,12 +308,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                                                 public void onFailure(@NonNull Exception e) {
                                                 }
                                             });
-                                    Toast.makeText(view.getContext(), "사용자 차단", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(view.getContext(), "사용자를 차단하였습니다.", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 3:
 
-                                    Toast.makeText(view.getContext(), "게시물 숨기기", Toast.LENGTH_SHORT).show();
-
+                                    Toast.makeText(view.getContext(), "공유", Toast.LENGTH_SHORT).show();
                                     break;
                             }
                             dialog.dismiss();
@@ -499,7 +498,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 //친구 삭제
     public void FriendsDelete(final View view, final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-
 
         builder.setTitle("정말 삭제하시겠습니까?")
                 .setCancelable(false)
