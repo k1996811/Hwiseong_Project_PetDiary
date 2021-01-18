@@ -48,17 +48,14 @@ public class FriendsListFragment extends Fragment {
     ArrayList<Person> personArrayList;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
 
         View root = inflater.inflate(R.layout.fragment_friends, container, false);
 
         RecyclerView recyclerView = root.findViewById(R.id.fri_recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         final PersonAdapter adapter = new PersonAdapter(getContext());
-
 
         database = FirebaseDatabase.getInstance();
         recyclerView.setLayoutManager(layoutManager);
